@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# glassfish:          Startup script for Glassfish Application Server.
+
+<% glassfish_home = "#{node[:glassfish][:base_dir]}/glassfish" %>
+
+export AS_JAVA=<%= node["java"]["java_home"] %>
+
+start() {
+        echo -n "Starting Glassfish: "
+        echo "Starting Glassfish at `date`" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
+        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin start-domain domain1" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
+        sleep 2
+        echo "done"
+}
+
+stop() {
+        echo -n "Stopping Glassfish: "
+        echo "Stopping Glassfish at `date`" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
+        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin stop-domain domain1" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
+        echo "done"
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                start
+                ;;
+        *)
+                echo $"Usage: glassfish {start|stop|restart}"
+                exit
+esac
+
+
+#create and edit file
+sudo vi /etc/init.d/glassfish
+
+#(paste the lines below into the file and save it...):
+
+#! /bin/sh
+
+#to prevent some possible problems
+export AS_JAVA=/usr/lib/jvm/java-6-sun
+
+GLASSFISHPATH=/home/glassfish/bin
+
+case "$1" in
+start)
+echo "starting glassfish from $GLASSFISHPATH"
+sudo -u glassfish $GLASSFISHPATH/asadmin start-domain domain1
+;;
+restart)
+$0 stop
+$0 start
+;;
+stop)
+echo "stopping glassfish from $GLASSFISHPATH"
+sudo -u glassfish $GLASSFISHPATH/asadmin stop-domain domain1
+;;
+*)
+echo $"usage: $0 {start|stop|restart}"
+exit 3
+;;
+esac
+:
