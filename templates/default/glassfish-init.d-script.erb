@@ -36,36 +36,3 @@ case "$1" in
                 echo $"Usage: glassfish {start|stop|restart}"
                 exit
 esac
-
-
-#create and edit file
-sudo vi /etc/init.d/glassfish
-
-#(paste the lines below into the file and save it...):
-
-#! /bin/sh
-
-#to prevent some possible problems
-export AS_JAVA=/usr/lib/jvm/java-6-sun
-
-GLASSFISHPATH=/home/glassfish/bin
-
-case "$1" in
-start)
-echo "starting glassfish from $GLASSFISHPATH"
-sudo -u glassfish $GLASSFISHPATH/asadmin start-domain domain1
-;;
-restart)
-$0 stop
-$0 start
-;;
-stop)
-echo "stopping glassfish from $GLASSFISHPATH"
-sudo -u glassfish $GLASSFISHPATH/asadmin stop-domain domain1
-;;
-*)
-echo $"usage: $0 {start|stop|restart}"
-exit 3
-;;
-esac
-:
