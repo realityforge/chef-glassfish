@@ -9,7 +9,7 @@ export AS_JAVA=<%= node["java"]["java_home"] %>
 start() {
         echo -n "Starting Glassfish: "
         echo "Starting Glassfish at `date`" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
-        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin start-domain domain1" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
+        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> domain1" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
         sleep 2
         echo "done"
 }
@@ -17,7 +17,7 @@ start() {
 stop() {
         echo -n "Stopping Glassfish: "
         echo "Stopping Glassfish at `date`" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
-        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin stop-domain domain1" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
+        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> domain1" >> <%= glassfish_home %>/domains/domain1/logs/startup.log
         echo "done"
 }
 
