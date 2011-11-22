@@ -24,7 +24,7 @@ user node[:glassfish][:user] do
   comment "GlassFish Application Server"
   gid node[:glassfish][:group]
   home node[:glassfish][:base_dir]
-  shell "/bin/false"
+  shell "/bin/bash"
 end
 
 package_url = node[:glassfish][:package_url]
