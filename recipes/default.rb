@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+include_recipe "java"
+
 group node[:glassfish][:group] do
 end
 

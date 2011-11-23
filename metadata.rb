@@ -5,6 +5,10 @@ description      "Installs/Configures GlassFish Application Server"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.7"
 
+recipe "glassfish::default", "Installs and configures GlassFish"
+
+depends 'java'
+
 attribute "glassfish/user",
   :display_name => "GlassFish User",
   :description => "The user that GlassFish executes as",
