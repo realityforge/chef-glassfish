@@ -30,7 +30,7 @@
    <config name="%%%CONFIG_MODEL_NAME%%%">
       <http-service>
         <access-log/>
-        <virtual-server id="server" network-listeners="http-listener-1"/>
+        <virtual-server id="server" network-listeners="http-listener"/>
         <virtual-server id="__asadmin" network-listeners="admin-listener"/>
       </http-service>
       <iiop-service>
@@ -178,7 +178,7 @@
       </java-config>
       <network-config>
         <protocols>
-          <protocol name="http-listener-1">
+          <protocol name="http-listener">
             <http default-virtual-server="server" max-connections="250">
               <file-cache enabled="false"/>
             </http>
@@ -190,7 +190,7 @@
           </protocol>
         </protocols>
         <network-listeners>
-          <network-listener port="%%%HTTP_PORT%%%" protocol="http-listener-1" transport="tcp" name="http-listener-1" thread-pool="http-thread-pool"/>
+          <network-listener port="%%%HTTP_PORT%%%" protocol="http-listener" transport="tcp" name="http-listener" thread-pool="http-thread-pool"/>
           <network-listener port="%%%ADMIN_PORT%%%" protocol="admin-listener" transport="tcp" name="admin-listener" thread-pool="admin-thread-pool"/>
         </network-listeners>
         <transports>
@@ -206,7 +206,7 @@
      <config name="default-config" dynamic-reconfiguration-enabled="true" >
          <http-service>
              <access-log/>
-             <virtual-server id="server" network-listeners="http-listener-1" >
+             <virtual-server id="server" network-listeners="http-listener" >
                  <property name="default-web-xml" value="${com.sun.aas.instanceRoot}/config/default-web.xml"/>
              </virtual-server>
              <virtual-server id="__asadmin" network-listeners="admin-listener" />
@@ -348,7 +348,7 @@
          </availability-service>
          <network-config>
              <protocols>
-                 <protocol name="http-listener-1">
+                 <protocol name="http-listener">
                      <http default-virtual-server="server">
                          <file-cache />
                      </http>
@@ -360,7 +360,7 @@
                  </protocol>
              </protocols>
              <network-listeners>
-                 <network-listener address="0.0.0.0" port="${HTTP_LISTENER_PORT}" protocol="http-listener-1" transport="tcp" name="http-listener-1" thread-pool="http-thread-pool" />
+                 <network-listener address="0.0.0.0" port="${HTTP_LISTENER_PORT}" protocol="http-listener" transport="tcp" name="http-listener" thread-pool="http-thread-pool" />
                  <network-listener port="${ASADMIN_LISTENER_PORT}" protocol="admin-listener" transport="tcp" name="admin-listener" thread-pool="http-thread-pool" />
              </network-listeners>
              <transports>
