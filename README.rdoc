@@ -6,3 +6,7 @@
 
 = USAGE:
 
+= TODO:
+
+* Create asadmin resource
+* Create resources for timers, realms, jdbc, ... etc
