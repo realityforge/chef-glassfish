@@ -22,7 +22,8 @@ def asadmin_command(command)
 end
 
 def asadmin_jvm_option(jvm_option)
-  asadmin_command("create-jvm-options -- #{jvm_option}")
+  # There is a need to escape : with a \
+  asadmin_command("create-jvm-options -- '#{jvm_option.gsub(':','\:')}'")
 end
 
 def asadmin_set(parameter)
@@ -39,22 +40,20 @@ action :create do
     command_string << asadmin_command("verify-domain-xml #{new_resource.domain_name}")
     command_string << asadmin_command("start-domain #{new_resource.domain_name}")
 
-    if false
-      new_resource.jvm_options.each do |jvm_option|
-        command_string << asadmin_jvm_option(jvm_option)
-      end
+    new_resource.jvm_options.each do |jvm_option|
+      command_string << asadmin_jvm_option(jvm_option)
+    end
 
-      command_string << asadmin_jvm_option("-XX:MaxPermSize=#{new_resource.max_perm_size}m")
-      command_string << asadmin_jvm_option("-Xss#{new_resource.max_stack_size}k")
-      command_string << asadmin_jvm_option("-Xmx#{new_resource.max_memory}m")
+    command_string << asadmin_jvm_option("-XX:MaxPermSize=#{new_resource.max_perm_size}m")
+    command_string << asadmin_jvm_option("-Xss#{new_resource.max_stack_size}k")
+    command_string << asadmin_jvm_option("-Xmx#{new_resource.max_memory}m")
 
-      if new_resource.tune_gc
-        command_string << asadmin_jvm_option("-XX:+AggressiveHeap")
-        command_string << asadmin_jvm_option("-XX:+DisableExplicitGC")
-        command_string << asadmin_jvm_option("-XX:+UseCompressedOops")
-        command_string << asadmin_jvm_option("-XX:+UseParallelOldGC")
-        command_string << asadmin_jvm_option("-XX:ParallelGCThreads=#{node[:cpu].size}")
-      end
+    if new_resource.tune_gc
+      command_string << asadmin_jvm_option("-XX:+AggressiveHeap")
+      command_string << asadmin_jvm_option("-XX:+DisableExplicitGC")
+      command_string << asadmin_jvm_option("-XX:+UseCompressedOops")
+      command_string << asadmin_jvm_option("-XX:+UseParallelOldGC")
+      command_string << asadmin_jvm_option("-XX:ParallelGCThreads=#{node[:cpu].size}")
     end
 
     user node[:glassfish][:user]
