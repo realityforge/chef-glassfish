@@ -65,9 +65,7 @@
       </ejb-container>
       <mdb-container steady-pool-size="0" max-pool-size="32" pool-resize-quantity="8" >
       </mdb-container>
-      <jms-service type="EMBEDDED" default-jms-host="default_JMS_host">
-        <jms-host name="default_JMS_host" host="localhost" port="%%%JMS_PROVIDER_PORT%%%" admin-user-name="admin" admin-password="admin" lazy-init="true"/>
-      </jms-service>
+      <jms-service type="EMBEDDED" default-jms-host="default_JMS_host"/>
       <security-service>
         <auth-realm classname="com.sun.enterprise.security.auth.realm.file.FileRealm" name="admin-realm">
           <property value="${com.sun.aas.instanceRoot}/config/admin-keyfile" name="file" />
@@ -242,9 +240,7 @@
              <ejb-timer-service />
          </ejb-container>
          <mdb-container />
-         <jms-service type="EMBEDDED" default-jms-host="default_JMS_host" addresslist-behavior="priority">
-             <jms-host name="default_JMS_host" host="localhost" port="${JMS_PROVIDER_PORT}" admin-user-name="admin" admin-password="admin" lazy-init="true"/>
-         </jms-service>
+         <jms-service type="EMBEDDED" default-jms-host="default_JMS_host" addresslist-behavior="priority"/>
          <log-service log-rotation-limit-in-bytes="2000000" file="${com.sun.aas.instanceRoot}/logs/server.log">
              <module-log-levels />
          </log-service>
