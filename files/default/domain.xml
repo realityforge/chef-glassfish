@@ -34,7 +34,7 @@
         <virtual-server id="__asadmin" network-listeners="admin-listener"/>
       </http-service>
       <iiop-service>
-        <orb use-thread-pool-ids="thread-pool-1" />
+        <orb use-thread-pool-ids="orb-thread-pool" />
         <iiop-listener address="0.0.0.0" port="%%%ORB_LISTENER_PORT%%%" id="orb-listener" lazy-init="true"/>
         <iiop-listener security-enabled="true" address="0.0.0.0" port="%%%ORB_SSL_PORT%%%" id="SSL">
           <ssl classname="com.sun.enterprise.security.ssl.GlassfishSSLImpl" cert-nickname="s1as" />
@@ -200,7 +200,7 @@
       <thread-pools>
           <thread-pool name="admin-thread-pool" max-thread-pool-size="50" max-queue-size="256"/>
           <thread-pool name="http-thread-pool" max-queue-size="4096"/>
-          <thread-pool name="thread-pool-1" max-thread-pool-size="200"/>
+          <thread-pool name="orb-thread-pool" max-thread-pool-size="200"/>
       </thread-pools>
     </config>
      <config name="default-config" dynamic-reconfiguration-enabled="true" >
@@ -212,7 +212,7 @@
              <virtual-server id="__asadmin" network-listeners="admin-listener" />
          </http-service>
          <iiop-service>
-             <orb use-thread-pool-ids="thread-pool-1" />
+             <orb use-thread-pool-ids="orb-thread-pool" />
              <iiop-listener port="${IIOP_LISTENER_PORT}" id="orb-listener" address="0.0.0.0" />
              <iiop-listener port="${IIOP_SSL_LISTENER_PORT}" id="SSL" address="0.0.0.0" security-enabled="true">
                  <ssl classname="com.sun.enterprise.security.ssl.GlassfishSSLImpl" cert-nickname="s1as" />
@@ -369,7 +369,7 @@
          </network-config>
          <thread-pools>
              <thread-pool name="http-thread-pool" />
-             <thread-pool max-thread-pool-size="200" idle-thread-timeout-in-seconds="120" name="thread-pool-1" />
+             <thread-pool max-thread-pool-size="200" idle-thread-timeout-in-seconds="120" name="orb-thread-pool" />
          </thread-pools>
          <group-management-service/>
          <management-rules />
