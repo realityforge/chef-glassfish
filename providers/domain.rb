@@ -56,6 +56,10 @@ action :create do
       command_string << asadmin_jvm_option("-XX:ParallelGCThreads=#{node[:cpu].size}")
     end
 
+    # We need to restart the domain for the configuration settings to be enabled
+    command_string << asadmin_command("stop-domain #{new_resource.domain_name}")
+    command_string << asadmin_command("start-domain #{new_resource.domain_name}")
+
     user node[:glassfish][:user]
     group node[:glassfish][:group]
     code command_string.join("\n")
