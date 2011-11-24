@@ -51,18 +51,15 @@ chown -R #{node[:glassfish][:user]} #{node[:glassfish][:base_dir]}
 chgrp -R #{node[:glassfish][:group]} #{node[:glassfish][:base_dir]}
 chmod -R 0770 #{node[:glassfish][:base_dir]}/bin/
 chmod -R 0770 #{node[:glassfish][:base_dir]}/glassfish/bin/
-#{node[:glassfish][:base_dir]}/glassfish/bin/asadmin delete-domain domain1
+rm -rf #{node[:glassfish][:domains_dir]}/domain1
 cd /tmp/glassfish
 EOF
   not_if { ::File.exists?( node[:glassfish][:base_dir] ) }
 end
 
-template "/etc/init.d/glassfish" do
-  source "glassfish-init.d-script.erb"
-  mode "0755"
-end
-
-service "glassfish" do
-  supports :start => true, :restart => true, :stop => true
-  action [ :enable, :start ]
+cookbook_file "#{node[:glassfish][:base_dir]}/glassfish/lib/templates/domain.xml" do
+  source "domain.xml"
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode 0644
 end
