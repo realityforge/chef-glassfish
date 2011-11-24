@@ -1,31 +1,27 @@
 #!/bin/bash
 #
-# glassfish:          Startup script for Glassfish Application Server.
+# glassfish-<%= @domain_name %>:          Startup script for Glassfish Application Server for <%= @domain_name %> domain.
 
 <% glassfish_home = "#{node[:glassfish][:base_dir]}/glassfish" %>
 
 export AS_JAVA=<%= node["java"]["java_home"] %>
 
 start() {
-        echo -n "Starting Glassfish Domains: "
-<% node[:glassfish][:domains].each do |domain_name| %>
-        <% log_file = "#{glassfish_home}/domains/#{domain_name}/logs/startup.log" %>
-        echo -n "<%= domain_name %> "
+        echo -n "Starting Glassfish Domain <%= @domain_name %>: "
+        <% log_file = "#{glassfish_home}/domains/#{@domain_name}/logs/startup.log" %>
+        su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
         echo "Starting Glassfish at `date`" >> <%= log_file %>
-        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= domain_name %>" >> <%= log_file %>
+        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %>
         sleep 2
-<% end %>
-    echo "done"
+        echo "done"
 }
 
 stop() {
-        echo -n "Stopping Glassfish Domains: "
-<% node[:glassfish][:domains].each do |domain_name| %>
-        <% log_file = "#{glassfish_home}/domains/#{domain_name}/logs/startup.log" %>
-        echo -n "<%= domain_name %> "
+        echo -n "Stopping Glassfish Domain <%= @domain_name %>: "
+        <% log_file = "#{glassfish_home}/domains/#{@domain_name}/logs/startup.log" %>
+        su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
         echo "Stopping Glassfish at `date`" >> <%= log_file %>
-        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= domain_name %>" >> <%= log_file %>
-<% end %>
+        su <%= node[:glassfish][:user] %> -c "<%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %>
         echo "done"
 }
 
