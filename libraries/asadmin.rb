@@ -19,11 +19,11 @@
 
 class Chef
   module Asadmin
-    def asadmin_command(command, options = {})
+    def asadmin_command(command)
       args = []
-      args << "--terse=#{!!options[:terse]}"
-      args << "--echo=#{!!options[:echo]}"
-      args << "--interactive=false"
+      args << "--terse" if new_resource.terse
+      args << "--echo" if new_resource.echo
+      #args << "--interactive=false"
       # TODO: Handle domain_name and lookup credentials/etc to access
       #[--host host]
       #[--port port]
@@ -33,13 +33,13 @@ class Chef
       "#{node[:glassfish][:base_dir]}/glassfish/bin/asadmin #{args.join(" ")} #{command}"
     end
 
-    def asadmin_jvm_option(jvm_option, options = {})
+    def asadmin_jvm_option(jvm_option)
       # There is a need to escape : with a \
-      asadmin_command("create-jvm-options -- '#{jvm_option.gsub(':', '\:')}'", options)
+      asadmin_command("create-jvm-options -- '#{jvm_option.gsub(':', '\:')}'")
     end
 
-    def asadmin_set(parameter, options = {})
-      asadmin_command("set #{parameter}", options)
+    def asadmin_set(parameter)
+      asadmin_command("set #{parameter}")
     end
   end
 end

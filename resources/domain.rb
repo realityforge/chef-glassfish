@@ -20,6 +20,8 @@
 actions :create, :destroy
 
 attribute :domain_name, :kind_of => String, :name_attribute => true
+attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :max_memory, :kind_of => Integer, :default => 512
 attribute :max_perm_size, :kind_of => Integer, :default => 96
 attribute :max_stack_size, :kind_of => Integer, :default => 128
