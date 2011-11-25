@@ -25,6 +25,6 @@ action :run do
     user node[:glassfish][:user]
     group node[:glassfish][:group]
     code asadmin_jvm_option(new_resource.jvm_option)
-    notifies :restart, "service[#{new_resource.domain_name}]"
+    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}")
   end
 end
