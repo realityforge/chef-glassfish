@@ -19,17 +19,19 @@
 
 class Chef
   module Asadmin
-    def asadmin_command(command)
+    def asadmin_command(command, remote_command = true)
       args = []
       args << "--terse" if new_resource.terse
       args << "--echo" if new_resource.echo
-      #args << "--interactive=false"
-      # TODO: Handle domain_name and lookup credentials/etc to access
-      #[--host host]
-      #[--port port]
-      #[--user admin-user]
-      #[--passwordfile filename]
-      #[--secure={false|true}]
+      if remote_command
+        # TODO: Handle
+        #[--user admin-user]
+        #[--passwordfile filename]
+        #[--secure={false|true}]
+        domain = new_resource.resources(:glassfish_domain => new_resource.domain_name)
+        args << "--port #{domain.admin_port}"
+      end
+
       "#{node[:glassfish][:base_dir]}/glassfish/bin/asadmin #{args.join(" ")} #{command}"
     end
 

@@ -24,4 +24,4 @@ default[:glassfish][:package_url] = "http://dlc.sun.com.edgesuite.net/glassfish/
 default[:glassfish][:package_checksum] = "8bf4dc016d602e96911456b2e34098b86bae61e2"
 default[:glassfish][:base_dir] = "/usr/local/glassfish3"
 default[:glassfish][:domains_dir] = "/usr/local/glassfish3/glassfish/domains"
-default[:glassfish][:domains] = []
+default[:glassfish][:domains] = Mash.new

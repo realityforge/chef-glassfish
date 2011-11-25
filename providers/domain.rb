@@ -27,13 +27,17 @@ action :create do
   bash "create domain" do
     not_if "#{asadmin_command('list-domains')} | grep '#{new_resource.domain_name} '"
 
+    args = []
+    args << "--nopassword"
+    args << "--instanceport #{new_resource.port}"
+    args << "--adminport #{new_resource.admin_port}"
     command_string = []
-    command_string << asadmin_command("create-domain --nopassword #{new_resource.domain_name}")
+    command_string << asadmin_command("create-domain #{args.join(' ')} #{new_resource.domain_name}", false)
     command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node[:cpu].size - 2)
     command_string << replace_in_domain_file("%%%MAX_PERM_SIZE%%%", new_resource.max_perm_size)
     command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
     command_string << replace_in_domain_file("%%%MAX_MEM_SIZE%%%", new_resource.max_memory)
-    command_string << asadmin_command("verify-domain-xml #{new_resource.domain_name}")
+    command_string << asadmin_command("verify-domain-xml #{new_resource.domain_name}", false)
 
     user node[:glassfish][:user]
     group node[:glassfish][:group]
@@ -58,8 +62,8 @@ action :destroy do
     only_if "#{asadmin_command('list-domains')} | grep '#{new_resource.domain_name} '"
     command_string = []
 
-    command_string << "#{asadmin_command("stop-domain #{new_resource.domain_name}")} 2> /dev/null > /dev/null"
-    command_string << asadmin_command("delete-domain #{new_resource.domain_name}")
+    command_string << "#{asadmin_command("stop-domain #{new_resource.domain_name}", false)} 2> /dev/null > /dev/null"
+    command_string << asadmin_command("delete-domain #{new_resource.domain_name}", false)
 
     command command_string.join("\n")
   end
