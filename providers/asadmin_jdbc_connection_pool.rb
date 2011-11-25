@@ -21,7 +21,7 @@ include Chef::Asadmin
 
 action :create do
   bash "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
-    not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -- '#{new_resource.name}'"
+    not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -x -- '#{new_resource.name}'"
     user node[:glassfish][:user]
     group node[:glassfish][:group]
     code asadmin_command("create-jdbc-connection-pool #{new_resource.parameters.join(' ')} #{new_resource.name}")

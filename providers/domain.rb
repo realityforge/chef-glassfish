@@ -25,7 +25,7 @@ end
 
 action :create do
   bash "create domain" do
-    not_if "#{asadmin_command('list-domains')} | grep '#{new_resource.domain_name} '"
+    not_if "#{asadmin_command('list-domains')} | grep -x -- '#{new_resource.domain_name} '"
 
     args = []
     args << "--nopassword"
