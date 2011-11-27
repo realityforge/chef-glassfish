@@ -80,7 +80,7 @@ end
 
 action :destroy do
   execute "destroy domain" do
-    only_if "#{asadmin_command('list-domains')} | grep '#{new_resource.domain_name} '"
+    only_if "#{asadmin_command('list-domains')} | grep -x -- '#{new_resource.domain_name} '"
     command_string = []
 
     command_string << "#{asadmin_command("stop-domain #{new_resource.domain_name}", false)} 2> /dev/null > /dev/null"
