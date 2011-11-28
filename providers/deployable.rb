@@ -42,7 +42,7 @@ action :deploy do
   end
 
   execute "deploy application #{new_resource.deployable_key}" do
-    not_if "#{asadmin_command('list-applications')} | grep -x -- '#{new_resource.deployable_key} ' && cat #{version_file} | grep -x -- '#{new_resource.version}' "
+    not_if "(#{asadmin_command('list-applications')} | grep -- '#{new_resource.deployable_key} ') && (cat #{version_file} | grep -x -- '#{new_resource.version}')"
 
     command = ""
     command << "deploy "
@@ -61,7 +61,7 @@ end
 
 action :undeploy do
   execute "undeploy application #{new_resource.deployable_key}" do
-    only_if "#{asadmin_command('list-applications')} | grep -x -- '#{new_resource.deployable_key} '"
+    only_if "#{asadmin_command('list-applications')} | grep -- '#{new_resource.deployable_key} '"
     command asadmin_command("undeploy #{new_resource.deployable_key}")
   end
 end
