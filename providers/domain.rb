@@ -51,7 +51,7 @@ action :create do
     variables(:domain_name => new_resource.domain_name)
   end
 
-  ruby_block "block_until_operational" do
+  ruby_block "block_until_operational-#{new_resource.domain_name}" do
     block do
       until IO.popen("netstat -lnt").entries.select { |entry|
         entry.split[3] =~ /:#{new_resource.port}$/
@@ -63,8 +63,8 @@ action :create do
       loop do
         url = URI.parse("http://127.0.0.1:#{new_resource.port}/")
         res = Chef::REST::RESTRequest.new(:GET, url, nil).call
-        break if res.kind_of?(Net::HTTPSuccess) or res.kind_of?(Net::HTTPNotFound)
-        Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not responding OK to GET on #{url}"
+        break if res.kind_of?(Net::HTTPSuccess) || res.kind_of?(Net::HTTPNotFound) || res.kind_of?(Net::HTTPUnauthorized)
+        Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not responding acceptable to GET on #{url}"
         sleep 1
       end
     end
@@ -74,7 +74,7 @@ action :create do
   service "glassfish-#{new_resource.domain_name}" do
     supports :start => true, :restart => true, :stop => true
     action [:enable, :start]
-    notifies :create, resources(:ruby_block => "block_until_operational"), :immediately
+    notifies :create, resources(:ruby_block => "block_until_operational-#{new_resource.domain_name}"), :immediately
   end
 end
 
