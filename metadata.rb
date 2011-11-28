@@ -6,6 +6,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.29"
 
 recipe "glassfish::default", "Installs and configures GlassFish"
+recipe "glassfish::managed_domains", "Installs GlassFish and domains defined in glassfish/domain_definitions"
 
 depends 'java'
 
@@ -45,8 +46,8 @@ attribute "glassfish/domains_dir",
   :type => "string",
   :default => "/usr/local/glassfish3/glassfish/domains"
 
-attribute "glassfish/domains",
-  :display_name => "GlassFish Domains",
-  :description => "The list of domain that will be started and stopped with the GlassFish service",
-  :type => "array",
-  :default => []
+attribute "glassfish/domain_definitions",
+  :display_name => "GlassFish Domain Definitions",
+  :description => "A map of domain defitions that drive the instantiation of a domain",
+  :type => "hash",
+  :default => {}
