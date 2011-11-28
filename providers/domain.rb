@@ -52,24 +52,24 @@ action :create do
   end
 
   ruby_block "block_until_operational" do
-  block do
-    until IO.popen("netstat -lnt").entries.select { |entry|
+    block do
+      until IO.popen("netstat -lnt").entries.select { |entry|
         entry.split[3] =~ /:#{new_resource.port}$/
       }.size == 1
-      Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not listening on port #{new_resource.port}"
-      sleep 1
-    end
+        Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not listening on port #{new_resource.port}"
+        sleep 1
+      end
 
-    loop do
-      url = URI.parse("http://127.0.0.1:#{new_resource.port}/")
-      res = Chef::REST::RESTRequest.new(:GET, url, nil).call
-      break if res.kind_of?(Net::HTTPSuccess) or res.kind_of?(Net::HTTPNotFound)
-      Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not responding OK to GET on #{url}"
-      sleep 1
+      loop do
+        url = URI.parse("http://127.0.0.1:#{new_resource.port}/")
+        res = Chef::REST::RESTRequest.new(:GET, url, nil).call
+        break if res.kind_of?(Net::HTTPSuccess) or res.kind_of?(Net::HTTPNotFound)
+        Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not responding OK to GET on #{url}"
+        sleep 1
+      end
     end
+    action :nothing
   end
-  action :nothing
-end
 
   service "glassfish-#{new_resource.domain_name}" do
     supports :start => true, :restart => true, :stop => true
