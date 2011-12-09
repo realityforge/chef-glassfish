@@ -28,19 +28,19 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
   end
 
   definition[:jvm_options].each do |jvm_option|
-    glassfish_asadmin_jvm_option jvm_option do
+    glassfish_jvm_option jvm_option do
       domain_name domain_key
     end
   end
 
   definition[:sets].each do |set|
-    glassfish_asadmin_set set do
+    glassfish_property set do
       domain_name domain_key
     end
   end
 
   definition[:realms].each_pair do |key, configuration|
-    glassfish_asadmin_auth_realm key.to_s do
+    glassfish_auth_realm key.to_s do
       domain_name domain_key
       parameters configuration[:parameters]
     end
@@ -48,14 +48,14 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
 
   definition[:jdbc_connection_pools].each_pair do |key, configuration|
     key = key.to_s
-    glassfish_asadmin_jdbc_connection_pool key do
+    glassfish_jdbc_connection_pool key do
       domain_name domain_key
       parameters configuration[:parameters]
     end
     configuration[:resources].each_pair do |resource_name, resource_configuration|
       params = ["--connectionpoolid #{key}"]
       params += resource_configuration[:parameters] if resource_configuration[:parameters]
-      glassfish_asadmin_jdbc_resource resource_name.to_s do
+      glassfish_jdbc_resource resource_name.to_s do
         domain_name domain_key
         parameters params
       end
