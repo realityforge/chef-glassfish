@@ -6,7 +6,7 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
   glassfish_domain domain_key do
-    max_memory definition["config"]["max_memory"] if definition["config"]["max_memory"]
+    max_memory definition[:config][:max_memory] if definition[:config][:max_memory]
     max_perm_size definition[:config][:max_perm_size] if definition[:config][:max_perm_size]
     max_stack_size definition[:config][:max_stack_size] if definition[:config][:max_stack_size]
     port definition[:config][:port] if definition[:config][:port]
