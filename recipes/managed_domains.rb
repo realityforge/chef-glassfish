@@ -12,7 +12,7 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
     port definition[:config][:port] if definition[:config][:port]
     admin_port definition[:config][:admin_port] if definition[:config][:admin_port]
     username definition[:config][:username] if definition[:config][:username]
-    password definition[:config][:admin_port] if definition[:config][:password]
+    password definition[:config][:password] if definition[:config][:password]
   end
 
   definition[:extra_libraries].each do |extra_library|
