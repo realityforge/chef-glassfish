@@ -51,7 +51,7 @@ chown -R #{node[:glassfish][:user]} #{node[:glassfish][:base_dir]}
 chgrp -R #{node[:glassfish][:group]} #{node[:glassfish][:base_dir]}
 chmod -R 0770 #{node[:glassfish][:base_dir]}/bin/
 chmod -R 0770 #{node[:glassfish][:base_dir]}/glassfish/bin/
-rm -rf #{node[:glassfish][:domains_dir]}/domain1
+rm -rf #{node[:glassfish][:base_dir]}/glassfish/domains/domain1
 cd /tmp/glassfish
 EOF
   not_if { ::File.exists?( node[:glassfish][:base_dir] ) }
