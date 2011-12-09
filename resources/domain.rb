@@ -19,16 +19,18 @@
 
 actions :create, :destroy
 
-attribute :domain_name, :kind_of => String, :name_attribute => true
-attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
-attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :max_memory, :kind_of => Integer, :default => 512
 attribute :max_perm_size, :kind_of => Integer, :default => 96
 attribute :max_stack_size, :kind_of => Integer, :default => 128
 attribute :port, :kind_of => Integer, :default => 8080
 attribute :admin_port, :kind_of => Integer, :default => 4848
+
+attribute :domain_name, :kind_of => String, :name_attribute => true
+attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :username, :kind_of => String, :default => nil
 attribute :password, :kind_of => String, :default => nil
+attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
 
 def initialize( *args )
   super
