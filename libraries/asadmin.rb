@@ -27,9 +27,9 @@ class Chef
         # TODO: Handle
         #[--user admin-user]
         #[--passwordfile filename]
+        admin_port = node[:glassfish][:domain_definitions][new_resource.domain_name][:config][:admin_port]
+        args << "--port #{admin_port}"
         #[--secure={false|true}]
-        domain = new_resource.resources(:glassfish_domain => new_resource.domain_name)
-        args << "--port #{domain.admin_port}"
       end
 
       "#{node[:glassfish][:base_dir]}/glassfish/bin/asadmin #{args.join(" ")} #{command}"
