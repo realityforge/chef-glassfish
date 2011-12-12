@@ -32,9 +32,11 @@ action :create do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '"
 
     args = []
-    args << "--nopassword"
     args << "--instanceport #{new_resource.port}"
     args << "--adminport #{new_resource.admin_port}"
+    #args << "--user #{new_resource.username}" if new_resource.username
+    #args << "--user #{new_resource.username}" if new_resource.username
+    args << "--nopassword=false" if new_resource.username
     args <<  domain_dir_arg
     command_string = []
     command_string << asadmin_command("create-domain #{args.join(' ')} #{new_resource.domain_name}", false)

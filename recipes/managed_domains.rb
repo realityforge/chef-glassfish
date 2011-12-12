@@ -5,6 +5,22 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
+  directory "#{node[:glassfish][:domains_dir]}" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode "0700"
+  end
+
+  if definition[:config][:password]
+    template "#{node[:glassfish][:domains_dir]}/#{domain_key}_admin_passwd" do
+      source "password.erb"
+      owner node[:glassfish][:user]
+      group node[:glassfish][:group]
+      mode "0600"
+      variables :domain_name => domain_key
+    end
+  end
+
   glassfish_domain domain_key do
     max_memory definition[:config][:max_memory] if definition[:config][:max_memory]
     max_perm_size definition[:config][:max_perm_size] if definition[:config][:max_perm_size]
@@ -13,16 +29,6 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
     admin_port definition[:config][:admin_port] if definition[:config][:admin_port]
     username definition[:config][:username] if definition[:config][:username]
     password definition[:config][:password] if definition[:config][:password]
-  end
-
-  if definition[:config][:password]
-    template "#{node[:glassfish][:domains_dir]}/#{domain_key}/admin_passwd" do
-      source "password.erb"
-      owner node[:glassfish][:user]
-      group node[:glassfish][:group]
-      mode "0600"
-      variables :domain_name => domain_key
-    end
   end
 
   definition[:extra_libraries].each do |extra_library|

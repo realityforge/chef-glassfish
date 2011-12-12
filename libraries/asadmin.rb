@@ -23,12 +23,12 @@ class Chef
       args = []
       args << "--terse" if new_resource.terse
       args << "--echo" if new_resource.echo
+      username = node[:glassfish][:domain_definitions][new_resource.domain_name][:config][:username]
+      args << "--user #{username}" if username
+      if node[:glassfish][:domain_definitions][new_resource.domain_name][:config][:password]
+        args << "--passwordfile=#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}_admin_passwd"
+      end
       if remote_command
-        username = node[:glassfish][:domain_definitions][new_resource.domain_name][:config][:username]
-        args << "--user #{username}" if username
-        if node[:glassfish][:domain_definitions][new_resource.domain_name][:config][:password]
-          args << "--passwordfile #{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/admin_passwd"
-        end
         if node[:glassfish][:domain_definitions][new_resource.domain_name][:config][:secure]
           args << "--secure"
         end
