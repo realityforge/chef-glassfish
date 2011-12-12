@@ -15,6 +15,16 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
     password definition[:config][:password] if definition[:config][:password]
   end
 
+  if definition[:config][:password]
+    template "#{node[:glassfish][:domains_dir]}/#{domain_key}/admin_passwd" do
+      source "password.erb"
+      owner node[:glassfish][:user]
+      group node[:glassfish][:group]
+      mode "0600"
+      variables :domain_name => domain_key
+    end
+  end
+
   definition[:extra_libraries].each do |extra_library|
     library_location = "#{node[:glassfish][:domains_dir]}/#{domain_key}/lib/ext/#{::File.basename(extra_library)}"
     remote_file library_location do
