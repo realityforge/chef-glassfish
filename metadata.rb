@@ -1,4 +1,4 @@
-maintainer       "Fire Information Systems Group"
+maintainer       "Peter Donald"
 maintainer_email "peter@realityforge.org"
 license          "Apache 2.0"
 description      "Installs/Configures GlassFish Application Server"
