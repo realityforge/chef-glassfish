@@ -1,0 +1,4 @@
+# Ignore IDEA project files
+*.iml
+*.ipr
+*.iws
