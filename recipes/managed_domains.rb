@@ -1,5 +1,7 @@
 include_recipe "glassfish::default"
 
+included_authbind = false
+
 node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
 
@@ -19,6 +21,13 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
       mode "0600"
       variables :domain_name => domain_key
     end
+  end
+
+  requires_authbind = (definition[:config][:port] && definition[:config][:port] < 1024) || (definition[:config][:admin_port] && definition[:config][:admin_port] < 1024)
+
+  if requires_authbind && !included_authbind
+    included_authbind = true
+    include_recipe "authbind"
   end
 
   glassfish_domain domain_key do

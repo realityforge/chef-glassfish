@@ -9,6 +9,7 @@ recipe "glassfish::default", "Installs and configures GlassFish"
 recipe "glassfish::managed_domains", "Installs GlassFish and domains defined in glassfish/domain_definitions"
 
 depends 'java'
+depends 'authbind'
 
 attribute "glassfish/user",
   :display_name => "GlassFish User",
