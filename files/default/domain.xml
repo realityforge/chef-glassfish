@@ -65,8 +65,8 @@
       </ejb-container>
       <mdb-container steady-pool-size="0" max-pool-size="32" pool-resize-quantity="8" >
       </mdb-container>
-      <jms-service type="EMBEDDED" default-jms-host="default_JMS_host">
-        <jms-host name="default_JMS_host" host="localhost" port="%%%JMS_PROVIDER_PORT%%%" admin-user-name="admin" admin-password="admin" lazy-init="true"/>
+      <jms-service default-jms-host="default_JMS_host" type="REMOTE">
+         <jms-host host="localhost" name="default_JMS_host"></jms-host>
       </jms-service>
       <security-service>
         <auth-realm classname="com.sun.enterprise.security.auth.realm.file.FileRealm" name="admin-realm">
