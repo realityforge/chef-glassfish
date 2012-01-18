@@ -3,6 +3,7 @@
 # glassfish-<%= @domain_name %>:          Startup script for Glassfish Application Server for <%= @domain_name %> domain.
 
 <% glassfish_home = "#{node[:glassfish][:base_dir]}/glassfish" %>
+<% authbind_prefix = @authbind ? "/usr/bin/authbind --deep " : "" %>
 
 export AS_JAVA=<%= node["java"]["java_home"] %>
 
@@ -11,7 +12,7 @@ start() {
         <% log_file = "#{glassfish_home}/domains/#{@domain_name}/logs/startup.log" %>
         su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
         echo "Starting Glassfish at `date`" >> <%= log_file %>
-        su <%= node[:glassfish][:user] %> -c "<%= @authbind ? "authbind –-deep " : "" %><%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %>
+        su <%= node[:glassfish][:user] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
         sleep 2
         echo "done"
 }
@@ -21,7 +22,7 @@ stop() {
         <% log_file = "#{glassfish_home}/domains/#{@domain_name}/logs/startup.log" %>
         su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
         echo "Stopping Glassfish at `date`" >> <%= log_file %>
-        su <%= node[:glassfish][:user] %> -c "<%= @authbind ? "authbind –-deep " : "" %><%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %>
+        su <%= node[:glassfish][:user] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
         echo "done"
 }
 
