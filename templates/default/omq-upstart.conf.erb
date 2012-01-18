@@ -1,0 +1,17 @@
+# omq - GlassFish OpenMQ server
+#
+description     "GlassFish <%= @name %> OpenMQ server"
+
+start on filesystem or runlevel [2345]
+stop on runlevel [!2345]
+
+<% omq_home = "#{node[:glassfish][:base_dir]}/mq" %>
+<% authbind_prefix = @authbind ? "/usr/bin/authbind --deep " : "" %>
+
+pre-start script
+    test -x <%= omq_home %>/bin/imqbrokerd || { stop; exit 0; }
+
+    mkdir -p -m0755 <%= @var_home %>
+end script
+
+exec <%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= @var_home %> -port <%= @port %> -javahome <%= node["java"]["java_home"] %> -name "<%= @name %>"
