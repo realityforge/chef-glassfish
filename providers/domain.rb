@@ -51,6 +51,10 @@ action :create do
     code command_string.join("\n")
   end
 
+  file "#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/docroot/index.html" do
+    action :delete
+  end
+
   requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
 
   template "/etc/init.d/glassfish-#{new_resource.domain_name}" do
