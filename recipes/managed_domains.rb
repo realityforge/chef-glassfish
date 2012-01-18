@@ -96,3 +96,35 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
     end
   end
 end
+
+node[:glassfish][:mq_servers].each_pair do |mq_key, definition|
+  mq_key = mq_key.to_s
+
+  Chef::Log.info "Defining GlassFish #{mq_key} OpenMQ Server"
+
+  directory "/var/omq" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode "0700"
+  end
+
+  var_home = definition[:var_home] || "/var/omq/#{mq_key}"
+  directory var_home do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode "0700"
+  end
+  requires_authbind = (definition[:port] && definition[:port] < 1024)
+
+  if requires_authbind && !included_authbind
+    included_authbind = true
+    include_recipe "authbind"
+  end
+
+  glassfish_mq mq_key do
+    max_memory definition[:max_memory] if definition[:max_memory]
+    max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
+    port definition[:port] if definition[:port]
+    var_home var_home
+  end
+end
