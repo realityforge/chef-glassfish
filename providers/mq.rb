@@ -46,6 +46,13 @@ action :create do
     mode 0700
   end
 
+  file "#{instance_dir}/etc/passwd" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+    action :touch
+  end
+
   template "/etc/init/omq-#{new_resource.instance}.conf" do
     source "omq-upstart.conf.erb"
     mode "0644"
