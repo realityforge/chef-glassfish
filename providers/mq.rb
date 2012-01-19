@@ -53,6 +53,18 @@ action :create do
     action :touch
   end
 
+  vm_args = []
+  vm_args << "-Xmx#{new_resource.max_memory}m"
+  vm_args << "-Xss#{new_resource.max_stack_size}k"
+  vm_args << "-Djava.util.logging.config.file=#{instance_dir}/etc/logging.properties"
+  if new_resource.jmx_port
+    vm_args << "-Dcom.sun.management.jmxremote"
+    vm_args << "-Dcom.sun.management.jmxremote.port=#{new_resource.jmx_port}"
+    vm_args << "-Dcom.sun.management.jmxremote.access.file=#{instance_dir}/etc/jmxremote.access"
+    vm_args << "-Dcom.sun.management.jmxremote.password.file=#{instance_dir}/etc/jmxremote.password"
+    vm_args << "-Dcom.sun.management.jmxremote.ssl=false"
+  end
+
   template "/etc/init/omq-#{new_resource.instance}.conf" do
     source "omq-upstart.conf.erb"
     mode "0644"
@@ -60,12 +72,19 @@ action :create do
 
     variables(:resource => new_resource,
               :authbind => requires_authbind,
-              :vmargs => "-Xmx#{new_resource.max_memory}m -Xss#{new_resource.max_stack_size}k -Djava.util.logging.config.file=#{instance_dir}/etc/logging.properties")
+              :vmargs => vm_args.join(" "))
   end
 
-  if requires_authbind
+  if new_resource.port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Port #{new_resource.port}" do
       port new_resource.port
+      user node[:glassfish][:user]
+    end
+  end
+
+  if new_resource.jmx_port && new_resource.jmx_port < 1024
+    authbind_port "AuthBind GlassFish OpenMQ JMX Port #{new_resource.jmx_port}" do
+      port new_resource.jmx_port
       user node[:glassfish][:user]
     end
   end
@@ -74,6 +93,33 @@ action :create do
     provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true, :status => true
     action [:enable, :start]
+  end
+
+  if new_resource.jmx_port
+    admins = {}
+    search(:users, "groups:#{new_resource.admin_group} AND jmx_password:*") do |u|
+      admins[u['id']] = u['jmx_password']
+    end
+    monitors = {}
+    search(:users, "groups:#{new_resource.monitor_group} AND jmx_password:*") do |u|
+      monitors[u['id']] = u['jmx_password']
+    end
+
+    file "#{instance_dir}/etc/jmxremote.access" do
+      owner node[:glassfish][:user]
+      group node[:glassfish][:group]
+      mode "0400"
+      action :create
+      content (admins.keys.collect { |username| "#{username}=readwrite\n" } + monitors.keys.collect { |username| "#{username}=readonly\n" }).join("")
+    end
+
+    file "#{instance_dir}/etc/jmxremote.password" do
+      owner node[:glassfish][:user]
+      group node[:glassfish][:group]
+      mode "0400"
+      action :create
+      content (admins.collect { |username, password| "#{username}=#{password}\n" } + monitors.collect { |username, password| "#{username}=#{password}\n" }).join("")
+    end
   end
 
   template "#{instance_dir}/etc/logging.properties" do
