@@ -122,4 +122,14 @@ node[:glassfish][:mq_servers].each_pair do |instance, definition|
     var_home definition[:var_home] if definition[:var_home]
     access_control_rules definition[:access_control_rules] if definition[:access_control_rules]
   end
+
+  definition[:users].each_pair do |username, user_details|
+    glassfish_mq_user username do
+      password user_details[:password]
+      group user_details[:group] if user_details[:group]
+      active user_details[:active] if user_details[:active]
+      instance instance
+      var_home definition[:var_home] if definition[:var_home]
+    end
+  end
 end
