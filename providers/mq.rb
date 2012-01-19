@@ -20,6 +20,15 @@
 action :create do
   requires_authbind = new_resource.port < 1024
 
+  instance_dir = "#{new_resource.var_home}/instances/#{new_resource.name}"
+
+  directory "#{instance_dir}/etc" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+    recursive true
+  end
+
   template "/etc/init/omq-#{new_resource.name}.conf" do
     source "omq-upstart.conf.erb"
     mode "0700"
@@ -27,7 +36,7 @@ action :create do
 
     variables(:name => new_resource.name,
               :authbind => requires_authbind,
-              :vmargs => "-Xmx#{new_resource.max_memory}m -Xss#{new_resource.max_stack_size}k",
+              :vmargs => "-Xmx#{new_resource.max_memory}m -Xss#{new_resource.max_stack_size}k -Djava.util.logging.config.file=#{instance_dir}/etc/logging.properties",
               :port => new_resource.port,
               :var_home => new_resource.var_home)
   end
@@ -43,6 +52,14 @@ action :create do
     provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true, :status => true
     action [:enable, :start]
+  end
+
+  template "#{instance_dir}/etc/logging.properties" do
+    source "logging.properties.erb"
+    mode "0700"
+    cookbook 'glassfish'
+    variables(:resource => new_resource)
+    notifies :restart, resources(:service => "omq-#{new_resource.name}")
   end
 end
 
