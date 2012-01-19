@@ -53,6 +53,19 @@ action :create do
     action :touch
   end
 
+  directory "#{instance_dir}/log" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+  end
+
+  # Not sure why this is required... but something runs service as root which created this file as root owned
+  file "#{instance_dir}/log/log.txt" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+    action :touch
+  end
 
   directory "#{instance_dir}/props" do
     owner node[:glassfish][:user]
