@@ -22,11 +22,28 @@ action :create do
 
   instance_dir = "#{new_resource.var_home}/instances/#{new_resource.instance}"
 
+  directory new_resource.var_home do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+  end
+
+  directory "#{new_resource.var_home}/instances" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+  end
+
+  directory instance_dir do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+  end
+
   directory "#{instance_dir}/etc" do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
     mode 0700
-    recursive true
   end
 
   template "/etc/init/omq-#{new_resource.instance}.conf" do
