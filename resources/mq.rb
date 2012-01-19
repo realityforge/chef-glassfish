@@ -23,7 +23,7 @@ attribute :max_memory, :kind_of => Integer, :default => 512
 attribute :max_stack_size, :kind_of => Integer, :default => 128
 attribute :port, :kind_of => Integer, :default => 7676
 attribute :name, :kind_of => String, :name_attribute => true
-attribute :var_home, :kind_of => String, :default => nil
+attribute :var_home, :kind_of => String, :default => "/var/omq"
 
 def initialize( *args )
   super
