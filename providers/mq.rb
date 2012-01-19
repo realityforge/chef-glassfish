@@ -83,6 +83,14 @@ action :create do
     variables(:resource => new_resource)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}")
   end
+
+  template "#{instance_dir}/etc/accesscontrol.properties" do
+    source "accesscontrol.properties.erb"
+    mode "0700"
+    cookbook 'glassfish'
+    variables(:rules => new_resource.access_control_rules)
+    notifies :restart, resources(:service => "omq-#{new_resource.instance}")
+  end
 end
 
 action :destroy do

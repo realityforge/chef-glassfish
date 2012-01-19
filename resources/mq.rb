@@ -24,6 +24,7 @@ attribute :max_stack_size, :kind_of => Integer, :default => 128
 attribute :port, :kind_of => Integer, :default => 7676
 attribute :instance, :kind_of => String, :name_attribute => true
 attribute :var_home, :kind_of => String, :default => "/var/omq"
+attribute :access_control_rules, :kind_of => Hash, :default => {}
 
 def initialize( *args )
   super

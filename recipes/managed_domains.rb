@@ -120,5 +120,6 @@ node[:glassfish][:mq_servers].each_pair do |instance, definition|
     max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
     port definition[:port] if definition[:port]
     var_home definition[:var_home] if definition[:var_home]
+    access_control_rules definition[:access_control_rules] if definition[:access_control_rules]
   end
 end

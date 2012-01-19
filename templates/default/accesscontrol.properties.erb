@@ -1,0 +1,20 @@
+##########################################################
+# MQ access control file for JMQFileAccessControlModel
+##########################################################
+
+version=JMQFileAccessControlModel/100
+
+##############################################
+# service connection access control
+##############################################
+
+connection.NORMAL.allow.user=*
+connection.ADMIN.allow.group=admin
+
+##############################################
+#       Application Specific Settings
+##############################################
+
+<% @rules.each_pair do |pattern,user| %>
+<%= pattern %>=<%= user %>
+<% end %>
