@@ -26,7 +26,7 @@ action :add do
     not_if "#{imqusermgr_command("list")} | grep -- '#{new_resource.user} '"
     user node[:glassfish][:user]
     group node[:glassfish][:group]
-    code "#{imqusermgr_command("add")} -u '#{new_resource.user}' -p '#{new_resource.password}' -g '#{new_resource.group}'"
+    code imqusermgr_command("add -u '#{new_resource.user}' -p '#{new_resource.password}' -g '#{new_resource.group}'")
   end
 end
 
@@ -35,6 +35,6 @@ action :remove do
     only_if "#{imqusermgr_command("list")} | grep -- '#{new_resource.user} '"
     user node[:glassfish][:user]
     group node[:glassfish][:group]
-    code "#{imqusermgr_command("delete")} -u '#{new_resource.user}' -f"
+    code imqusermgr_command("delete -u '#{new_resource.user}' -f")
   end
 end
