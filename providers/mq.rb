@@ -48,7 +48,7 @@ action :create do
 
   template "/etc/init/omq-#{new_resource.instance}.conf" do
     source "omq-upstart.conf.erb"
-    mode "0700"
+    mode "0644"
     cookbook 'glassfish'
 
     variables(:resource => new_resource,
