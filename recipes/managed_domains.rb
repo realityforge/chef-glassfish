@@ -108,12 +108,6 @@ node[:glassfish][:mq_servers].each_pair do |mq_key, definition|
     mode "0700"
   end
 
-  var_home = definition[:var_home] || "/var/omq/#{mq_key}"
-  directory var_home do
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
-    mode "0700"
-  end
   requires_authbind = (definition[:port] && definition[:port] < 1024)
 
   if requires_authbind && !included_authbind
@@ -125,6 +119,6 @@ node[:glassfish][:mq_servers].each_pair do |mq_key, definition|
     max_memory definition[:max_memory] if definition[:max_memory]
     max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
     port definition[:port] if definition[:port]
-    var_home var_home
+    var_home definition[:var_home] if definition[:var_home]
   end
 end
