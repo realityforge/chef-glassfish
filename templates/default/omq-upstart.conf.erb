@@ -12,4 +12,4 @@ pre-start script
     test -x <%= omq_home %>/bin/imqbrokerd || { stop; exit 0; }
 end script
 
-exec start-stop-daemon --start -u <%= node[:glassfish][:user] %> --exec <%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= @resource.var_home %> -port <%= @resource.port %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"
+exec su <%= node[:glassfish][:user] %> -c '<%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= @resource.var_home %> -port <%= @resource.port %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"'
