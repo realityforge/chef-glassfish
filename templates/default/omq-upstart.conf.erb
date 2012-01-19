@@ -1,6 +1,6 @@
 # omq - GlassFish OpenMQ server
 #
-description     "GlassFish <%= @name %> OpenMQ server"
+description     "GlassFish <%= @resource.instance %> OpenMQ server"
 
 start on filesystem or runlevel [2345]
 stop on runlevel [!2345]
@@ -12,4 +12,4 @@ pre-start script
     test -x <%= omq_home %>/bin/imqbrokerd || { stop; exit 0; }
 end script
 
-exec <%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= @var_home %> -port <%= @port %> -javahome <%= node["java"]["java_home"] %> -name "<%= @name %>"
+exec <%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= @resource.var_home %> -port <%= @resource.port %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"
