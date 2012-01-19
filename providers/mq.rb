@@ -53,6 +53,21 @@ action :create do
     action :touch
   end
 
+
+  directory "#{instance_dir}/props" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+  end
+
+  file "#{instance_dir}/props/config.properties" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+    action :create
+    content "imq.instanceconfig.version=300\n"
+  end
+
   vm_args = []
   vm_args << "-Xmx#{new_resource.max_memory}m"
   vm_args << "-Xss#{new_resource.max_stack_size}k"
