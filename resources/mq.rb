@@ -25,6 +25,7 @@ attribute :port, :kind_of => Integer, :default => 7676
 attribute :instance, :kind_of => String, :name_attribute => true
 attribute :var_home, :kind_of => String, :default => "/var/omq"
 attribute :access_control_rules, :kind_of => Hash, :default => {}
+attribute :config, :kind_of => Hash, :default => {}
 attribute :jmx_port, :kind_of => Integer, :default => nil
 attribute :admin_group, :kind_of => String, :default => 'omq_admins'
 attribute :monitor_group, :kind_of => String, :default => 'omq_monitors'

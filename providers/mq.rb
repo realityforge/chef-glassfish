@@ -73,14 +73,6 @@ action :create do
     mode 0700
   end
 
-  file "#{instance_dir}/props/config.properties" do
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
-    mode 0700
-    action :create
-    content "imq.instanceconfig.version=300\n"
-  end
-
   vm_args = []
   vm_args << "-Xmx#{new_resource.max_memory}m"
   vm_args << "-Xss#{new_resource.max_stack_size}k"
@@ -148,6 +140,15 @@ action :create do
       action :create
       content (admins.collect { |username, password| "#{username}=#{password}\n" } + monitors.collect { |username, password| "#{username}=#{password}\n" }).join("")
     end
+  end
+
+  file "#{instance_dir}/props/config.properties" do
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    mode 0700
+    action :create
+    content "imq.instanceconfig.version=300\n#{new_resource.config.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
+    notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 
   template "#{instance_dir}/etc/logging.properties" do
