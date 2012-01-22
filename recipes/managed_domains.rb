@@ -97,7 +97,17 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
   end
 end
 
-node[:glassfish][:mq_servers].each_pair do |instance, definition|
+node[:openmq][:extra_libraries].each do |extra_library|
+  library_location = "#{node[:glassfish][:base_dir]}/mq/lib/ext/#{File.basename(extra_library)}"
+  remote_file library_location do
+    source extra_library
+    mode "0640"
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    not_if { ::File.exists?(library_location) }
+  end
+end
+
   instance = instance.to_s
 
   Chef::Log.info "Defining GlassFish #{instance} OpenMQ Server"
