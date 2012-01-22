@@ -131,6 +131,7 @@ action :create do
       mode "0400"
       action :create
       content (admins.keys.collect { |username| "#{username}=readwrite\n" } + monitors.keys.collect { |username| "#{username}=readonly\n" }).join("")
+      notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
     end
 
     file "#{instance_dir}/etc/jmxremote.password" do
@@ -139,6 +140,7 @@ action :create do
       mode "0400"
       action :create
       content (admins.collect { |username, password| "#{username}=#{password}\n" } + monitors.collect { |username, password| "#{username}=#{password}\n" }).join("")
+      notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
     end
   end
 
@@ -156,7 +158,7 @@ action :create do
     mode "0700"
     cookbook 'glassfish'
     variables(:resource => new_resource)
-    notifies :restart, resources(:service => "omq-#{new_resource.instance}")
+    notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 
   template "#{instance_dir}/etc/accesscontrol.properties" do
@@ -164,7 +166,7 @@ action :create do
     mode "0700"
     cookbook 'glassfish'
     variables(:rules => new_resource.access_control_rules)
-    notifies :restart, resources(:service => "omq-#{new_resource.instance}")
+    notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 end
 
