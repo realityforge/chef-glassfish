@@ -126,16 +126,27 @@ node[:openmq][:instances].each_pair do |instance, definition|
     include_recipe "authbind"
   end
 
+  access_control_rules = {}
+  search(:node, "openmq_access_control_rules:* AND chef_environment:#{node.chef_environment}") do |node|
+    access_control_rules.merge!(node["openmq"]["access_control_rules"].to_hash)
+  end
+
   glassfish_mq instance do
     max_memory definition[:max_memory] if definition[:max_memory]
     max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
     port definition[:port] if definition[:port]
     jmx_port definition[:jmx_port] if definition[:jmx_port]
     var_home definition[:var_home] if definition[:var_home]
-    access_control_rules definition[:access_control_rules] if definition[:access_control_rules]
+    config definition[:config] if definition[:config]
+    access_control_rules access_control_rules
   end
 
-  definition[:users].each_pair do |username, user_details|
+  users = {}
+  search(:node, "openmq_users:* AND chef_environment:#{node.chef_environment}") do |node|
+    users.merge!( node["openmq"]["users"].to_hash )
+  end
+
+  users.each_pair do |username, user_details|
     glassfish_mq_user username do
       password user_details[:password]
       group user_details[:group] if user_details[:group]
