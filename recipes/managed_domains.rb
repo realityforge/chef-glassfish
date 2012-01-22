@@ -108,6 +108,7 @@ node[:openmq][:extra_libraries].each do |extra_library|
   end
 end
 
+node[:openmq][:instances].each_pair do |instance, definition|
   instance = instance.to_s
 
   Chef::Log.info "Defining GlassFish #{instance} OpenMQ Server"
