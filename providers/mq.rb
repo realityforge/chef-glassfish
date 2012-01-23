@@ -46,13 +46,6 @@ action :create do
     mode 0700
   end
 
-  file "#{instance_dir}/etc/passwd" do
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
-    mode 0700
-    action :touch
-  end
-
   directory "#{instance_dir}/log" do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
@@ -161,6 +154,15 @@ action :create do
     group node[:glassfish][:group]
     variables(:resource => new_resource)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
+  end
+
+  template "#{instance_dir}/etc/passwd" do
+    source "passwd.erb"
+    mode "0400"
+    cookbook 'glassfish'
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    variables(:users => new_resource.users)
   end
 
   template "#{instance_dir}/etc/accesscontrol.properties" do

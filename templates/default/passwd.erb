@@ -1,0 +1,14 @@
+<% require 'digest/md5'
+
+   def to_signed(n)
+     length = 128 # in bits; you have to choose this
+     mid = 2**(length-1)
+     max_unsigned = 2**length
+     (n>=mid) ? n - max_unsigned : n
+   end
+
+%><% @users.each do |username, config|
+  password_hash = Digest::MD5.hexdigest("#{username}:#{config[:password]}")
+  signed_password_hash = to_signed(password_hash.to_i(16)).to_s(16)
+%><%= username %>:<%= signed_password_hash %>:<%= config[:group] || 'user'%>:1
+<% end %>
