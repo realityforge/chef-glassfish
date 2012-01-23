@@ -4,6 +4,7 @@
 
 version=JMQFileAccessControlModel/100
 
+<% @rules.sort.each do |pattern,user| %>
 ##############################################
 # service connection access control
 ##############################################
@@ -15,6 +16,5 @@ connection.ADMIN.allow.group=admin
 #       Application Specific Settings
 ##############################################
 
-<% @rules.each_pair do |pattern,user| %>
 <%= pattern %>=<%= user %>
 <% end %>

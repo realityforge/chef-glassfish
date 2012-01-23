@@ -130,7 +130,7 @@ action :create do
       group node[:glassfish][:group]
       mode "0400"
       action :create
-      content (admins.keys.collect { |username| "#{username}=readwrite\n" } + monitors.keys.collect { |username| "#{username}=readonly\n" }).join("")
+      content (admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
       notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
     end
 
@@ -139,7 +139,7 @@ action :create do
       group node[:glassfish][:group]
       mode "0400"
       action :create
-      content (admins.collect { |username, password| "#{username}=#{password}\n" } + monitors.collect { |username, password| "#{username}=#{password}\n" }).join("")
+      content (admins.sort.collect { |username, password| "#{username}=#{password}\n" } + monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
       notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
     end
   end
@@ -149,7 +149,7 @@ action :create do
     group node[:glassfish][:group]
     mode "0400"
     action :create
-    content "imq.instanceconfig.version=300\n#{new_resource.config.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
+    content "imq.instanceconfig.version=300\n#{new_resource.config.sort.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 
