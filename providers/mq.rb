@@ -147,7 +147,7 @@ action :create do
   file "#{instance_dir}/props/config.properties" do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
-    mode 0700
+    mode "0400"
     action :create
     content "imq.instanceconfig.version=300\n#{new_resource.config.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
@@ -155,7 +155,7 @@ action :create do
 
   template "#{instance_dir}/etc/logging.properties" do
     source "logging.properties.erb"
-    mode "0700"
+    mode "0400"
     cookbook 'glassfish'
     variables(:resource => new_resource)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
@@ -163,7 +163,7 @@ action :create do
 
   template "#{instance_dir}/etc/accesscontrol.properties" do
     source "accesscontrol.properties.erb"
-    mode "0700"
+    mode "0400"
     cookbook 'glassfish'
     variables(:rules => new_resource.access_control_rules)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
