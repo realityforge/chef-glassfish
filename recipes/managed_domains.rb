@@ -119,7 +119,13 @@ node[:openmq][:instances].each_pair do |instance, definition|
     mode "0700"
   end
 
-  requires_authbind = (definition[:port] && definition[:port] < 1024)
+  requires_authbind = false
+
+  requires_authbind ||= (definition[:port] && definition[:port] < 1024)
+  requires_authbind ||= (definition[:admin_port] && definition[:admin_port] < 1024)
+  requires_authbind ||= (definition[:jms_port] && definition[:jms_port] < 1024)
+  requires_authbind ||= (definition[:jmx_port] && definition[:jmx_port] < 1024)
+  requires_authbind ||= (definition[:stomp_port] && definition[:stomp_port] < 1024)
 
   if requires_authbind && !included_authbind
     included_authbind = true
@@ -140,8 +146,12 @@ node[:openmq][:instances].each_pair do |instance, definition|
     max_memory definition[:max_memory] if definition[:max_memory]
     max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
     port definition[:port] if definition[:port]
+    admin_port definition[:admin_port] if definition[:admin_port]
+    jms_port definition[:jms_port] if definition[:jms_port]
     jmx_port definition[:jmx_port] if definition[:jmx_port]
+    stomp_port definition[:stomp_port] if definition[:stomp_port]
     var_home definition[:var_home] if definition[:var_home]
+    bridge_user definition[:bridge_user] if definition[:bridge_user]
     config definition[:config] if definition[:config]
     users users
     access_control_rules access_control_rules

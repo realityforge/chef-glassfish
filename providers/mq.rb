@@ -18,7 +18,12 @@
 #
 
 action :create do
-  requires_authbind = new_resource.port < 1024
+  requires_authbind = false
+  requires_authbind ||= new_resource.port < 1024
+  requires_authbind ||= new_resource.admin_port < 1024
+  requires_authbind ||= new_resource.jms_port < 1024
+  requires_authbind ||= new_resource.jmx_port < 1024
+  requires_authbind ||= new_resource.stomp_port < 1024
 
   instance_dir = "#{new_resource.var_home}/instances/#{new_resource.instance}"
 
@@ -102,6 +107,27 @@ action :create do
     end
   end
 
+    if new_resource.admin_port && new_resource.admin_port < 1024
+    authbind_port "AuthBind GlassFish OpenMQ Admin Port #{new_resource.admin_port}" do
+      port new_resource.admin_port
+      user node[:glassfish][:user]
+    end
+  end
+
+  if new_resource.jms_port && new_resource.jms_port < 1024
+    authbind_port "AuthBind GlassFish OpenMQ JMS Port #{new_resource.jms_port}" do
+      port new_resource.jms_port
+      user node[:glassfish][:user]
+    end
+  end
+
+  if new_resource.stomp_port && new_resource.stomp_port < 1024
+    authbind_port "AuthBind GlassFish OpenMQ Stomp Port #{new_resource.stomp_port}" do
+      port new_resource.stomp_port
+      user node[:glassfish][:user]
+    end
+  end
+
   service "omq-#{new_resource.instance}" do
     provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true, :status => true
@@ -137,12 +163,49 @@ action :create do
     end
   end
 
+  configs = {}
+  configs.merge!(new_resource.config)
+
+  bridges = []
+  services = []
+
+  configs["imq.portmapper.port"] = new_resource.port
+
+  if new_resource.admin_port
+    services << "admin"
+    configs["imq.admin.tcp.port"] = new_resource.admin_port
+  end
+
+  if new_resource.jms_port
+    services << "jms"
+    configs["imq.jms.tcp.port"] = new_resource.jms_port
+  end
+
+  if new_resource.stomp_port
+    bridges << "stomp"
+    configs["imq.bridge.stomp.tcp.enabled"] = "true"
+    configs["imq.bridge.stomp.tcp.port"] = new_resource.stomp_port
+  end
+
+  if services.size > 0
+    configs["imq.service.activelist"] = services.join(',')
+  end
+
+  if bridges.size > 0
+    configs["imq.bridge.enabled"] = "true"
+    configs["imq.bridge.activelist"] = bridges.join(',')
+    configs["imq.bridge.admin.user"] = new_resource.bridge_user
+    user = new_resource.users[new_resource.bridge_user]
+    raise "Missing user details for bridge user '#{new_resource.bridge_user}'" unless user
+    configs["imq.bridge.admin.password"] = user[:password]
+  end
+
   file "#{instance_dir}/props/config.properties" do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
     mode "0400"
     action :create
-    content "imq.instanceconfig.version=300\n#{new_resource.config.sort.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
+    content "imq.instanceconfig.version=300\n\n#{configs.sort.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 
