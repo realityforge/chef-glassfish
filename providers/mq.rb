@@ -235,7 +235,6 @@ action :create do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
     variables(:rules => new_resource.access_control_rules)
-    notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 end
 
