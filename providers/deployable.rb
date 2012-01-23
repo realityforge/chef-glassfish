@@ -25,7 +25,7 @@ end
 
 action :deploy do
 
-  ruby_block "create_version_file" do
+  ruby_block "create_#{new_resource.deployable_key}_version_file" do
     block do
       ::File.open(version_file, 'w') do |f2|
         f2.puts new_resource.version
