@@ -157,6 +157,8 @@ action :create do
     source "logging.properties.erb"
     mode "0400"
     cookbook 'glassfish'
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
     variables(:resource => new_resource)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
@@ -165,6 +167,8 @@ action :create do
     source "accesscontrol.properties.erb"
     mode "0400"
     cookbook 'glassfish'
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
     variables(:rules => new_resource.access_control_rules)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
