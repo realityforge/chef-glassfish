@@ -133,14 +133,16 @@ node[:openmq][:instances].each_pair do |instance, definition|
   end
 
   access_control_rules = {}
-  search(:node, "openmq_access_control_rules:* AND chef_environment:#{node.chef_environment}") do |node|
-    access_control_rules.merge!(node["openmq"]["access_control_rules"].to_hash)
+  search(:node, "openmq_access_control_rules:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
+    access_control_rules.merge!(n["openmq"]["access_control_rules"].to_hash)
   end
+  access_control_rules.merge!(node["openmq"]["access_control_rules"].to_hash)
 
   users = {}
-  search(:node, "openmq_users:* AND chef_environment:#{node.chef_environment}") do |node|
-    users.merge!( node["openmq"]["users"].to_hash )
+  search(:node, "openmq_users:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
+    users.merge!( n["openmq"]["users"].to_hash )
   end
+  users.merge!( node["openmq"]["users"].to_hash )
 
   glassfish_mq instance do
     max_memory definition[:max_memory] if definition[:max_memory]
