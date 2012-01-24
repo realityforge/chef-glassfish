@@ -151,7 +151,7 @@ node[:openmq][:instances].each_pair do |instance, definition|
     jmx_port definition[:jmx_port] if definition[:jmx_port]
     stomp_port definition[:stomp_port] if definition[:stomp_port]
     var_home definition[:var_home] if definition[:var_home]
-    bridge_user definition[:bridge_user] if definition[:bridge_user]
+    admin_user definition[:admin_user] if definition[:admin_user]
     config definition[:config] if definition[:config]
     users users
     access_control_rules access_control_rules

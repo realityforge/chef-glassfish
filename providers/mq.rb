@@ -163,49 +163,13 @@ action :create do
     end
   end
 
-  configs = {}
-  configs.merge!(new_resource.config)
-
-  bridges = []
-  services = []
-
-  configs["imq.portmapper.port"] = new_resource.port
-
-  if new_resource.admin_port
-    services << "admin"
-    configs["imq.admin.tcp.port"] = new_resource.admin_port
-  end
-
-  if new_resource.jms_port
-    services << "jms"
-    configs["imq.jms.tcp.port"] = new_resource.jms_port
-  end
-
-  if new_resource.stomp_port
-    bridges << "stomp"
-    configs["imq.bridge.stomp.tcp.enabled"] = "true"
-    configs["imq.bridge.stomp.tcp.port"] = new_resource.stomp_port
-  end
-
-  if services.size > 0
-    configs["imq.service.activelist"] = services.join(',')
-  end
-
-  if bridges.size > 0
-    configs["imq.bridge.enabled"] = "true"
-    configs["imq.bridge.activelist"] = bridges.join(',')
-    configs["imq.bridge.admin.user"] = new_resource.bridge_user
-    user = new_resource.users[new_resource.bridge_user]
-    raise "Missing user details for bridge user '#{new_resource.bridge_user}'" unless user
-    configs["imq.bridge.admin.password"] = user[:password]
-  end
-
-  file "#{instance_dir}/props/config.properties" do
+  template "#{instance_dir}/props/config.properties" do
+    source "config.properties.erb"
+    mode "0400"
+    cookbook 'glassfish'
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
-    mode "0400"
-    action :create
-    content "imq.instanceconfig.version=300\n\n#{configs.sort.collect { |k, v| "#{k}=#{v}\n" }.join("")}"
+    variables(:resource => new_resource)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 

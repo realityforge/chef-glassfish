@@ -28,7 +28,7 @@ attribute :access_control_rules, :kind_of => Hash, :default => {}
 attribute :config, :kind_of => Hash, :default => {}
 attribute :admin_group, :kind_of => String, :default => 'omq_admins'
 attribute :monitor_group, :kind_of => String, :default => 'omq_monitors'
-attribute :bridge_user, :kind_of => String, :default => 'bridge'
+attribute :admin_user, :kind_of => String, :default => 'imqadmin'
 
 attribute :port, :kind_of => Integer, :default => 7676
 attribute :admin_port, :kind_of => Integer, :default => 7677
