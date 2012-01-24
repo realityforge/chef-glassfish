@@ -26,6 +26,8 @@ attribute :var_home, :kind_of => String, :default => "/var/omq"
 attribute :users, :kind_of => Hash, :default => {}
 attribute :access_control_rules, :kind_of => Hash, :default => {}
 attribute :config, :kind_of => Hash, :default => {}
+attribute :queues, :kind_of => Hash, :default => {}
+attribute :topics, :kind_of => Hash, :default => {}
 attribute :admin_group, :kind_of => String, :default => 'omq_admins'
 attribute :monitor_group, :kind_of => String, :default => 'omq_monitors'
 attribute :admin_user, :kind_of => String, :default => 'imqadmin'

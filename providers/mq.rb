@@ -200,6 +200,25 @@ action :create do
     group node[:glassfish][:group]
     variables(:rules => new_resource.access_control_rules)
   end
+
+  destinations = {}
+  destinations.merge!(new_resource.queues)
+  destinations.merge!(new_resource.topics)
+
+  destinations.each_pair do |key, config|
+    glassfish_mq_destination key do
+      queue new_resource.queues.keys.include?(key)
+      processed_config = {}
+      config.each_pair do |k,v|
+        processed_config[k] = v unless k.to_s == 'schema'
+      end
+      config processed_config
+      host 'localhost'
+      port new_resource.port
+      username new_resource.admin_user
+      passfile "#{instance_dir}/props/config.properties"
+    end
+  end
 end
 
 action :destroy do
