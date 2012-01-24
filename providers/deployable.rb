@@ -55,7 +55,7 @@ action :deploy do
     command << cached_package_filename
 
     command asadmin_command(command)
-    notifies :create, resources(:ruby_block => "create_version_file"), :immediately
+    notifies :create, resources(:ruby_block => "create_#{new_resource.deployable_key}_version_file"), :immediately
   end
 end
 
