@@ -140,21 +140,21 @@ node[:openmq][:instances].each_pair do |instance, definition|
 
   users = {}
   search(:node, "openmq_users:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    users.merge!( n["openmq"]["users"].to_hash )
+    users.merge!(n["openmq"]["users"].to_hash)
   end
-  users.merge!( node["openmq"]["users"].to_hash )
+  users.merge!(node["openmq"]["users"].to_hash)
 
   queues = {}
   search(:node, "openmq_destinations_queues:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    queues.merge!( n["openmq"]["destinations"]["queues"].to_hash )
+    queues.merge!(n["openmq"]["destinations"]["queues"].to_hash)
   end
-  queues.merge!( node["openmq"]["destinations"]["queues"].to_hash )
+  queues.merge!(node["openmq"]["destinations"]["queues"].to_hash)
 
   topics = {}
   search(:node, "openmq_destinations_topics:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    topics.merge!( n["openmq"]["destinations"]["topics"].to_hash )
+    topics.merge!(n["openmq"]["destinations"]["topics"].to_hash)
   end
-  topics.merge!( node["openmq"]["destinations"]["topics"].to_hash )
+  topics.merge!(node["openmq"]["destinations"]["topics"].to_hash)
 
   glassfish_mq instance do
     max_memory definition[:max_memory] if definition[:max_memory]
