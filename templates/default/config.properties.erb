@@ -1,6 +1,8 @@
 imq.instanceconfig.version=300
 <%
 configs = {}
+  configs["imq.log.timezone"] = node["tz"] || "GMT"
+
   configs.merge!(@resource.config)
 
   bridges = []
