@@ -103,6 +103,10 @@ action :create do
     action [:enable, :start]
     notifies :create, resources(:ruby_block => "block_until_operational-#{new_resource.domain_name}"), :immediately
   end
+
+  glassfish_property "server.ejb-container.property.disable-nonportable-jndi-names=true" do
+    domain_name new_resource.domain_name
+  end
 end
 
 action :destroy do
