@@ -2,6 +2,7 @@ imq.instanceconfig.version=300
 <%
 configs = {}
   configs["imq.log.timezone"] = node["tz"] || "GMT"
+  configs["imq.log.file.output"] = "ERROR|WARNING"
 
   configs.merge!(@resource.config)
 
