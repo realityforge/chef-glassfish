@@ -44,6 +44,10 @@ class Chef
     def asadmin_set(parameter)
       asadmin_command("set #{parameter}")
     end
+
+    def asadmin_set_web_env_entry(webapp, key, value, type)
+      asadmin_command("set-web-env-entry --name=#{key} --value=#{value} --type #{type} #{webapp}")
+    end
   end
 end
 
