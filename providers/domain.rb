@@ -60,7 +60,7 @@ action :create do
     args << "--nopassword=false" if new_resource.username
     args <<  domain_dir_arg
     command_string = []
-    command_string << asadmin_command("create-domain #{args.join(' ')} #{new_resource.domain_name}", false)
+    command_string << (requires_authbind ? "authbind --deep " : "") + asadmin_command("create-domain #{args.join(' ')} #{new_resource.domain_name}", false)
     command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node[:cpu].size - 2)
     command_string << replace_in_domain_file("%%%MAX_PERM_SIZE%%%", new_resource.max_perm_size)
     command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
