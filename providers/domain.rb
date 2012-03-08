@@ -57,8 +57,6 @@ action :create do
     args = []
     args << "--instanceport #{new_resource.port}"
     args << "--adminport #{new_resource.admin_port}"
-    #args << "--user #{new_resource.username}" if new_resource.username
-    #args << "--user #{new_resource.username}" if new_resource.username
     args << "--nopassword=false" if new_resource.username
     args <<  domain_dir_arg
     command_string = []
