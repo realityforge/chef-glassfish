@@ -107,6 +107,17 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
         url configuration[:url]
         context_root configuration[:context_root] if configuration[:context_root]
       end
+      if configuration[:web_env_entries]
+        configuration[:web_env_entries].each_pair do |key, value|
+          glassfish_web_env_entry "#{deployable_key} set #{key}" do
+            domain_name domain_key
+            webapp deployable_key
+            key key
+            value value
+            value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
+          end
+        end
+      end
     end
   end
 end
