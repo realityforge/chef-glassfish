@@ -28,7 +28,30 @@ def replace_in_domain_file(key, value)
 end
 
 action :create do
-  bash "create domain" do
+  requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
+
+  template "/etc/init.d/glassfish-#{new_resource.domain_name}" do
+    source "glassfish-init.d-script.erb"
+    mode "0755"
+    cookbook 'glassfish'
+    variables(:domain_name => new_resource.domain_name, :authbind => requires_authbind)
+  end
+
+  if new_resource.port < 1024
+    authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
+      port new_resource.port
+      user node[:glassfish][:user]
+    end
+  end
+
+  if new_resource.admin_port < 1024
+    authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
+      port new_resource.admin_port
+      user node[:glassfish][:user]
+    end
+  end
+
+  bash "create domain #{new_resource.domain_name}" do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '"
 
     args = []
@@ -53,29 +76,6 @@ action :create do
 
   file "#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/docroot/index.html" do
     action :delete
-  end
-
-  requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
-
-  template "/etc/init.d/glassfish-#{new_resource.domain_name}" do
-    source "glassfish-init.d-script.erb"
-    mode "0755"
-    cookbook 'glassfish'
-    variables(:domain_name => new_resource.domain_name, :authbind => requires_authbind)
-  end
-
-  if new_resource.port < 1024
-    authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
-      port new_resource.port
-      user node[:glassfish][:user]
-    end
-  end
-
-  if new_resource.admin_port < 1024
-    authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
-      port new_resource.admin_port
-      user node[:glassfish][:user]
-    end
   end
 
   ruby_block "block_until_operational-#{new_resource.domain_name}" do
