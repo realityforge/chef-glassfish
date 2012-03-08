@@ -24,7 +24,7 @@ def domain_dir_arg
 end
 
 def replace_in_domain_file(key, value)
-  "sed -i 's/#{key}/#{value}/g' #{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/config/domain.xml"
+  "sed -i 's/#{key}/#{value}/g' #{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/config/domain.xml 2> /dev/null > /dev/null"
 end
 
 action :create do
