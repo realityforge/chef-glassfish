@@ -48,6 +48,10 @@ class Chef
     def asadmin_set_web_env_entry(webapp, key, value, type)
       asadmin_command("set-web-env-entry --name=#{key} --value=#{value} --type #{type} #{webapp}")
     end
+
+    def asadmin_create_custom_resource(key, value, type, factory_class = "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory")
+      asadmin_command("create-custom-resource --factoryclass #{factory_class} --restype #{type} --property \"value=#{value.gsub(':','\'')}\" #{key}")
+    end
   end
 end
 

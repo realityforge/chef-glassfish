@@ -115,6 +115,17 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
     end
   end
 
+  if definition[:custom_resources]
+    definition[:custom_resources].each_pair do |key, value|
+      glassfish_custom_resource "custom-resource #{key}" do
+        domain_name domain_key
+        key key
+        value value
+        value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
+      end
+    end
+  end
+
   if definition[:deployables]
     definition[:deployables].each_pair do |deployable_key, configuration|
       glassfish_deployable deployable_key.to_s do
