@@ -125,7 +125,7 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
       end
       if configuration[:web_env_entries]
         configuration[:web_env_entries].each_pair do |key, value|
-          glassfish_web_env_entry "#{deployable_key} set #{key}" do
+          glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
             domain_name domain_key
             webapp deployable_key
             key key
