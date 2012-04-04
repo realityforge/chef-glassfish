@@ -50,7 +50,7 @@ class Chef
     end
 
     def asadmin_create_custom_resource(key, value, type, factory_class = "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory")
-      asadmin_command("create-custom-resource --factoryclass #{factory_class} --restype #{type} --property \"value=#{value.gsub(':','\'')}\" #{key}")
+      asadmin_command("create-custom-resource --factoryclass #{factory_class} --restype #{type} --property \"value=#{value.gsub(':','\:')}\" #{key}")
     end
   end
 end
