@@ -21,7 +21,7 @@ attribute :version, :kind_of => String, :required => true
 attribute :url, :kind_of => String, :required => true
 attribute :enabled, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :upload, :kind_of => [TrueClass, FalseClass], :default => true
-attribute :force, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :force, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :context_root, :kind_of => String, :default => nil
 attribute :virtual_servers, :kind_of => Array, :default => ['server']
 
