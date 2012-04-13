@@ -13,7 +13,12 @@ start() {
         su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
         echo "Starting Glassfish at `date`" >> <%= log_file %>
         su <%= node[:glassfish][:user] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
-        sleep 2
+        <% @listen_ports.each do |listen_port| %>
+        while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -eq 0 ]
+        do
+            sleep 1
+        done
+        <% end %>
         echo "done"
 }
 
@@ -23,6 +28,12 @@ stop() {
         su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
         echo "Stopping Glassfish at `date`" >> <%= log_file %>
         su <%= node[:glassfish][:user] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
+        <% @listen_ports.each do |listen_port| %>
+        while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -ne 0 ]
+        do
+            sleep 1
+        done
+        <% end %>
         echo "done"
 }
 

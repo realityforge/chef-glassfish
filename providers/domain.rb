@@ -31,7 +31,7 @@ action :create do
     source "glassfish-init.d-script.erb"
     mode "0755"
     cookbook 'glassfish'
-    variables(:domain_name => new_resource.domain_name, :authbind => requires_authbind)
+    variables(:domain_name => new_resource.domain_name, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
   end
 
   if new_resource.port < 1024
@@ -73,30 +73,9 @@ action :create do
     action :delete
   end
 
-  ruby_block "block_until_operational-#{new_resource.domain_name}" do
-    block do
-      until IO.popen("netstat -lnt").entries.select { |entry|
-        entry.split[3] =~ /:#{new_resource.port}$/
-      }.size == 1
-        Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not listening on port #{new_resource.port}"
-        sleep 1
-      end
-
-      loop do
-        url = URI.parse("http://127.0.0.1:#{new_resource.port}/")
-        res = Chef::REST::RESTRequest.new(:GET, url, nil).call
-        break if res.kind_of?(Net::HTTPSuccess) || res.kind_of?(Net::HTTPNotFound) || res.kind_of?(Net::HTTPUnauthorized)
-        Chef::Log.debug "service[glassfish-#{new_resource.domain_name}] not responding acceptable to GET on #{url}"
-        sleep 1
-      end
-    end
-    action :nothing
-  end
-
   service "glassfish-#{new_resource.domain_name}" do
     supports :start => true, :restart => true, :stop => true
     action [:enable, :start]
-    notifies :create, resources(:ruby_block => "block_until_operational-#{new_resource.domain_name}"), :immediately
   end
 
   glassfish_property "server.ejb-container.property.disable-nonportable-jndi-names=true" do
