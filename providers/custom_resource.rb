@@ -17,10 +17,15 @@
 include Chef::Asadmin
 
 action :run do
-  bash "asadmin_create-custom-resource #{new_resource.key} => #{new_resource.value}" do
-    not_if "#{asadmin_command("list-custom-resources #{new_resource.key}")} | grep -x -- '#{new_resource.key}'"
+  ruby "asadmin_create-custom-resource #{new_resource.key} => #{new_resource.value}" do
+    not_if "#{asadmin_command("get resources.custom-resource.#{new_resource.key}.property.value")} | grep -x -- '#{new_resource.value}'"
     user node[:glassfish][:user]
     group node[:glassfish][:group]
-    code asadmin_create_custom_resource(new_resource.key, new_resource.value, new_resource.value_type)
+    code <<-CODE
+      if `#{asadmin_command("list-custom-resources #{new_resource.key}")}` =~ /^#{new_resource.key}$/ &&
+        `#{asadmin_command("get resources.custom-resource.#{new_resource.key}.property.value")}` =~ Regexp.new("^" + Regexp.escape("resources.custom-resource.#{new_resource.key}.property.value=#{new_resource.value}") + "$")
+        `#{asadmin_create_custom_resource(new_resource.key, new_resource.value, new_resource.value_type)}`
+      end
+    CODE
   end
 end
