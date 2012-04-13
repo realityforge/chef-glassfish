@@ -150,7 +150,7 @@ action :create do
     end
   end
 
-    if new_resource.admin_port && new_resource.admin_port < 1024
+  if new_resource.admin_port && new_resource.admin_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Admin Port #{new_resource.admin_port}" do
       port new_resource.admin_port
       user node[:glassfish][:user]
@@ -264,7 +264,7 @@ action :create do
     glassfish_mq_destination key do
       queue new_resource.queues.keys.include?(key)
       processed_config = {}
-      config.each_pair do |k,v|
+      config.each_pair do |k, v|
         if k.to_s == 'schema'
           processed_config['validateXMLSchemaEnabled'] = 'true'
           processed_config['XMLSchemaURIList'] = v
