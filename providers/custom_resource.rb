@@ -22,6 +22,5 @@ action :run do
     user node[:glassfish][:user]
     group node[:glassfish][:group]
     code asadmin_create_custom_resource(new_resource.key, new_resource.value, new_resource.value_type)
-    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}")
   end
 end
