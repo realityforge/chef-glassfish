@@ -19,16 +19,20 @@ exec su <%= node[:glassfish][:user] %> -c '<%= authbind_prefix %><%= omq_home %>
 
 # Uglies to wait until the broker is actually up before completion of the 'start'
 post-start script
-  while [ $(netstat -nl | grep -c 0.0.0.0:<%= @resource.port %>) -eq 0 ]
+  <% @listen_ports.each do |listen_port| %>
+  while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -eq 0 ]
   do
     sleep 1
   done
+  <% end %>
 end script
 
 # Uglies to wait until the broker is actually up before completion of the 'stop'
 post-stop script
-  while [ $(netstat -nl | grep -c 0.0.0.0:<%= @resource.port %>) -ne 0 ]
+  <% @listen_ports.each do |listen_port| %>
+  while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -ne 0 ]
   do
     sleep 1
   done
+  <% end %>
 end script

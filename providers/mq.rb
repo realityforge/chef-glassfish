@@ -131,8 +131,15 @@ action :create do
     mode "0644"
     cookbook 'glassfish'
 
+    listen_ports = [new_resource.port]
+    listen_ports << new_resource.jmx_port if new_resource.jmx_port
+    listen_ports << new_resource.admin_port if new_resource.admin_port
+    listen_ports << new_resource.jms_port if new_resource.jms_port
+    listen_ports << new_resource.stomp_port if new_resource.stomp_port
+
     variables(:resource => new_resource,
               :authbind => requires_authbind,
+              :listen_ports => listen_ports,
               :vmargs => vm_args.join(" "))
   end
 
