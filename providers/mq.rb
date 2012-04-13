@@ -14,6 +14,52 @@
 # limitations under the License.
 #
 
+def mq_config_settings(resource)
+  configs = {}
+  configs["imq.log.timezone"] = node["tz"] || "GMT"
+  configs["imq.log.file.output"] = "ERROR|WARNING"
+
+  configs.merge!(resource.config)
+
+  bridges = []
+  services = []
+
+  configs["imq.portmapper.port"] = resource.port
+
+  if resource.admin_port
+    services << "admin"
+    configs["imq.admin.tcp.port"] = resource.admin_port
+  end
+
+  if resource.jms_port
+    services << "jms"
+    configs["imq.jms.tcp.port"] = resource.jms_port
+  end
+
+  if resource.stomp_port
+    bridges << "stomp"
+    configs["imq.bridge.stomp.tcp.enabled"] = "true"
+    configs["imq.bridge.stomp.tcp.port"] = resource.stomp_port
+  end
+
+  if services.size > 0
+    configs["imq.service.activelist"] = services.join(',')
+  end
+
+  configs["imq.bridge.admin.user"] = resource.admin_user
+  user = resource.users[resource.admin_user]
+  raise "Missing user details for admin user '#{resource.admin_user}'" unless user
+  configs["imq.bridge.admin.password"] = user[:password]
+  configs["imq.imqcmd.password"] = user[:password]
+
+  if bridges.size > 0
+    configs["imq.bridge.enabled"] = "true"
+    configs["imq.bridge.activelist"] = bridges.join(',')
+  end
+
+  configs
+end
+
 action :create do
   requires_authbind = false
   requires_authbind ||= new_resource.port < 1024
@@ -161,12 +207,24 @@ action :create do
   end
 
   template "#{instance_dir}/props/config.properties" do
+    not_if do
+      properties = {}
+      IO.foreach("#{instance_dir}/props/config.properties") do |line|
+        properties[$1.strip] = $2 if line =~ /([^=]*)=(.*)\/\/(.*)/ || line =~ /([^=]*)=(.*)/
+      end
+
+      regenerate = false
+      mq_config_settings(new_resource).each do |k,v|
+        regenerate ||= properties[k] != v
+      end
+      regenerate
+    end
     source "config.properties.erb"
-    mode "0400"
+    mode "0600"
     cookbook 'glassfish'
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
-    variables(:resource => new_resource)
+    variables(:config => mq_config_settings(new_resource))
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 
