@@ -222,11 +222,10 @@ action :create do
         IO.foreach(filename) do |line|
           properties[$1.strip] = $2 if (line =~ /([^#=]+)=(.*)/)
         end
-        regenerate = false
+        keep_existing = true
         mq_config_settings(new_resource).each do |k, v|
-          regenerate ||= properties[k] != v
+          keep_existing = false if properties[k].to_s != v.to_s
         end
-        keep_existing = !regenerate
       end
       keep_existing
     end
