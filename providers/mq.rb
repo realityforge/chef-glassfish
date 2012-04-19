@@ -220,7 +220,7 @@ action :create do
       keep_existing = false
       if ::File.exist?(filename)
         IO.foreach(filename) do |line|
-          properties[$1.strip] = $2 if line =~ /([^=]*)=(.*)\/\/(.*)/ || line =~ /([^=]*)=(.*)/
+          properties[$1.strip] = $2 if (line =~ /([^#=]+)=(.*)/)
         end
         regenerate = false
         mq_config_settings(new_resource).each do |k, v|
