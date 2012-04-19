@@ -54,20 +54,7 @@ node[:glassfish][:domain_definitions].each_pair do |domain_key, definition|
     admin_port definition[:config][:admin_port] if definition[:config][:admin_port]
     username definition[:config][:username] if definition[:config][:username]
     password definition[:config][:password] if definition[:config][:password]
-  end
-
-  if definition[:extra_libraries]
-    definition[:extra_libraries].each do |extra_library|
-      library_location = "#{node[:glassfish][:domains_dir]}/#{domain_key}/lib/ext/#{::File.basename(extra_library)}"
-      remote_file library_location do
-        source extra_library
-        mode "0640"
-        owner node[:glassfish][:user]
-        group node[:glassfish][:group]
-        not_if { ::File.exists?(library_location) }
-        #notifies :restart, resources(:service => "glassfish-#{domain_key}")
-      end
-    end
+    extra_libraries definition[:extra_libraries] if definition[:extra_libraries]
   end
 
   if definition[:jvm_options]

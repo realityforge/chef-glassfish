@@ -28,6 +28,7 @@ attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :username, :kind_of => String, :default => nil
 attribute :password, :kind_of => String, :default => nil
 attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :extra_libraries, :kind_of => Array, :default => []
 
 def initialize( *args )
   super

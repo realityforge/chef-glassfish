@@ -73,6 +73,19 @@ action :create do
     action :delete
   end
 
+  if new_resource.extra_libraries
+    new_resource.extra_libraries.each do |extra_library|
+      library_location = "#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/lib/ext/#{::File.basename(extra_library)}"
+      remote_file library_location do
+        source extra_library
+        mode "0640"
+        owner node[:glassfish][:user]
+        group node[:glassfish][:group]
+        not_if { ::File.exists?(library_location) }
+      end
+    end
+  end
+
   service "glassfish-#{new_resource.domain_name}" do
     supports :start => true, :restart => true, :stop => true
     action [:enable, :start]
