@@ -216,15 +216,19 @@ action :create do
   template "#{instance_dir}/props/config.properties" do
     not_if do
       properties = {}
-      IO.foreach("#{instance_dir}/props/config.properties") do |line|
-        properties[$1.strip] = $2 if line =~ /([^=]*)=(.*)\/\/(.*)/ || line =~ /([^=]*)=(.*)/
+      filename = "#{instance_dir}/props/config.properties"
+      keep_existing = false
+      if ::File.exist?(filename)
+        IO.foreach(filename) do |line|
+          properties[$1.strip] = $2 if line =~ /([^=]*)=(.*)\/\/(.*)/ || line =~ /([^=]*)=(.*)/
+        end
+        regenerate = false
+        mq_config_settings(new_resource).each do |k, v|
+          regenerate ||= properties[k] != v
+        end
+        keep_existing = !regenerate
       end
-
-      regenerate = false
-      mq_config_settings(new_resource).each do |k,v|
-        regenerate ||= properties[k] != v
-      end
-      regenerate
+      keep_existing
     end
     source "config.properties.erb"
     mode "0600"
