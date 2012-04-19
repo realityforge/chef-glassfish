@@ -73,7 +73,7 @@ action :create do
   directory new_resource.var_home do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
-    mode 0700
+    mode "0700"
   end
 
   directory "#{new_resource.var_home}/instances" do
