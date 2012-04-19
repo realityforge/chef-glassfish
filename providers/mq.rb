@@ -181,7 +181,7 @@ action :create do
   service "omq-#{new_resource.instance}" do
     provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true, :status => true
-    action [:enable, :start]
+    action [:enable]
   end
 
   if new_resource.jmx_port
@@ -265,6 +265,10 @@ action :create do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
     variables(:rules => new_resource.access_control_rules)
+  end
+
+  service "omq-#{new_resource.instance}" do
+    action [:start]
   end
 
   destinations = {}
