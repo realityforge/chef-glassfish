@@ -1,6 +1,8 @@
 
 ## v0.0.38:
 
+* Enhance : Support the logging_properties attribute on the mq resource. This makes it possible to configure the
+            logging.properties file generated for the OpenMQ server.
 * Bug     : Explicitly configure the OpenMQ server logging settings. This avoids the scenario where the stomp bridge
             log can grow without bounds.
 

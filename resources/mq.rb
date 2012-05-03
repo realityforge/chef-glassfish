@@ -22,6 +22,15 @@ attribute :instance, :kind_of => String, :name_attribute => true
 attribute :var_home, :kind_of => String, :default => "/var/omq"
 attribute :users, :kind_of => Hash, :default => {}
 attribute :access_control_rules, :kind_of => Hash, :default => {}
+attribute :logging_properties,
+          :kind_of => Hash,
+          :default =>
+            {
+              "handlers" => "java.util.logging.ConsoleHandler",
+              ".level" => "INFO",
+              "java.util.logging.ConsoleHandler.level" => "INFO",
+              "java.util.logging.ConsoleHandler.formatter" => "java.util.logging.SimpleFormatter"
+            }
 attribute :config, :kind_of => Hash, :default => {}
 attribute :queues, :kind_of => Hash, :default => {}
 attribute :topics, :kind_of => Hash, :default => {}
