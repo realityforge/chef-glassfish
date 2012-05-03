@@ -17,7 +17,25 @@
 def mq_config_settings(resource)
   configs = {}
   configs["imq.log.timezone"] = node["tz"] || "GMT"
+
+  # Specify supported LogHandlers
+  configs["imq.log.handlers"] = "file,console"
+
+  # FileLogHandler settings.
+  # The FileLogHandler logs messages to a set of rolling files.
+  # The rollover criteria can be the file size (bytes) and/or
+  # the file age (seconds). 0 means don't rollover based on that criteria.
+  configs["imq.log.file.rolloverbytes"] = "268435456"
+  configs["imq.log.file.rolloversecs"] = "604800"
+  configs["imq.log.file.dirpath"] = "${imq.instanceshome}${/}${imq.instancename}${/}log"
+  configs["imq.log.file.filename"] = "omq.log"
   configs["imq.log.file.output"] = "ERROR|WARNING"
+
+  # Console settings.
+  # The console handler logs messages to an OutputStream. This can either be
+  # System.err (ERR) or System.out (OUT).
+  configs["imq.log.console.stream"] = "ERR"
+  configs["imq.log.console.output"] = "ERROR|WARNING"
 
   configs.merge!(resource.config)
 
@@ -40,6 +58,8 @@ def mq_config_settings(resource)
     bridges << "stomp"
     configs["imq.bridge.stomp.tcp.enabled"] = "true"
     configs["imq.bridge.stomp.tcp.port"] = resource.stomp_port
+    configs["imq.bridge.stomp.logfile.limit"] = "268435456"
+    configs["imq.bridge.stomp.logfile.count"] = "3"
   end
 
   if services.size > 0

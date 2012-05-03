@@ -1,3 +1,9 @@
+
+## v0.0.38:
+
+* Bug     : Explicitly configure the OpenMQ server logging settings. This avoids the scenario where the stomp bridge
+            log can grow without bounds.
+
 ## v0.0.37:
 
 * Bug     : Stop the OpenMQ server restarting every chef run. Resulting from both the server and the chef rewriting the
