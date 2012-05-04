@@ -1,3 +1,6 @@
+## v0.0.39:
+
+* Enhance : Support the logging_properties attribute being mapped from the managed_domains recipe.
 
 ## v0.0.38:
 

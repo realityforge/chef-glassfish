@@ -206,6 +206,7 @@ node[:openmq][:instances].each_pair do |instance, definition|
     var_home definition[:var_home] if definition[:var_home]
     admin_user definition[:admin_user] if definition[:admin_user]
     config definition[:config] if definition[:config]
+    logging_properties definition[:logging_properties] if definition[:logging_properties]
     users users
     access_control_rules access_control_rules
     queues queues
