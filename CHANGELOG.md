@@ -1,3 +1,8 @@
+## v0.0.40:
+
+* Enhance : Support the logging_properties attribute on the domain resource and in the managed_domains recipe. This
+            makes it possible to configure the logging.properties file generated for the Glassfish application server.
+
 ## v0.0.39:
 
 * Enhance : Support the logging_properties attribute being mapped from the managed_domains recipe.
