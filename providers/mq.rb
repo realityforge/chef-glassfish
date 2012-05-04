@@ -264,7 +264,7 @@ action :create do
     cookbook 'glassfish'
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
-    variables(:resource => new_resource)
+    variables(:logging_properties => new_resource.logging_properties)
     notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
   end
 
