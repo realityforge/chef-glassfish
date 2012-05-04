@@ -29,6 +29,7 @@ attribute :username, :kind_of => String, :default => nil
 attribute :password, :kind_of => String, :default => nil
 attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :extra_libraries, :kind_of => Array, :default => []
+attribute :logging_properties, :kind_of => Hash, :default => {}
 
 def initialize( *args )
   super

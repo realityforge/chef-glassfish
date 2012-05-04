@@ -16,6 +16,79 @@
 
 include Chef::Asadmin
 
+def default_logging_properties
+  {
+    "handlers" => "java.util.logging.ConsoleHandler",
+    "java.util.logging.ConsoleHandler.formatter" => "com.sun.enterprise.server.logging.UniformLogFormatter",
+
+    "com.sun.enterprise.server.logging.GFFileHandler.formatter" => "com.sun.enterprise.server.logging.UniformLogFormatter",
+    "com.sun.enterprise.server.logging.GFFileHandler.file" => "${com.sun.aas.instanceRoot}/logs/server.log",
+    "com.sun.enterprise.server.logging.GFFileHandler.rotationTimelimitInMinutes" => "0",
+    "com.sun.enterprise.server.logging.GFFileHandler.flushFrequency" => "1",
+    "com.sun.enterprise.server.logging.GFFileHandler.logtoConsole" => "false",
+    "com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes" => "2000000",
+    "com.sun.enterprise.server.logging.GFFileHandler.retainErrorsStasticsForHours" => "0",
+    "com.sun.enterprise.server.logging.GFFileHandler.maxHistoryFiles" => "3",
+    "com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange" => "false",
+
+    "com.sun.enterprise.server.logging.SyslogHandler.useSystemLogging" => "false",
+
+    "log4j.logger.org.hibernate.validator.util.Version" => "warn",
+
+    #All log level details
+    ".level" => "INFO",
+
+    "com.sun.enterprise.server.logging.GFFileHandler.level" => "ALL",
+    "javax.enterprise.system.tools.admin.level" => "INFO",
+    "org.apache.jasper.level" => "INFO",
+    "javax.enterprise.resource.corba.level" => "INFO",
+    "javax.enterprise.system.core.level" => "INFO",
+    "javax.enterprise.system.core.classloading.level" => "INFO",
+    "javax.enterprise.resource.jta.level" => "INFO",
+    "java.util.logging.ConsoleHandler.level" => "FINEST",
+    "javax.enterprise.system.webservices.saaj.level" => "INFO",
+    "javax.enterprise.system.tools.deployment.level" => "INFO",
+    "javax.enterprise.system.container.ejb.level" => "INFO",
+    "javax.enterprise.system.core.transaction.level" => "INFO",
+    "org.apache.catalina.level" => "INFO",
+    "javax.enterprise.system.container.ejb.mdb.level" => "INFO",
+    "org.apache.coyote.level" => "INFO",
+    "javax.level" => "INFO",
+    "javax.enterprise.resource.javamail.level" => "INFO",
+    "javax.enterprise.system.webservices.rpc.level" => "INFO",
+    "javax.enterprise.system.container.web.level" => "INFO",
+    "javax.enterprise.system.util.level" => "INFO",
+    "javax.enterprise.resource.resourceadapter.level" => "INFO",
+    "javax.enterprise.resource.jms.level" => "INFO",
+    "javax.enterprise.system.core.config.level" => "INFO",
+    "javax.enterprise.system.level" => "INFO",
+    "javax.enterprise.system.core.security.level" => "INFO",
+    "javax.enterprise.system.container.cmp.level" => "INFO",
+    "javax.enterprise.system.webservices.registry.level" => "INFO",
+    "javax.enterprise.system.core.selfmanagement.level" => "INFO",
+    "javax.enterprise.resource.jdo.level" => "INFO",
+    "javax.enterprise.system.core.naming.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.application.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.resource.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.config.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.context.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.facelets.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.lifecycle.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.managedbean.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.renderkit.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.taglib.level" => "INFO",
+    "javax.enterprise.resource.webcontainer.jsf.timing.level" => "INFO",
+    "javax.enterprise.resource.sqltrace.level" => "FINE",
+    "javax.org.glassfish.persistence.level" => "INFO",
+    "org.jvnet.hk2.osgiadapter.level" => "INFO",
+    "javax.enterprise.system.tools.backup.level" => "INFO",
+    "org.glassfish.admingui.level" => "INFO",
+    "javax.enterprise.system.ssl.security.level" => "INFO",
+    "ShoalLogger.level" => "CONFIG",
+    "org.eclipse.persistence.session.level" => "INFO",
+  }
+end
+
 def domain_dir_arg
   "--domaindir #{node[:glassfish][:domains_dir]}"
 end
@@ -73,6 +146,21 @@ action :create do
     action :delete
   end
 
+  service "glassfish-#{new_resource.domain_name}" do
+    supports :start => true, :restart => true, :stop => true
+    action [:start]
+  end
+
+  template "#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/config/logging.properties" do
+    source "logging.properties.erb"
+    mode "0400"
+    cookbook 'glassfish'
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    variables(:logging_properties  => default_logging_properties.merge(new_resource.logging_properties))
+    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
+  end
+
   if new_resource.extra_libraries
     new_resource.extra_libraries.each do |extra_library|
       library_location = "#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/lib/ext/#{::File.basename(extra_library)}"
@@ -88,7 +176,7 @@ action :create do
 
   service "glassfish-#{new_resource.domain_name}" do
     supports :start => true, :restart => true, :stop => true
-    action [:enable, :start]
+    action [:start]
   end
 
   glassfish_property "server.ejb-container.property.disable-nonportable-jndi-names=true" do
