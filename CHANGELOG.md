@@ -1,3 +1,8 @@
+## v0.0.41:
+
+* Change  : Remove the searching of other nodes to locate the OpenMQ topics, queues, users and access control rules as
+            that is a business specific policy that has no place in a generic cookbook.
+
 ## v0.0.40:
 
 * Enhance : Support the logging_properties attribute on the domain resource and in the managed_domains recipe. This

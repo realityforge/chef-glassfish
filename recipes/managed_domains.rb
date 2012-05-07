@@ -172,30 +172,6 @@ node[:openmq][:instances].each_pair do |instance, definition|
     include_recipe "authbind"
   end
 
-  access_control_rules = {}
-  search(:node, "openmq_access_control_rules:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    access_control_rules.merge!(n["openmq"]["access_control_rules"].to_hash)
-  end
-  access_control_rules.merge!(node["openmq"]["access_control_rules"].to_hash)
-
-  users = {}
-  search(:node, "openmq_users:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    users.merge!(n["openmq"]["users"].to_hash)
-  end
-  users.merge!(node["openmq"]["users"].to_hash)
-
-  queues = {}
-  search(:node, "openmq_destinations_queues:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    queues.merge!(n["openmq"]["destinations"]["queues"].to_hash)
-  end
-  queues.merge!(node["openmq"]["destinations"]["queues"].to_hash)
-
-  topics = {}
-  search(:node, "openmq_destinations_topics:* AND chef_environment:#{node.chef_environment} AND NOT name:#{node.name}") do |n|
-    topics.merge!(n["openmq"]["destinations"]["topics"].to_hash)
-  end
-  topics.merge!(node["openmq"]["destinations"]["topics"].to_hash)
-
   glassfish_mq instance do
     max_memory definition[:max_memory] if definition[:max_memory]
     max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
@@ -208,9 +184,9 @@ node[:openmq][:instances].each_pair do |instance, definition|
     admin_user definition[:admin_user] if definition[:admin_user]
     config definition[:config] if definition[:config]
     logging_properties definition[:logging_properties] if definition[:logging_properties]
-    users users
-    access_control_rules access_control_rules
-    queues queues
-    topics topics
+    users node["openmq"]["users"].to_hash
+    access_control_rules node["openmq"]["access_control_rules"].to_hash
+    queues node["openmq"]["destinations"]["queues"].to_hash
+    topics node["openmq"]["destinations"]["topics"].to_hash
   end
 end
