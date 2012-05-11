@@ -1,3 +1,8 @@
+## v0.0.42:
+
+* Change  : Split the managed_domains into two attribute driven recipes. One to create domains and one to create brokers.
+* Change  : Change the name of the attribute used to drive the creation of the domains to `glassfish.domains`.
+
 ## v0.0.41:
 
 * Change  : Remove the searching of other nodes to locate the OpenMQ topics, queues, users and access control rules as
