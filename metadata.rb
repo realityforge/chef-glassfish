@@ -6,7 +6,8 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.41"
 
 recipe "glassfish::default", "Installs and configures GlassFish"
-recipe "glassfish::managed_domains", "Installs GlassFish and domains defined in glassfish/domain_definitions"
+recipe "glassfish::attribute_driven_domain", "Installs GlassFish domains defined in the glassfish/domains attribute"
+recipe "glassfish::attribute_driven_mq", "Installs GlassFish OpenMQ brokers defined in the openmq/instances attribute"
 
 depends 'java'
 depends 'authbind'
