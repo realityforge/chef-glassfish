@@ -48,9 +48,12 @@ attribute "glassfish/domains_dir",
   :type => "string",
   :default => "/usr/local/glassfish3/glassfish/domains"
 
-attribute "glassfish/domain_definitions",
+attribute "glassfish/domains",
   :display_name => "GlassFish Domain Definitions",
-  :description => "A map of domain defitions that drive the instantiation of a domain",
+  :description => "A map of domain definitions that drive the instantiation of a domain",
+  :type => "hash",
+  :default => {}
+
 attribute "openmq/instances",
   :display_name => "GlassFish OpenMQ Broker Definitions",
   :description => "A map of broker definitions that drive the instantiation of a OpenMQ broker",
