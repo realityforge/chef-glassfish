@@ -50,5 +50,14 @@ attribute "glassfish/domains_dir",
 attribute "glassfish/domain_definitions",
   :display_name => "GlassFish Domain Definitions",
   :description => "A map of domain defitions that drive the instantiation of a domain",
+attribute "openmq/instances",
+  :display_name => "GlassFish OpenMQ Broker Definitions",
+  :description => "A map of broker definitions that drive the instantiation of a OpenMQ broker",
+  :type => "hash",
+  :default => {}
+
+attribute "openmq/extra_libraries",
+  :display_name => "Extract libraries for the OpenMQ Broker",
+  :description => "A list of URLs to jars that are added to brokers classpath",
   :type => "hash",
   :default => {}
