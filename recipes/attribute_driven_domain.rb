@@ -70,6 +70,23 @@ node[:glassfish][:domains].each_pair do |domain_key, definition|
     end
   end
 
+  ##
+  ## Deploy all OSGi bundles prior to attempting to setup resources as they are likely to be the things
+  ## that are provided by OSGi
+  ##
+  if definition[:deployables]
+    definition[:deployables].each_pair do |deployable_key, configuration|
+      if configuration[:type] && configuration[:type].to_s == 'osgi'
+        glassfish_deployable deployable_key.to_s do
+          domain_name domain_key
+          version configuration[:version]
+          url configuration[:url]
+          type :osgi
+        end
+      end
+    end
+  end
+
   if definition[:realms]
     definition[:realms].each_pair do |key, configuration|
       glassfish_auth_realm key.to_s do
@@ -112,20 +129,22 @@ node[:glassfish][:domains].each_pair do |domain_key, definition|
 
   if definition[:deployables]
     definition[:deployables].each_pair do |deployable_key, configuration|
-      glassfish_deployable deployable_key.to_s do
-        domain_name domain_key
-        version configuration[:version]
-        url configuration[:url]
-        context_root configuration[:context_root] if configuration[:context_root]
-      end
-      if configuration[:web_env_entries]
-        configuration[:web_env_entries].each_pair do |key, value|
-          glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
-            domain_name domain_key
-            webapp deployable_key
-            key key
-            value value
-            value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
+      if configuration[:type].nil? || configuration[:type].to_s != 'osgi'
+        glassfish_deployable deployable_key.to_s do
+          domain_name domain_key
+          version configuration[:version]
+          url configuration[:url]
+          context_root configuration[:context_root] if configuration[:context_root]
+        end
+        if configuration[:web_env_entries]
+          configuration[:web_env_entries].each_pair do |key, value|
+            glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
+              domain_name domain_key
+              webapp deployable_key
+              key key
+              value value
+              value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
+            end
           end
         end
       end

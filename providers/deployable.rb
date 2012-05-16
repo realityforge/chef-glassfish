@@ -47,6 +47,7 @@ action :deploy do
     command << "--enabled=#{new_resource.enabled} "
     command << "--upload=#{new_resource.upload} "
     command << "--force=#{new_resource.force} "
+    command << "--type #{new_resource.type} " if new_resource.type
     command << "--contextroot=#{new_resource.context_root} " if new_resource.context_root
     command << "--virtualservers=#{new_resource.virtual_servers.join(",")} "
     command << cached_package_filename

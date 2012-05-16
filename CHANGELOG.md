@@ -1,6 +1,9 @@
 ## v0.0.44:
 
-* Change  : Allow the configuration of the set of login modules in the 'glassfish_domain' resource and the
+* Enhance : Support the deployment of OSGi bundles using the 'glassfish_deployable' resource by setting the
+            type parameter to ':osgi'. OSGi bundles are deployed prior to the realms or any other commands
+             being executed as they can be the modules providing the capability.
+* Enhance : Allow the configuration of the set of login modules in the 'glassfish_domain' resource and the
             associated attribute driven recipes.
 
 ## v0.0.43:

@@ -20,6 +20,7 @@ attribute :deployable_key, :kind_of => String, :name_attribute => true
 attribute :version, :kind_of => String, :required => true
 attribute :url, :kind_of => String, :required => true
 attribute :enabled, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :type, :kind_of => Symbol, :default => nil
 attribute :upload, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :force, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :context_root, :kind_of => String, :default => nil
