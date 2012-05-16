@@ -89,6 +89,17 @@ def default_logging_properties
   }
 end
 
+def default_realm_confs
+  {
+    "fileRealm" => "com.sun.enterprise.security.auth.login.FileLoginModule",
+    "ldapRealm" => "com.sun.enterprise.security.auth.login.LDAPLoginModule",
+    "solarisRealm" => "com.sun.enterprise.security.auth.login.SolarisLoginModule",
+    "jdbcRealm" => "com.sun.enterprise.security.auth.login.JDBCLoginModule",
+    "jdbcDigestRealm" => "com.sun.enterprise.security.auth.login.JDBCDigestLoginModule",
+    "pamRealm" => "com.sun.enterprise.security.auth.login.PamLoginModule",
+  }
+end
+
 def domain_dir_arg
   "--domaindir #{node[:glassfish][:domains_dir]}"
 end
@@ -158,6 +169,16 @@ action :create do
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
     variables(:logging_properties  => default_logging_properties.merge(new_resource.logging_properties))
+    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
+  end
+
+  template "#{node[:glassfish][:domains_dir]}/#{new_resource.domain_name}/config/login.conf" do
+    source "login.conf.erb"
+    mode "0400"
+    cookbook 'glassfish'
+    owner node[:glassfish][:user]
+    group node[:glassfish][:group]
+    variables(:realm_types  => default_realm_confs.merge(new_resource.realm_types))
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 

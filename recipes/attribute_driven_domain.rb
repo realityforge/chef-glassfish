@@ -51,6 +51,7 @@ node[:glassfish][:domains].each_pair do |domain_key, definition|
     password definition[:config][:password] if definition[:config][:password]
     extra_libraries definition[:extra_libraries] if definition[:extra_libraries]
     logging_properties definition[:logging_properties] if definition[:logging_properties]
+    realm_types definition[:realm_types] if definition[:realm_types]
   end
 
   if definition[:jvm_options]

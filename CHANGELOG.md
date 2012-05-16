@@ -1,3 +1,8 @@
+## v0.0.44:
+
+* Change  : Allow the configuration of the set of login modules in the 'glassfish_domain' resource and the
+            associated attribute driven recipes.
+
 ## v0.0.43:
 
 * Change  : Update the `glassfish_mq` resource so that it is necessary to explicitly specify the jmx admins and
