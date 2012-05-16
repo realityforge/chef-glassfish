@@ -34,8 +34,8 @@ attribute :logging_properties,
 attribute :config, :kind_of => Hash, :default => {}
 attribute :queues, :kind_of => Hash, :default => {}
 attribute :topics, :kind_of => Hash, :default => {}
-attribute :admin_group, :kind_of => String, :default => 'omq_admins'
-attribute :monitor_group, :kind_of => String, :default => 'omq_monitors'
+attribute :jmx_admins, :kind_of => Hash, :default => {}
+attribute :jmx_monitors, :kind_of => Hash, :default => {}
 attribute :admin_user, :kind_of => String, :default => 'imqadmin'
 
 attribute :port, :kind_of => Integer, :default => 7676

@@ -205,21 +205,12 @@ action :create do
   end
 
   if new_resource.jmx_port
-    admins = {}
-    search(:users, "groups:#{new_resource.admin_group} AND jmx_password:*") do |u|
-      admins[u['id']] = u['jmx_password']
-    end
-    monitors = {}
-    search(:users, "groups:#{new_resource.monitor_group} AND jmx_password:*") do |u|
-      monitors[u['id']] = u['jmx_password']
-    end
-
     file "#{instance_dir}/etc/jmxremote.access" do
       owner node[:glassfish][:user]
       group node[:glassfish][:group]
       mode "0400"
       action :create
-      content (admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
+      content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
       notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
     end
 
@@ -228,7 +219,7 @@ action :create do
       group node[:glassfish][:group]
       mode "0400"
       action :create
-      content (admins.sort.collect { |username, password| "#{username}=#{password}\n" } + monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
+      content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
       notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
     end
   end

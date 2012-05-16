@@ -1,3 +1,8 @@
+## v0.0.43:
+
+* Change  : Update the `glassfish_mq` resource so that it is necessary to explicitly specify the jmx admins and
+            monitors rather than relying on a search in a 'users' data bag search.
+
 ## v0.0.42:
 
 * Change  : Split the managed_domains into two attribute driven recipes. One to create domains and one to create brokers.
