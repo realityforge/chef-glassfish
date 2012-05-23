@@ -118,18 +118,16 @@ action :create do
     variables(:domain_name => new_resource.domain_name, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
   end
 
-  if new_resource.port < 1024
-    authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
-      port new_resource.port
-      user node['glassfish']['user']
-    end
+  authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
+    only_if { new_resource.port < 1024 }
+    port new_resource.port
+    user node['glassfish']['user']
   end
 
-  if new_resource.admin_port < 1024
-    authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
-      port new_resource.admin_port
-      user node['glassfish']['user']
-    end
+  authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
+    only_if { new_resource.admin_port < 1024 }
+    port new_resource.admin_port
+    user node['glassfish']['user']
   end
 
   bash "create domain #{new_resource.domain_name}" do

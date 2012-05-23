@@ -26,12 +26,11 @@ action :create do
     code imqcmd_command("create dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")
   end
 
-  if new_resource.config.size > 0
-    bash "imqcmd_update_#{new_resource.queue ? "queue" : "topic"} #{new_resource.destination_name}" do
-      user node['glassfish']['user']
-      group node['glassfish']['group']
-      code imqcmd_command("update dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name} #{new_resource.config.collect { |k, v| "-o #{k}=#{v}" }.join(' ')}")
-    end
+  bash "imqcmd_update_#{new_resource.queue ? "queue" : "topic"} #{new_resource.destination_name}" do
+    only_if { new_resource.config.size > 0 }
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code imqcmd_command("update dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name} #{new_resource.config.collect { |k, v| "-o #{k}=#{v}" }.join(' ')}")
   end
 end
 

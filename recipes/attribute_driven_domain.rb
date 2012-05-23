@@ -27,14 +27,13 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     mode "0700"
   end
 
-  if definition['config']['password']
-    template "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" do
-      source "password.erb"
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
-      mode "0600"
-      variables :domain_name => domain_key
-    end
+  template "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" do
+    only_if { definition['config']['password'] }
+    source "password.erb"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    variables :domain_name => domain_key
   end
 
   if (definition['config']['port'] && definition['config']['port'] < 1024) || (definition['config']['admin_port'] && definition['config']['admin_port'] < 1024)
@@ -76,13 +75,12 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   ##
   if definition['deployables']
     definition['deployables'].each_pair do |deployable_key, configuration|
-      if configuration['type'] && configuration['type'].to_s == 'osgi'
-        glassfish_deployable deployable_key.to_s do
-          domain_name domain_key
-          version configuration['version']
-          url configuration['url']
-          type :osgi
-        end
+      glassfish_deployable deployable_key.to_s do
+        only_if { configuration['type'] && configuration['type'].to_s == 'osgi' }
+        domain_name domain_key
+        version configuration['version']
+        url configuration['url']
+        type :osgi
       end
     end
   end
