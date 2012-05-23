@@ -265,7 +265,7 @@ action :create do
     cookbook 'glassfish'
     owner node['glassfish']['user']
     group node['glassfish']['group']
-    variables('user's => new_resource.users)
+    variables(:users => new_resource.users)
   end
 
   template "#{instance_dir}/etc/accesscontrol.properties" do
