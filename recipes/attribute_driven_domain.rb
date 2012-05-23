@@ -21,7 +21,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
-  directory "#{node['glassfish']['domains_dir']}" do
+  directory node['glassfish']['domains_dir'] do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0700"
