@@ -1,3 +1,7 @@
+## v0.0.45:
+
+* Enhance : Several changes to the code style of the cookbook and steps to start using foodcritic to check cookbook.
+
 ## v0.0.44:
 
 * Enhance : Support the deployment of OSGi bundles using the 'glassfish_deployable' resource by setting the
