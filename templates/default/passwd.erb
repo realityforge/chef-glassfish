@@ -10,5 +10,5 @@
 %><% @users.each do |username, config|
   password_hash = Digest::MD5.hexdigest("#{username}:#{config[:password]}")
   signed_password_hash = to_signed(password_hash.to_i(16)).to_s(16)
-%><%= username %>:<%= signed_password_hash %>:<%= config[:group] || 'user'%>:1
+%><%= username %>:<%= signed_password_hash %>:<%= config['group'] || 'user'%>:1
 <% end %>

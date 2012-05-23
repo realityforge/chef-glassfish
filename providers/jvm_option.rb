@@ -19,8 +19,8 @@ include Chef::Asadmin
 action :run do
   bash "asadmin_jvm_option #{new_resource.jvm_option}" do
     not_if "#{asadmin_command('list-jvm-options')} | grep -x -- '#{new_resource.jvm_option}'"
-    user node[:glassfish][:user]
-    group node[:glassfish][:group]
+    user node['glassfish']['user']
+    group node['glassfish']['group']
     code asadmin_jvm_option(new_resource.jvm_option)
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}")
   end

@@ -16,54 +16,54 @@
 
 include_recipe "glassfish::default"
 
-node[:glassfish][:domains].each_pair do |domain_key, definition|
+node['glassfish']['domains'].each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
-  directory "#{node[:glassfish][:domains_dir]}" do
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
+  directory "#{node['glassfish']['domains_dir']}" do
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
     mode "0700"
   end
 
-  if definition[:config][:password]
-    template "#{node[:glassfish][:domains_dir]}/#{domain_key}_admin_passwd" do
+  if definition['config']['password']
+    template "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" do
       source "password.erb"
-      owner node[:glassfish][:user]
-      group node[:glassfish][:group]
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
       mode "0600"
       variables :domain_name => domain_key
     end
   end
 
-  if (definition[:config][:port] && definition[:config][:port] < 1024) || (definition[:config][:admin_port] && definition[:config][:admin_port] < 1024)
+  if (definition['config']['port'] && definition['config']['port'] < 1024) || (definition['config']['admin_port'] && definition['config']['admin_port'] < 1024)
     include_recipe "authbind"
   end
 
   glassfish_domain domain_key do
-    max_memory definition[:config][:max_memory] if definition[:config][:max_memory]
-    max_perm_size definition[:config][:max_perm_size] if definition[:config][:max_perm_size]
-    max_stack_size definition[:config][:max_stack_size] if definition[:config][:max_stack_size]
-    port definition[:config][:port] if definition[:config][:port]
-    admin_port definition[:config][:admin_port] if definition[:config][:admin_port]
-    username definition[:config][:username] if definition[:config][:username]
-    password definition[:config][:password] if definition[:config][:password]
-    extra_libraries definition[:extra_libraries] if definition[:extra_libraries]
-    logging_properties definition[:logging_properties] if definition[:logging_properties]
-    realm_types definition[:realm_types] if definition[:realm_types]
+    max_memory definition['config']['max_memory'] if definition['config']['max_memory']
+    max_perm_size definition['config']['max_perm_size'] if definition['config']['max_perm_size']
+    max_stack_size definition['config']['max_stack_size'] if definition['config']['max_stack_size']
+    port definition['config']['port'] if definition['config']['port']
+    admin_port definition['config']['admin_port'] if definition['config']['admin_port']
+    username definition['config']['username'] if definition['config']['username']
+    password definition['config']['password'] if definition['config']['password']
+    extra_libraries definition['extra_libraries'] if definition['extra_libraries']
+    logging_properties definition['logging_properties'] if definition['logging_properties']
+    realm_types definition['realm_types'] if definition['realm_types']
   end
 
-  if definition[:jvm_options]
-    definition[:jvm_options].each do |jvm_option|
+  if definition['jvm_options']
+    definition['jvm_options'].each do |jvm_option|
       glassfish_jvm_option jvm_option do
         domain_name domain_key
       end
     end
   end
 
-  if definition[:sets]
-    definition[:sets].each do |set|
+  if definition['sets']
+    definition['sets'].each do |set|
       glassfish_property set do
         domain_name domain_key
       end
@@ -74,39 +74,39 @@ node[:glassfish][:domains].each_pair do |domain_key, definition|
   ## Deploy all OSGi bundles prior to attempting to setup resources as they are likely to be the things
   ## that are provided by OSGi
   ##
-  if definition[:deployables]
-    definition[:deployables].each_pair do |deployable_key, configuration|
-      if configuration[:type] && configuration[:type].to_s == 'osgi'
+  if definition['deployables']
+    definition['deployables'].each_pair do |deployable_key, configuration|
+      if configuration['type'] && configuration['type'].to_s == 'osgi'
         glassfish_deployable deployable_key.to_s do
           domain_name domain_key
-          version configuration[:version]
-          url configuration[:url]
+          version configuration['version']
+          url configuration['url']
           type :osgi
         end
       end
     end
   end
 
-  if definition[:realms]
-    definition[:realms].each_pair do |key, configuration|
+  if definition['realms']
+    definition['realms'].each_pair do |key, configuration|
       glassfish_auth_realm key.to_s do
         domain_name domain_key
-        parameters configuration[:parameters]
+        parameters configuration['parameters']
       end
     end
   end
 
-  if definition[:jdbc_connection_pools]
-    definition[:jdbc_connection_pools].each_pair do |key, configuration|
+  if definition['jdbc_connection_pools']
+    definition['jdbc_connection_pools'].each_pair do |key, configuration|
       key = key.to_s
       glassfish_jdbc_connection_pool key do
         domain_name domain_key
-        parameters configuration[:parameters]
+        parameters configuration['parameters']
       end
-      if configuration[:resources]
-        configuration[:resources].each_pair do |resource_name, resource_configuration|
+      if configuration['resources']
+        configuration['resources'].each_pair do |resource_name, resource_configuration|
           params = ["--connectionpoolid #{key}"]
-          params += resource_configuration[:parameters] if resource_configuration[:parameters]
+          params += resource_configuration['parameters'] if resource_configuration['parameters']
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
             parameters params
@@ -116,8 +116,8 @@ node[:glassfish][:domains].each_pair do |domain_key, definition|
     end
   end
 
-  if definition[:custom_resources]
-    definition[:custom_resources].each_pair do |key, value|
+  if definition['custom_resources']
+    definition['custom_resources'].each_pair do |key, value|
       glassfish_custom_resource "custom-resource #{key}" do
         domain_name domain_key
         key key
@@ -127,17 +127,17 @@ node[:glassfish][:domains].each_pair do |domain_key, definition|
     end
   end
 
-  if definition[:deployables]
-    definition[:deployables].each_pair do |deployable_key, configuration|
-      if configuration[:type].nil? || configuration[:type].to_s != 'osgi'
+  if definition['deployables']
+    definition['deployables'].each_pair do |deployable_key, configuration|
+      if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
         glassfish_deployable deployable_key.to_s do
           domain_name domain_key
-          version configuration[:version]
-          url configuration[:url]
-          context_root configuration[:context_root] if configuration[:context_root]
+          version configuration['version']
+          url configuration['url']
+          context_root configuration['context_root'] if configuration['context_root']
         end
-        if configuration[:web_env_entries]
-          configuration[:web_env_entries].each_pair do |key, value|
+        if configuration['web_env_entries']
+          configuration['web_env_entries'].each_pair do |key, value|
             glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
               domain_name domain_key
               webapp deployable_key

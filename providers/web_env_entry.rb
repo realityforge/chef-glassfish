@@ -19,8 +19,8 @@ include Chef::Asadmin
 action :run do
   bash "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.key}" do
     not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -x -- '#{new_resource.key}'"
-    user node[:glassfish][:user]
-    group node[:glassfish][:group]
+    user node['glassfish']['user']
+    group node['glassfish']['group']
     code asadmin_set_web_env_entry(new_resource.webapp, new_resource.key, new_resource.value, new_resource.value_type)
   end
 end

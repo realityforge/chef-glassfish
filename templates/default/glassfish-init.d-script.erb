@@ -2,7 +2,7 @@
 #
 # glassfish-<%= @domain_name %>:          Startup script for Glassfish Application Server for <%= @domain_name %> domain.
 
-<% glassfish_home = "#{node[:glassfish][:base_dir]}/glassfish" %>
+<% glassfish_home = "#{node['glassfish']['base_dir']}/glassfish" %>
 <% authbind_prefix = @authbind ? "/usr/bin/authbind --deep " : "" %>
 
 export AS_JAVA=<%= node["java"]["java_home"] %>
@@ -10,9 +10,9 @@ export AS_JAVA=<%= node["java"]["java_home"] %>
 start() {
         echo -n "Starting Glassfish Domain <%= @domain_name %>: "
         <% log_file = "#{glassfish_home}/domains/#{@domain_name}/logs/startup.log" %>
-        su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
+        su <%= node['glassfish']['user'] %> -c "touch <%= log_file %>"
         echo "Starting Glassfish at `date`" >> <%= log_file %>
-        su <%= node[:glassfish][:user] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
+        su <%= node['glassfish']['user'] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin start-domain --domaindir <%= node['glassfish']['domains_dir'] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
         <% @listen_ports.each do |listen_port| %>
         while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -eq 0 ]
         do
@@ -25,9 +25,9 @@ start() {
 stop() {
         echo -n "Stopping Glassfish Domain <%= @domain_name %>: "
         <% log_file = "#{glassfish_home}/domains/#{@domain_name}/logs/startup.log" %>
-        su <%= node[:glassfish][:user] %> -c "touch <%= log_file %>"
+        su <%= node['glassfish']['user'] %> -c "touch <%= log_file %>"
         echo "Stopping Glassfish at `date`" >> <%= log_file %>
-        su <%= node[:glassfish][:user] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node[:glassfish][:domains_dir] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
+        su <%= node['glassfish']['user'] %> -c "<%= authbind_prefix %><%= glassfish_home %>/bin/asadmin stop-domain --domaindir <%= node['glassfish']['domains_dir'] %> <%= @domain_name %>" >> <%= log_file %> 2>> <%= log_file %>
         <% @listen_ports.each do |listen_port| %>
         while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -ne 0 ]
         do

@@ -18,8 +18,8 @@ include Chef::Asadmin
 
 action :run do
   bash "asadmin_set #{new_resource.parameter}" do
-    user node[:glassfish][:user]
-    group node[:glassfish][:group]
+    user node['glassfish']['user']
+    group node['glassfish']['group']
     code asadmin_set(new_resource.parameter)
   end
 end

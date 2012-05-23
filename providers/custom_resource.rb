@@ -19,8 +19,8 @@ include Chef::Asadmin
 action :run do
   ruby "asadmin_create-custom-resource #{new_resource.key} => #{new_resource.value}" do
     not_if "#{asadmin_command("get resources.custom-resource.#{new_resource.key}.property.value")} | grep -x -- '#{new_resource.value}'"
-    user node[:glassfish][:user]
-    group node[:glassfish][:group]
+    user node['glassfish']['user']
+    group node['glassfish']['group']
     code <<-CODE
       if `#{asadmin_command("list-custom-resources #{new_resource.key}")}` =~ /^#{new_resource.key}$/ &&
         `#{asadmin_command("get resources.custom-resource.#{new_resource.key}.property.value")}` =~ Regexp.new("^" + Regexp.escape("resources.custom-resource.#{new_resource.key}.property.value=#{new_resource.value}") + "$")

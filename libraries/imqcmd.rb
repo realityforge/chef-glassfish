@@ -23,7 +23,7 @@ class Chef
       args << "-b #{new_resource.host}:#{new_resource.port}"
       args << "-u #{new_resource.username}"
       args << "-passfile #{new_resource.passfile}"
-      "#{node[:glassfish][:base_dir]}/mq/bin/imqcmd #{args.join(" ")} #{command}"
+      "#{node['glassfish']['base_dir']}/mq/bin/imqcmd #{args.join(" ")} #{command}"
     end
   end
 end

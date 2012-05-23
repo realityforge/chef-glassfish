@@ -16,57 +16,57 @@
 
 include_recipe "glassfish::default"
 
-node[:openmq][:extra_libraries].each do |extra_library|
-  library_location = "#{node[:glassfish][:base_dir]}/mq/lib/ext/#{File.basename(extra_library)}"
+node['openmq']['extra_libraries'].each do |extra_library|
+  library_location = "#{node['glassfish']['base_dir']}/mq/lib/ext/#{File.basename(extra_library)}"
   remote_file library_location do
     source extra_library
     mode "0640"
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
     not_if { ::File.exists?(library_location) }
   end
 end
 
-node[:openmq][:instances].each_pair do |instance, definition|
+node['openmq']['instances'].each_pair do |instance, definition|
   instance = instance.to_s
 
   Chef::Log.info "Defining GlassFish #{instance} OpenMQ Server"
 
   directory "/var/omq" do
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
     mode "0700"
   end
 
   requires_authbind = false
 
-  requires_authbind ||= (definition[:port] && definition[:port] < 1024)
-  requires_authbind ||= (definition[:admin_port] && definition[:admin_port] < 1024)
-  requires_authbind ||= (definition[:jms_port] && definition[:jms_port] < 1024)
-  requires_authbind ||= (definition[:jmx_port] && definition[:jmx_port] < 1024)
-  requires_authbind ||= (definition[:stomp_port] && definition[:stomp_port] < 1024)
+  requires_authbind ||= (definition['port'] && definition['port'] < 1024)
+  requires_authbind ||= (definition['admin_port'] && definition['admin_port'] < 1024)
+  requires_authbind ||= (definition['jms_port'] && definition['jms_port'] < 1024)
+  requires_authbind ||= (definition['jmx_port'] && definition['jmx_port'] < 1024)
+  requires_authbind ||= (definition['stomp_port'] && definition['stomp_port'] < 1024)
 
   if requires_authbind
-    include_recipe "authbind"
+    include_recipe 'authbind'
   end
 
   glassfish_mq instance do
-    max_memory definition[:max_memory] if definition[:max_memory]
-    max_stack_size definition[:max_stack_size] if definition[:max_stack_size]
-    port definition[:port] if definition[:port]
-    admin_port definition[:admin_port] if definition[:admin_port]
-    jms_port definition[:jms_port] if definition[:jms_port]
-    jmx_port definition[:jmx][:port] if definition[:jmx] && definition[:jmx][:port]
-    jmx_admins definition[:jmx][:admins].to_hash if definition[:jmx] && definition[:jmx][:admins]
-    jmx_monitors definition[:jmx][:monitors].to_hash if definition[:jmx] && definition[:jmx][:monitors]
-    stomp_port definition[:stomp_port] if definition[:stomp_port]
-    var_home definition[:var_home] if definition[:var_home]
-    admin_user definition[:admin_user] if definition[:admin_user]
-    config definition[:config] if definition[:config]
-    logging_properties definition[:logging_properties] if definition[:logging_properties]
-    users node["openmq"]["users"].to_hash
-    access_control_rules node["openmq"]["access_control_rules"].to_hash
-    queues node["openmq"]["destinations"]["queues"].to_hash
-    topics node["openmq"]["destinations"]["topics"].to_hash
+    max_memory definition['max_memory'] if definition['max_memory']
+    max_stack_size definition['max_stack_size'] if definition['max_stack_size']
+    port definition['port'] if definition['port']
+    admin_port definition['admin_port'] if definition['admin_port']
+    jms_port definition['jms_port'] if definition['jms_port']
+    jmx_port definition['jmx']['port'] if definition['jmx'] && definition['jmx']['port']
+    jmx_admins definition['jmx']['admins'].to_hash if definition['jmx'] && definition['jmx']['admins']
+    jmx_monitors definition['jmx']['monitors'].to_hash if definition['jmx'] && definition['jmx']['monitors']
+    stomp_port definition['stomp_port'] if definition['stomp_port']
+    var_home definition['var_home'] if definition['var_home']
+    admin_user definition['admin_user'] if definition['admin_user']
+    config definition['config'] if definition['config']
+    logging_properties definition['logging_properties'] if definition['logging_properties']
+    users node['openmq']['users'].to_hash
+    access_control_rules node['openmq']['access_control_rules'].to_hash
+    queues node['openmq']['destinations']['queues'].to_hash
+    topics node['openmq']['destinations']['topics'].to_hash
   end
 end
