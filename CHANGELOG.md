@@ -1,6 +1,7 @@
 ## v0.0.45:
 
 * Enhance : Several changes to the code style of the cookbook and steps to start using foodcritic to check cookbook.
+* Enhance : Add some basic documentation to the README.
 
 ## v0.0.44:
 
