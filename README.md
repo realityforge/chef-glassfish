@@ -1,7 +1,11 @@
 Description
 ===========
 
-Installs the GlassFish server.
+The glassfish cookbook installs and configures the GlassFish application server and the OpenMQ message broker bundled
+with the GlassFish application server. The cookbook also defines resources to create and configure GlassFish
+application domains and OpenMQ broker instances. There are also two recipes (`glassfish::attribute_driven_domain` and
+`glassfish::attribute_driven_mq`) that look for attributes defined on the current node that will drive the creation of
+ GlassFish application domains or OpenMQ broker instances.
 
 Requirements
 ============
