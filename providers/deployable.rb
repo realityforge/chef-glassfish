@@ -17,7 +17,7 @@
 include Chef::Asadmin
 
 def version_file
-  "#{node['glassfish']['domains_dir']}/#{new_resource.deployable_key}.VERSION"
+  "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.deployable_key}.VERSION"
 end
 
 action :deploy do
