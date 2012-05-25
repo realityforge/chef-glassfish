@@ -39,7 +39,9 @@ action :deploy do
   end
 
   execute "deploy application #{new_resource.deployable_key}" do
-    not_if "(#{asadmin_command('list-applications')} | grep -- '#{new_resource.deployable_key} ') && (cat #{version_file} | grep -x -- '#{new_resource.version}')"
+    not_if do
+      ((`#{asadmin_command('list-applications')}` =~ /#{new_resource.deployable_key} /) != nil) && ((`cat #{version_file}` =~ /^#{new_resource.version}$/) != nil)
+    end
 
     command = ""
     command << "deploy "
