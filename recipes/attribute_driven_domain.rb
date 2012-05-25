@@ -75,12 +75,13 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   ##
   if definition['deployables']
     definition['deployables'].each_pair do |deployable_key, configuration|
-      glassfish_deployable deployable_key.to_s do
-        only_if { configuration['type'] && configuration['type'].to_s == 'osgi' }
-        domain_name domain_key
-        version configuration['version']
-        url configuration['url']
-        type :osgi
+      if configuration['type'] && configuration['type'].to_s == 'osgi'
+        glassfish_deployable deployable_key.to_s do
+          domain_name domain_key
+          version configuration['version']
+          url configuration['url']
+          type :osgi
+        end
       end
     end
   end
