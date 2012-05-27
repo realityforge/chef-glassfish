@@ -123,3 +123,33 @@ used when there is not yet a resource defined in this cookbook for executing an 
     glassfish_asadmin "list-domains" do
        domain_name 'my_domain'
     end
+
+`glassfish_web_env_entry`
++++++++++++++++++++++++++++++
+
+Set a value that can be retrieved as a `web env entry` in a particular web application. This resource is idempotent and
+will not set the entry if it already exists and has the same value. Nil values can be specified. The java type of the
+value must also be specified.
+
+### Actions
+
+- :run: Execute the command.
+
+### Attribute Parameters
+
+- webapp: the name of the web application name.
+- key: the key name of the web env entry.
+- value: the value of the entry. May be nil.
+- value_type: the java type name of env entry.
+- All of the domain specific attributes.
+
+### Example
+
+    # List all the domains on the server
+    glassfish_web_env_entry "Set IntegrationServerURL" do
+       domain_name 'my_domain'
+       key 'IntegrationServerURL'
+       value 'http://example.com/Foo'
+       value_type 'java.lang.String'
+    end
+
