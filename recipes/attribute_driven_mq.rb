@@ -32,12 +32,6 @@ node['openmq']['instances'].each_pair do |instance, definition|
 
   Chef::Log.info "Defining GlassFish #{instance} OpenMQ Server"
 
-  directory "/var/omq" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0700"
-  end
-
   requires_authbind = false
 
   requires_authbind ||= (definition['port'] && definition['port'] < 1024)
