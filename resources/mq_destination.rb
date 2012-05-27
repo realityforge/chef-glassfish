@@ -22,7 +22,7 @@ attribute :config, :kind_of => Hash, :default => {}
 
 attribute :host, :kind_of => String, :required => true
 attribute :port, :kind_of => Integer, :required => true
-attribute :username, :kind_of => String, :required => true
+attribute :username, :kind_of => String, :default => 'imqadmin'
 attribute :passfile, :kind_of => String, :required => true
 
 def initialize( *args )
