@@ -43,8 +43,24 @@ There are three recipes provided:
 Resource/Provider
 =================
 
+GlassFish Domain Resources
+--------------------------
+
+Several of the resources defined in the cookbook relate to a GlassFish application domain. The resource is typically
+responsible for communicating with the domain or creating the domain so that it can be communicated with remotely. As
+a result there are several attributes that are common across all of the domain resources;
+
+### Common Attribute Parameters
+
+- domain_name: the name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to true.
+- echo: Echo commands supplied to asadmin. Defaults to false.
+- username: Username to use when communicating with the domain. Defaults to nil.
+- password: Password to use when communicating with the domain. Must be set if username is set. Defaults to nil.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to false.
+
 `glassfish_domain`
---------------
+++++++++++++++++++
 
 Creates a GlassFish application domain, creates an OS-level service and starts the service.
 
@@ -65,11 +81,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
   syslog or graylog.
 - realm_types: an map of names to realm implementation classes that is merged into the default realm types.
 - domain_name: the name of the domain. This is the name of the resource.
-- terse: Use terse output from the underlying asadmin. Defaults to true.
-- echo: Echo commands supplied to asadmin. Defaults to false.
-- username: Username to use when communicating with the domain. Defaults to nil.
-- password: Password to use when communicating with the domain. Must be set if username is set. Defaults to nil.
-- secure: If true use SSL when communicating with the domain for administration. Defaults to false.
+- All of the domain specific attributes.
 
 ### Example
 
