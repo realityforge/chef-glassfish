@@ -214,4 +214,35 @@ Creates a OpenMQ message broker instance, creates an OS-level service and starts
       }
     end
 
+`glassfish_mq_destination`
+-----------------------
 
+Creates or deletes a queue or a topic in an OpenMQ message broker instance.
+
+### Actions
+
+- :create: Create the destination.
+- :destroy: Destroy the destination.
+
+### Attribute Parameters
+
+- destination_name: The name of the destination. The name of the resource.
+- queue: True if the destination is a node, false for a topic.
+- config: The configuration settings for queue. Valid properties include those exposed by JMX. Also supports the key
+          'schema' containing a URL which expands to 'validateXMLSchemaEnabled=true' and 'XMLSchemaURIList=$uri'.
+- host: The host of the OpenMQ message broker instance.
+- port: The port of the portmapper service in message broker instance.
+- username: The username used to connect to message broker. Defaults to 'imqadmin'.
+- passfile: The filename of a property file that contains a password for admin user set using the property "imq.imqcmd.password".
+
+### Example
+
+    # Create a queue destination
+    glassfish_destination "MySystem.MyMessageQueue" do
+      queue true
+      config {'schema' => 'http://example.org/MyMessageFormat.xsd'}
+      host "localhost"
+      port 7676
+      username 'imqadmin'
+      passfile '/etc/omq/omqadmin.pass'
+    end
