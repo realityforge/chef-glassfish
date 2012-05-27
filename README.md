@@ -101,3 +101,25 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
         "gelf4j.logging.GelfHandler.compressedChunking" => false,
       }
     end
+
+`glassfish_asadmin`
+++++++++++++++++++
+
+`asadmin` is the command line application used to manage a GlassFish application server. Typically this resource is
+used when there is not yet a resource defined in this cookbook for executing an underlying command on the server.
+
+### Actions
+
+- :run: Execute the command.
+
+### Attribute Parameters
+
+- command: the command to execute. This is the name of the resource.
+- All of the domain specific attributes.
+
+### Example
+
+    # List all the domains on the server
+    glassfish_asadmin "list-domains" do
+       domain_name 'my_domain'
+    end
