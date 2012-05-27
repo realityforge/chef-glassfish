@@ -111,6 +111,22 @@ end
 action :create do
   requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
 
+  directory node['glassfish']['domains_dir'] do
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0700"
+    recursive true
+  end
+
+  template "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_admin_passwd" do
+    only_if { definition['config']['password'] }
+    source "password.erb"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    variables :domain_name => new_resource.domain_name
+  end
+
   template "/etc/init.d/glassfish-#{new_resource.domain_name}" do
     source "glassfish-init.d-script.erb"
     mode "0755"

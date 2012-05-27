@@ -1,5 +1,6 @@
 ## v0.0.45:
 
+* Change  : Move the creation of domains directory into the `glassfish_domain` resource.
 * Change  : Expand the 'schema' key in MQ destination configurations in the `glassfish_mq_destination` resource rather
             than the `glassfish_mq` resource.
 * Change  : The username for the glassfish_mq_destination now defaults to 'imqadmin'.

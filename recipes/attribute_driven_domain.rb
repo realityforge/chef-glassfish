@@ -21,21 +21,6 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
-  directory node['glassfish']['domains_dir'] do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0700"
-  end
-
-  template "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" do
-    only_if { definition['config']['password'] }
-    source "password.erb"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0600"
-    variables :domain_name => domain_key
-  end
-
   if (definition['config']['port'] && definition['config']['port'] < 1024) || (definition['config']['admin_port'] && definition['config']['admin_port'] < 1024)
     include_recipe "authbind"
   end
