@@ -60,7 +60,6 @@ node['openmq']['instances'].each_pair do |instance, definition|
     jmx_admins definition['jmx']['admins'].to_hash if definition['jmx'] && definition['jmx']['admins']
     jmx_monitors definition['jmx']['monitors'].to_hash if definition['jmx'] && definition['jmx']['monitors']
     stomp_port definition['stomp_port'] if definition['stomp_port']
-    var_home definition['var_home'] if definition['var_home']
     admin_user definition['admin_user'] if definition['admin_user']
     config definition['config'] if definition['config']
     logging_properties definition['logging_properties'] if definition['logging_properties']

@@ -25,3 +25,4 @@ default['glassfish']['domains'] = Mash.new
 
 default['openmq']['extra_libraries'] = Mash.new
 default['openmq']['instances'] = Mash.new
+default['openmq']['var_home'] = '/var/omq'

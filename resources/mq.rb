@@ -19,7 +19,6 @@ actions :create, :destroy
 attribute :max_memory, :kind_of => Integer, :default => 512
 attribute :max_stack_size, :kind_of => Integer, :default => 128
 attribute :instance, :kind_of => String, :name_attribute => true
-attribute :var_home, :kind_of => String, :default => "/var/omq"
 attribute :users, :kind_of => Hash, :default => {}
 attribute :access_control_rules, :kind_of => Hash, :default => {}
 attribute :logging_properties,

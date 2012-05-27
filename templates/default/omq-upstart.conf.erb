@@ -18,7 +18,7 @@ pre-start script
     test -x <%= omq_home %>/bin/imqbrokerd || { stop; exit 0; }
 end script
 
-exec su <%= node['glassfish']['user'] %> -c '<%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= @resource.var_home %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"'
+exec su <%= node['glassfish']['user'] %> -c '<%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= node['openmq']['var_home'] %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"'
 
 # Uglies to wait until the broker is actually up before completion of the 'start'
 post-start script

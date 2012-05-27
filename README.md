@@ -27,6 +27,7 @@ Attributes
 * `node['glassfish']['domains']` - A map that describes zero or more GlassFish application domains. Used to drive the `attribtue_driven_domain` recipe.
 * `node['openmq']['instances']` - A map that describes zero or more message broker instances. Used to drive the `attribtue_driven_mq` recipe.
 * `node['openmq']['extra_libraries']` - A list of URLs to jars to place on the OpenMQ classpath.
+* `node['openmq']['var_home']` - The directory in which the OpenMQ instances are stored. Defaults to "/var/omq".
 
 Usage
 =====

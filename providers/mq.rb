@@ -88,15 +88,15 @@ action :create do
   requires_authbind ||= new_resource.jmx_port < 1024
   requires_authbind ||= new_resource.stomp_port < 1024
 
-  instance_dir = "#{new_resource.var_home}/instances/#{new_resource.instance}"
+  instance_dir = "#{node['openmq']['var_home']}/instances/#{new_resource.instance}"
 
-  directory new_resource.var_home do
+  directory node['openmq']['var_home'] do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0700"
   end
 
-  directory "#{new_resource.var_home}/instances" do
+  directory "#{node['openmq']['var_home']}/instances" do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0700"
