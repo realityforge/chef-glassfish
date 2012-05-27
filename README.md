@@ -153,12 +153,12 @@ value must also be specified.
 
 
 OpenMQ Message Broker Resources
--------------------------------
+===============================
 
 Several of the resources defined in the cookbook relate to a OpenMQ message broker. These are listed below
 
 `glassfish_mq`
-++++++++++++++++++
+--------------
 
 Creates a OpenMQ message broker instance, creates an OS-level service and starts the service.
 
