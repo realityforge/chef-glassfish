@@ -41,11 +41,8 @@ There are three recipes provided:
   then creates 0 or more OpenMQ message broker instances based on attribute values defined on the node.
 
 
-Resource/Provider
-=================
-
 GlassFish Domain Resources
---------------------------
+==========================
 
 Several of the resources defined in the cookbook relate to a GlassFish application domain. The resource is typically
 responsible for communicating with the domain or creating the domain so that it can be communicated with remotely. As
@@ -61,7 +58,7 @@ a result there are several attributes that are common across all of the domain r
 - secure: If true use SSL when communicating with the domain for administration. Defaults to false.
 
 `glassfish_domain`
-++++++++++++++++++
+------------------
 
 Creates a GlassFish application domain, creates an OS-level service and starts the service.
 
@@ -104,7 +101,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
     end
 
 `glassfish_asadmin`
-++++++++++++++++++
+-------------------
 
 `asadmin` is the command line application used to manage a GlassFish application server. Typically this resource is
 used when there is not yet a resource defined in this cookbook for executing an underlying command on the server.
@@ -126,7 +123,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
     end
 
 `glassfish_web_env_entry`
-+++++++++++++++++++++++++++++
+-------------------------
 
 Set a value that can be retrieved as a `web env entry` in a particular web application. This resource is idempotent and
 will not set the entry if it already exists and has the same value. Nil values can be specified. The java type of the
