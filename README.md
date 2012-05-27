@@ -5,7 +5,8 @@ The glassfish cookbook installs and configures the GlassFish application server 
 with the GlassFish application server. The cookbook also defines resources to create and configure GlassFish
 application domains and OpenMQ broker instances. There are also two recipes (`glassfish::attribute_driven_domain` and
 `glassfish::attribute_driven_mq`) that look for attributes defined on the current node that will drive the creation of
- GlassFish application domains or OpenMQ broker instances.
+GlassFish application domains or OpenMQ broker instances. See the attribute_driven_mq and attribute_driven_domain
+sections below for a description of the attribute definitions.
 
 Requirements
 ============
@@ -151,6 +152,40 @@ value must also be specified.
        value_type 'java.lang.String'
     end
 
+`glassfish_auth_realm`
+----------------------
+
+TODO
+
+`glassfish_custom_resource`
+---------------------------
+
+TODO
+
+`glassfish_jvm_option`
+----------------------
+
+TODO
+
+`glassfish_deployable`
+----------------------
+
+TODO
+
+`glassfish_jdbc_connection_pool`
+--------------------------------
+
+TODO
+
+`glassfish_jdbc_resource`
+-------------------------
+
+TODO
+
+`glassfish_property`
+--------------------
+
+TODO
 
 OpenMQ Message Broker Resources
 ===============================
@@ -246,3 +281,24 @@ Creates or deletes a queue or a topic in an OpenMQ message broker instance.
       username 'imqadmin'
       passfile '/etc/omq/omqadmin.pass'
     end
+
+
+attribute_driven_domain
+=======================
+
+The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the
+attributes.
+
+### Example
+
+TODO
+
+attribute_driven_mq
+===================
+
+The `attribute_driven_mq` recipe interprets attributes on the node and defines the resources described in the
+attributes.
+
+### Example
+
+TODO
