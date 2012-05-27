@@ -26,11 +26,21 @@ action :create do
     code imqcmd_command("create dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")
   end
 
+  processed_config = {}
+  config.each_pair do |k, v|
+    if k.to_s == 'schema'
+      processed_config['validateXMLSchemaEnabled'] = 'true'
+      processed_config['XMLSchemaURIList'] = v
+    else
+      processed_config[k] = v
+    end
+  end
+
   bash "imqcmd_update_#{new_resource.queue ? "queue" : "topic"} #{new_resource.destination_name}" do
-    only_if { new_resource.config.size > 0 }
+    only_if { processed_config.size > 0 }
     user node['glassfish']['user']
     group node['glassfish']['group']
-    code imqcmd_command("update dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name} #{new_resource.config.collect { |k, v| "-o #{k}=#{v}" }.join(' ')}")
+    code imqcmd_command("update dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name} #{processed_config.collect { |k, v| "-o #{k}=#{v}" }.join(' ')}")
   end
 end
 

@@ -1,5 +1,7 @@
 ## v0.0.45:
 
+* Change  : Expand the 'schema' key in MQ destination configurations in the `glassfish_mq_destination` resource rather
+            than the `glassfish_mq` resource.
 * Change  : The username for the glassfish_mq_destination now defaults to 'imqadmin'.
 * Change  : The base directory in which the OpenMQ instances are stored is now retrieved via the
             `node['openmq']['var_home']` property rather than being configured on the resource or in the domain

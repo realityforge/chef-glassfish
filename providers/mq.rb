@@ -288,16 +288,7 @@ action :create do
   destinations.each_pair do |key, config|
     glassfish_mq_destination key do
       queue new_resource.queues.keys.include?(key)
-      processed_config = {}
-      config.each_pair do |k, v|
-        if k.to_s == 'schema'
-          processed_config['validateXMLSchemaEnabled'] = 'true'
-          processed_config['XMLSchemaURIList'] = v
-        else
-          processed_config[k] = v
-        end
-      end
-      config processed_config
+      config config
       host 'localhost'
       port new_resource.port
       username new_resource.admin_user
