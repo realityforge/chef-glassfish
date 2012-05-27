@@ -151,3 +151,67 @@ value must also be specified.
        value_type 'java.lang.String'
     end
 
+
+OpenMQ Message Broker Resources
+-------------------------------
+
+Several of the resources defined in the cookbook relate to a OpenMQ message broker. These are listed below
+
+`glassfish_mq`
+++++++++++++++++++
+
+Creates a OpenMQ message broker instance, creates an OS-level service and starts the service.
+
+### Actions
+
+- :create: Create the message broker instance, enable and start the associated service.
+- :destroy: Stop the associated service and delete the instance directory and associated artifacts.
+
+### Attribute Parameters
+
+- max_memory: The amount of heap memory to allocate to the domain in MiB. Defaults to 512.
+- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to 128.
+- port: the port for the portmapper to bind. Defaults to 7676.
+- admin_port: the port on which admin service will bind. Defaults to 7677.
+- jms_port: the port on which jms service will bind. Defaults to 7678.
+- stomp_port: the port on which the stomp service will bind. If not specified, no stomp service will execute. Defaults to nil.
+- jmx_port: the port on which jmx service will bind. If not specified, no jmx service will be exported. Defaults to nil.
+- jmx_admins: A map of username to password for read-write JMX admin interface. Ignored unless jmx_port is specified.
+- jmx_monitors: A map of username to password for read-only JMX admin interface. Ignored unless jmx_port is specified.
+- logging_properties: a hash of properties that will be merged into logging.properties. Use this to send logs to
+  syslog or graylog.
+- config: A map of key-value properties that are merged into the OpenMQ configuration file.
+- users: a map of users to passwords for interacting with the service.
+- admin_user: The user in the users map that is used during administration. Defaults to 'imqadmin'.
+- queues: A map of queue names to queue properties.
+- topics: A map of topic names to topic properties.
+- access_control_rules: An access control list of patterns to users.
+
+### Example
+
+    # Create a basic mq broker instance
+    glassfish_mq "MessageBroker" do
+      port 80
+      jmx_port 8089
+      jmx_admins { 'admin' => 'secret1' }
+      jmx_monitors { 'monitoring_system' => 'secret2' }
+      logging_properties {
+        "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
+        ".level" => "INFO",
+        "java.util.logging.ConsoleHandler.level" => "INFO",
+        "java.util.logging.ConsoleHandler.formatter" => "java.util.logging.SimpleFormatter",
+        "gelf4j.logging.GelfHandler.level" => "ALL",
+        "gelf4j.logging.GelfHandler.host" => 'graylog.example.org',
+        "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyInstance"}',
+        "gelf4j.logging.GelfHandler.compressedChunking" => false,
+      }
+      users { 'MyApp' => 'MyAppsPassword', 'MyOtherApp' => 'S3Cr37' }
+      queues { 'MySystem.MyMessageQueue' => {'XMLSchemaURIList' => 'http://example.com/...'} }
+      access_control_rules {
+        'queue.MySystem.MyMessageQueue.browse.allow.user' => '*',
+        'queue.MySystem.MyMessageQueue.produce.allow.user' => 'MyApp',
+        'queue.MySystem.MyMessageQueue.consume.allow.user' => 'MyOtherApp'
+      }
+    end
+
+
