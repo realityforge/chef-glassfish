@@ -27,7 +27,7 @@ action :create do
   end
 
   processed_config = {}
-  config.each_pair do |k, v|
+  new_resource.config.each_pair do |k, v|
     if k.to_s == 'schema'
       processed_config['validateXMLSchemaEnabled'] = 'true'
       processed_config['XMLSchemaURIList'] = v
