@@ -218,6 +218,10 @@ action :create do
 
   glassfish_property "server.ejb-container.property.disable-nonportable-jndi-names=true" do
     domain_name new_resource.domain_name
+    admin_port new_resource.admin_port if new_resource.admin_port
+    username new_resource.username if new_resource.username
+    password_file new_resource.password_file if new_resource.password_file
+    secure new_resource.secure if new_resource.secure
   end
 end
 
