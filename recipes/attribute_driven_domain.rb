@@ -30,7 +30,6 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     include_recipe "authbind"
   end
 
-
   glassfish_domain domain_key do
     max_memory definition['config']['max_memory'] if definition['config']['max_memory']
     max_perm_size definition['config']['max_perm_size'] if definition['config']['max_perm_size']
