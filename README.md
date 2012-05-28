@@ -81,7 +81,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - realm_types: an map of names to realm implementation classes that is merged into the default realm types.
 - domain_name: the name of the domain. This is the name of the resource.
 - password: Password to use when communicating with the domain. Must be set if username is set. Defaults to nil.
-- All of the common attribute parameters except password_file.
+- password_file: the file in which the password is saved. Should be set if username is set. Defaults to nil.
+- All of the common attribute parameters.
 
 ### Example
 
