@@ -119,12 +119,12 @@ action :create do
   end
 
   template "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_admin_passwd" do
-    only_if { definition['config']['password'] }
+    only_if { new_resource.password }
     source "password.erb"
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0600"
-    variables :domain_name => new_resource.domain_name
+    variables :password => new_resource.password
   end
 
   template "/etc/init.d/glassfish-#{new_resource.domain_name}" do
