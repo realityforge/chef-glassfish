@@ -24,7 +24,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   admin_port = definition['config']['admin_port']
   username = definition['config']['username']
   secure = definition['config']['secure']
-  password_file = "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd"
+  password_file = username ? "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" : nil
 
   if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
     include_recipe "authbind"
