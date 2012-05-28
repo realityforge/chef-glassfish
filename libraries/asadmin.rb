@@ -20,17 +20,11 @@ class Chef
       args = []
       args << "--terse" if new_resource.terse
       args << "--echo" if new_resource.echo
-      username = node['glassfish']['domains'][new_resource.domain_name]['config']['username']
-      args << "--user #{username}" if username
-      if node['glassfish']['domains'][new_resource.domain_name]['config']['password']
-        args << "--passwordfile=#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_admin_passwd"
-      end
+      args << "--user #{new_resource.username}" if new_resource.username
+      args << "--passwordfile=#{new_resource.password_file}" if new_resource.password_file
       if remote_command
-        if node['glassfish']['domains'][new_resource.domain_name]['config']['secure']
-          args << "--secure"
-        end
-        admin_port = node['glassfish']['domains'][new_resource.domain_name]['config']['admin_port']
-        args << "--port #{admin_port}"
+        args << "--secure" if new_resource.secure
+        args << "--port #{new_resource.admin_port}"
       end
 
       "#{node['glassfish']['base_dir']}/glassfish/bin/asadmin #{args.join(" ")} #{command}"

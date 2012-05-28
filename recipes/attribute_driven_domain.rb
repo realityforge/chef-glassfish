@@ -21,17 +21,25 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
-  if (definition['config']['port'] && definition['config']['port'] < 1024) || (definition['config']['admin_port'] && definition['config']['admin_port'] < 1024)
+  admin_port = definition['config']['admin_port']
+  username = definition['config']['username']
+  secure = definition['config']['secure']
+  password_file = "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd"
+
+  if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
     include_recipe "authbind"
   end
+
 
   glassfish_domain domain_key do
     max_memory definition['config']['max_memory'] if definition['config']['max_memory']
     max_perm_size definition['config']['max_perm_size'] if definition['config']['max_perm_size']
     max_stack_size definition['config']['max_stack_size'] if definition['config']['max_stack_size']
     port definition['config']['port'] if definition['config']['port']
-    admin_port definition['config']['admin_port'] if definition['config']['admin_port']
-    username definition['config']['username'] if definition['config']['username']
+    admin_port admin_port if admin_port
+    username username if username
+    password_file password_file if password_file
+    secure secure if secure
     password definition['config']['password'] if definition['config']['password']
     extra_libraries definition['extra_libraries'] if definition['extra_libraries']
     logging_properties definition['logging_properties'] if definition['logging_properties']
@@ -42,6 +50,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     definition['jvm_options'].each do |jvm_option|
       glassfish_jvm_option jvm_option do
         domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
       end
     end
   end
@@ -50,6 +62,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     definition['sets'].each do |set|
       glassfish_property set do
         domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
       end
     end
   end
@@ -63,6 +79,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
       if configuration['type'] && configuration['type'].to_s == 'osgi'
         glassfish_deployable deployable_key.to_s do
           domain_name domain_key
+          admin_port admin_port if admin_port
+          username username if username
+          password_file password_file if password_file
+          secure secure if secure
           version configuration['version']
           url configuration['url']
           type :osgi
@@ -75,6 +95,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     definition['realms'].each_pair do |key, configuration|
       glassfish_auth_realm key.to_s do
         domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
         parameters configuration['parameters']
       end
     end
@@ -85,6 +109,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
       key = key.to_s
       glassfish_jdbc_connection_pool key do
         domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
         parameters configuration['parameters']
       end
       if configuration['resources']
@@ -93,6 +121,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           params += resource_configuration['parameters'] if resource_configuration['parameters']
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
+            admin_port admin_port if admin_port
+            username username if username
+            password_file password_file if password_file
+            secure secure if secure
             parameters params
           end
         end
@@ -104,6 +136,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     definition['custom_resources'].each_pair do |key, value|
       glassfish_custom_resource "custom-resource #{key}" do
         domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
         key key
         value value
         value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
@@ -116,6 +152,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
       if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
         glassfish_deployable deployable_key.to_s do
           domain_name domain_key
+          admin_port admin_port if admin_port
+          username username if username
+          password_file password_file if password_file
+          secure secure if secure
           version configuration['version']
           url configuration['url']
           context_root configuration['context_root'] if configuration['context_root']
@@ -124,6 +164,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           configuration['web_env_entries'].each_pair do |key, value|
             glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
               domain_name domain_key
+              admin_port admin_port if admin_port
+              username username if username
+              password_file password_file if password_file
+              secure secure if secure
               webapp deployable_key
               key key
               value value

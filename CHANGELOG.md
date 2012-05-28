@@ -1,5 +1,7 @@
 ## v0.0.45:
 
+* Change  : Update the GlassFish application server resources to cease the dependence on on attributes and rely on
+            parameters passed to the resource.
 * Change  : Move the creation of domains directory into the `glassfish_domain` resource.
 * Change  : Expand the 'schema' key in MQ destination configurations in the `glassfish_mq_destination` resource rather
             than the `glassfish_mq` resource.

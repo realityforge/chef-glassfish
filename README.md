@@ -55,8 +55,9 @@ a result there are several attributes that are common across all of the domain r
 - terse: Use terse output from the underlying asadmin. Defaults to true.
 - echo: Echo commands supplied to asadmin. Defaults to false.
 - username: Username to use when communicating with the domain. Defaults to nil.
-- password: Password to use when communicating with the domain. Must be set if username is set. Defaults to nil.
+- password_file: the file in which the password must be stored assigned to appropriate key. Must be set if username is set. Defaults to nil.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to false.
+- admin_port: the port on which the web management console is bound. Defaults to 4848.
 
 `glassfish_domain`
 ------------------
@@ -74,13 +75,13 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - max_perm_size: The amount of perm gen memory to allocate to the domain in MiB. Defaults to 96.
 - max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to 128.
 - port: the port on which the HTTP service will bind. Defaults to 8080.
-- admin_port: the port on which the web management console will bind. Defaults to 4848.
 - extra_libraries: an array of URLs for libraries that should be added to the domains classpath.
 - logging_properties: a hash of properties that will be merged into logging.properties. Use this to send logs to
   syslog or graylog.
 - realm_types: an map of names to realm implementation classes that is merged into the default realm types.
 - domain_name: the name of the domain. This is the name of the resource.
-- All of the domain specific attributes.
+- password: Password to use when communicating with the domain. Must be set if username is set. Defaults to nil.
+- All of the common attribute parameters except password_file.
 
 ### Example
 
@@ -114,7 +115,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
 ### Attribute Parameters
 
 - command: the command to execute. This is the name of the resource.
-- All of the domain specific attributes.
+- All of the common attribute parameters.
 
 ### Example
 
@@ -140,7 +141,7 @@ value must also be specified.
 - key: the key name of the web env entry.
 - value: the value of the entry. May be nil.
 - value_type: the java type name of env entry.
-- All of the domain specific attributes.
+- All of the common attribute parameters.
 
 ### Example
 

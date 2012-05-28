@@ -21,6 +21,10 @@ attribute :jvm_option, :kind_of => String, :name_attribute => true
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :username, :kind_of => String, :default => nil
+attribute :password_file, :kind_of => String, :default => nil
+attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :admin_port, :kind_of => Integer, :default => 4848
 
 def initialize( *args )
   super
