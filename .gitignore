@@ -2,3 +2,6 @@
 *.iml
 *.ipr
 *.iws
+
+# Ignore the generated json file
+metadata.json
