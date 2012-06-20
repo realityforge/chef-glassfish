@@ -1,3 +1,7 @@
+## v0.0.46:
+
+* Bug     : Default the value of `node['openmq']['extra_libraries']` to an empty array rather than a hash.
+
 ## v0.0.45:
 
 * Change  : Update the GlassFish application server resources to cease the dependence on on attributes and rely on
