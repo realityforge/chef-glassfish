@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Change  : Update to GlassFish installing 3.1.2 by default.
 * Bug     : Stop overriding the log formatter in logging properties files as GlassFish requires a specific formatter.
 * Change  : Remove the usage of the `node['glassfish']['package_checksum']` property as the url identifies a fixed version.
 * Change  : Explicitly name the cookbook.

@@ -17,7 +17,8 @@
 default['glassfish']['user'] = "glassfish"
 default['glassfish']['group'] = "glassfish-admin"
 
-default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/3.1.1/release/glassfish-3.1.1.zip"
+version = "3.1.2"
+default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{version}/release/glassfish-#{version}.zip"
 default['glassfish']['base_dir'] = "/usr/local/glassfish3"
 default['glassfish']['domains_dir'] = "/usr/local/glassfish3/glassfish/domains"
 default['glassfish']['domains'] = Mash.new

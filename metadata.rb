@@ -29,7 +29,7 @@ attribute "glassfish/package_url",
   :display_name => "URL for GlassFish Package",
   :description => "The url to the GlassFish install package",
   :type => "string",
-  :default => "http://dlc.sun.com.edgesuite.net/glassfish/3.1.1/release/glassfish-3.1.1.zip"
+  :default => "http://dlc.sun.com.edgesuite.net/glassfish/3.1.2/release/glassfish-3.1.2.zip"
 
 attribute "glassfish/base_dir",
   :display_name => "GlassFish Base Directory",
