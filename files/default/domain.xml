@@ -189,18 +189,18 @@
       <network-config>
         <protocols>
           <protocol name="http-listener-1">
-            <http default-virtual-server="server" max-connections="250">
+            <http xpowered-by="false" default-virtual-server="server" max-connections="250">
               <file-cache enabled="false"/>
             </http>
           </protocol>
           <protocol security-enabled="true" name="http-listener-2">
-            <http default-virtual-server="server" max-connections="250">
+            <http xpowered-by="false" default-virtual-server="server" max-connections="250">
               <file-cache enabled="false"/>
             </http>
             <ssl classname="com.sun.enterprise.security.ssl.GlassfishSSLImpl" ssl3-enabled="false" cert-nickname="s1as"></ssl>
           </protocol>
           <protocol name="admin-listener">
-            <http default-virtual-server="__asadmin" max-connections="250" encoded-slash-enabled="true" >
+            <http xpowered-by="false" default-virtual-server="__asadmin" max-connections="250" encoded-slash-enabled="true" >
               <file-cache enabled="false"/>
             </http>
           </protocol>
