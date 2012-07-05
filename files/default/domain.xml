@@ -254,6 +254,7 @@
              </session-config>
          </web-container>
          <ejb-container session-store="${com.sun.aas.instanceRoot}/session-store">
+             <property name="disable-nonportable-jndi-names" value="true"></property>
              <ejb-timer-service />
          </ejb-container>
          <mdb-container />
