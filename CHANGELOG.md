@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Change  : Remove the usage of the `node['glassfish']['package_checksum']` property as the url identifies a fixed version.
 * Change  : Explicitly name the cookbook.
 * Bug     : Default the value of `node['openmq']['extra_libraries']` to an empty array rather than a hash.
 

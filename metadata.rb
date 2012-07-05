@@ -31,12 +31,6 @@ attribute "glassfish/package_url",
   :type => "string",
   :default => "http://dlc.sun.com.edgesuite.net/glassfish/3.1.1/release/glassfish-3.1.1.zip"
 
-attribute "glassfish/package_checksum",
-  :display_name => "Checksum for the GlassFish Package",
-  :description => "The SHA1 checksum for the GlassFish install package",
-  :type => "string",
-  :default => "8bf4dc016d602e96911456b2e34098b86bae61e2"
-
 attribute "glassfish/base_dir",
   :display_name => "GlassFish Base Directory",
   :description => "The base directory of the GlassFish install",
