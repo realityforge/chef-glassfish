@@ -28,7 +28,6 @@ attribute :logging_properties,
               "handlers" => "java.util.logging.ConsoleHandler",
               ".level" => "INFO",
               "java.util.logging.ConsoleHandler.level" => "INFO",
-              "java.util.logging.ConsoleHandler.formatter" => "java.util.logging.SimpleFormatter"
             }
 attribute :config, :kind_of => Hash, :default => {}
 attribute :queues, :kind_of => Hash, :default => {}
