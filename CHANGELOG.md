@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Change  : Update the base directory to be specific to the version. i.e. /usr/local/glassfish-3.1.2
 * Change  : Update to GlassFish installing 3.1.2 by default.
 * Bug     : Stop overriding the log formatter in logging properties files as GlassFish requires a specific formatter.
 * Change  : Remove the usage of the `node['glassfish']['package_checksum']` property as the url identifies a fixed version.
