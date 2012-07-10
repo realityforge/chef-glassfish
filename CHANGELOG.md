@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Change  : Use create_if_missing when downloading resources.
 * Change  : Disable the xpowered-by header by default.
 * Change  : Update the base directory to be specific to the version. i.e. /usr/local/glassfish-3.1.2
 * Change  : Update to GlassFish installing 3.1.2 by default.

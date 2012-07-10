@@ -206,7 +206,7 @@ action :create do
         mode "0640"
         owner node['glassfish']['user']
         group node['glassfish']['group']
-        not_if { ::File.exists?(library_location) }
+        action :create_if_missing
       end
     end
   end

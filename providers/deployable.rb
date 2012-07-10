@@ -35,7 +35,7 @@ action :deploy do
   remote_file cached_package_filename do
     source new_resource.url
     mode "0600"
-    not_if { ::File.exists?(cached_package_filename) }
+    action :create_if_missing
   end
 
   execute "deploy application #{new_resource.deployable_key}" do
