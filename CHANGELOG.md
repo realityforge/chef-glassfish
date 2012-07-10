@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Bug     : Ensure unzip package is installed otherwise the initial install will fail.
 * Change  : Use create_if_missing when downloading resources.
 * Change  : Disable the xpowered-by header by default.
 * Change  : Update the base directory to be specific to the version. i.e. /usr/local/glassfish-3.1.2

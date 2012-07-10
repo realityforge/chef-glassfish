@@ -36,6 +36,8 @@ remote_file cached_package_filename do
   action :create_if_missing
 end
 
+package "unzip"
+
 bash "unpack_glassfish" do
     code <<-EOF
 mkdir /tmp/glassfish
