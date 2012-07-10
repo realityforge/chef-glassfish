@@ -40,6 +40,7 @@ package "unzip"
 
 bash "unpack_glassfish" do
     code <<-EOF
+rm -rf /tmp/glassfish
 mkdir /tmp/glassfish
 cd /tmp/glassfish
 unzip -qq #{cached_package_filename}
@@ -50,7 +51,7 @@ chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
 chmod -R 0770 #{node['glassfish']['base_dir']}/bin/
 chmod -R 0770 #{node['glassfish']['base_dir']}/glassfish/bin/
 rm -rf #{node['glassfish']['base_dir']}/glassfish/domains/domain1
-cd /tmp/glassfish
+test -d #{node['glassfish']['base_dir']}
 EOF
   not_if { ::File.exists?( node['glassfish']['base_dir'] ) }
 end

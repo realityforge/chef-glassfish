@@ -2,6 +2,8 @@
 
 * Enhance : Add a `glassfish_secure_admin` resource that either enables or disables remote administration.
 * Bug     : Ensure unzip package is installed otherwise the initial install will fail.
+* Bug     : Fix bug where a failure during package install could leave the system in an unrecoverable state as the
+            partial install directory existed.
 * Change  : Use create_if_missing when downloading resources.
 * Change  : Disable the xpowered-by header by default.
 * Change  : Update the base directory to be specific to the version. i.e. /usr/local/glassfish-3.1.2
