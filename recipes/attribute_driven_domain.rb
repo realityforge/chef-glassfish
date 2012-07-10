@@ -45,6 +45,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     realm_types definition['realm_types'] if definition['realm_types']
   end
 
+  glassfish_secure_admin "#{domain_key}: secure_admin" do
+    action ('true' == definition['config']['remote_access'].to_s) ? :enable : :disable
+  end
+
   if definition['jvm_options']
     definition['jvm_options'].each do |jvm_option|
       glassfish_jvm_option jvm_option do

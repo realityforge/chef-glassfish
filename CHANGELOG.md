@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Enhance : Add a `glassfish_secure_admin` resource that either enables or disables remote administration.
 * Bug     : Ensure unzip package is installed otherwise the initial install will fail.
 * Change  : Use create_if_missing when downloading resources.
 * Change  : Disable the xpowered-by header by default.

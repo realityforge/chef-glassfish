@@ -125,6 +125,22 @@ used when there is not yet a resource defined in this cookbook for executing an 
        domain_name 'my_domain'
     end
 
+`glassfish_secure_admin`
+-------------------
+
+Enable or disable secure admin flag on the glassfish server which enables/disables remote administration.
+
+### Actions
+
+- :enable: Enable remote access/secure admin.
+- :disable: Disable remote access/secure admin.
+
+### Example
+
+    glassfish_secure_admin "My Domain Remote Access" do
+       action :enable
+    end
+
 `glassfish_web_env_entry`
 -------------------------
 
