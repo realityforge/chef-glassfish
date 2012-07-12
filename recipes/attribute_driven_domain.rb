@@ -102,7 +102,11 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
-        parameters configuration['parameters']
+        target configuration['target'] if configuration['target']
+        classname configuration['classname'] if configuration['classname']
+        jaas_context configuration['jaas-context'] if configuration['jaas-context']
+        assign_groups configuration['assign-groups'] if configuration['assign-groups']
+        properties configuration['properties'] if configuration['properties']
       end
     end
   end

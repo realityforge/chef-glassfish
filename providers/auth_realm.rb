@@ -17,10 +17,24 @@
 include Chef::Asadmin
 
 action :create do
+  command = []
+  command << "create-auth-realm"
+  command << "--target" << new_resource.target if new_resource.target
+  command << "--classname" << new_resource.classname
+  command << "--target" << new_resource.target if new_resource.target
+  properties = new_resource.properties.dup
+  properties['jaas-context'] = new_resource.jaas_context
+  properties['assign-groups'] = new_resource.assign_groups if new_resource.assign_groups
+  command << "--property" << "'#{properties.collect{|k,v| "#{k}=#{v.gsub(':','\:')}"}.join(":")}'"
+  command << new_resource.name
+
   bash "asadmin_create_auth_realm #{new_resource.name}" do
     not_if "#{asadmin_command('list-auth-realms')} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
-    code asadmin_command("create-auth-realm #{new_resource.parameters.join(' ')} #{new_resource.name}")
+    code asadmin_command(command.join(' '))
+  end
+end
+
   end
 end

@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Change  : Convert the `glassfish_auth_realm` resource to using more strongly types attributes.
 * Enhance : Add a `glassfish_secure_admin` resource that either enables or disables remote administration.
 * Bug     : Ensure unzip package is installed otherwise the initial install will fail.
 * Bug     : Fix bug where a failure during package install could leave the system in an unrecoverable state as the

@@ -17,7 +17,11 @@
 actions :create
 
 attribute :realm_name, :kind_of => String, :name_attribute => true
-attribute :parameters, :kind_of => Array, :default => []
+attribute :target, :kind_of => String, :default => nil
+attribute :classname, :kind_of => String, :required => true
+attribute :jaas_context, :kind_of => String, :required => true
+attribute :assign_groups, :kind_of => String, :default => nil
+attribute :properties, :kind_of => Hash, :default => {}
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
