@@ -14,9 +14,10 @@
 # limitations under the License.
 #
 
-actions :run
+actions :set
 
-attribute :parameter, :kind_of => String, :name_attribute => true
+attribute :key, :kind_of => String, :required => true
+attribute :value, :kind_of => String, :required => true
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
@@ -28,5 +29,5 @@ attribute :admin_port, :kind_of => Integer, :default => 4848
 
 def initialize( *args )
   super
-  @action = :run
+  @action = :set
 end

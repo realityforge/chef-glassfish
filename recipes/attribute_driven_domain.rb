@@ -61,14 +61,16 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  if definition['sets']
-    definition['sets'].each do |set|
-      glassfish_property set do
+  if definition['properties']
+    definition['properties'].each_pair do |key, value|
+      glassfish_property "#{key}=#{value}" do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        key key
+        value value
       end
     end
   end

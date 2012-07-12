@@ -35,10 +35,6 @@ class Chef
       asadmin_command("create-jvm-options -- '#{jvm_option.gsub(':', '\:')}'")
     end
 
-    def asadmin_set(parameter)
-      asadmin_command("set #{parameter}")
-    end
-
     def asadmin_set_web_env_entry(webapp, key, value, type)
       value_string = value.nil? ? "--ignoreDescriptorItem" : "--value=#{value} --type #{type}"
       asadmin_command("set-web-env-entry --name=#{key} #{value_string} #{webapp}")

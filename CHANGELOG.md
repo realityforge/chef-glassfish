@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Change  : Convert the `glassfish_property` resource to using more strongly types attributes.
 * Enhance : Support the delete action on the `glassfish_auth_realm` resource.
 * Change  : Convert the `glassfish_auth_realm` resource to using more strongly types attributes.
 * Enhance : Add a `glassfish_secure_admin` resource that either enables or disables remote administration.
