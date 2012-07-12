@@ -36,5 +36,16 @@ action :create do
   end
 end
 
+action :delete do
+  command = []
+  command << "delete-auth-realm"
+  command << "--target" << new_resource.target if new_resource.target
+  command << new_resource.name
+
+  bash "asadmin_delete_auth_realm #{new_resource.name}" do
+    only_if "#{asadmin_command('list-auth-realms')} | grep -x -- '#{new_resource.name}'"
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
   end
 end

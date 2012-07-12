@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-actions :create
+actions :create, :delete
 
 attribute :realm_name, :kind_of => String, :name_attribute => true
 attribute :target, :kind_of => String, :default => nil
