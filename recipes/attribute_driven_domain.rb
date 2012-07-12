@@ -46,6 +46,11 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   glassfish_secure_admin "#{domain_key}: secure_admin" do
+    domain_name domain_key
+    admin_port admin_port if admin_port
+    username username if username
+    password_file password_file if password_file
+    secure secure if secure
     action ('true' == definition['config']['remote_access'].to_s) ? :enable : :disable
   end
 
