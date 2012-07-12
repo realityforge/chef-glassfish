@@ -25,7 +25,7 @@ action :create do
   properties = new_resource.properties.dup
   properties['jaas-context'] = new_resource.jaas_context
   properties['assign-groups'] = new_resource.assign_groups if new_resource.assign_groups
-  command << "--property" << "'#{properties.collect{|k,v| "#{k}=#{v.gsub(':','\:')}"}.join(":")}'"
+  command << "--property" << encode_parameters(properties)
   command << new_resource.name
 
   bash "asadmin_create_auth_realm #{new_resource.name}" do

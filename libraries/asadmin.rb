@@ -16,6 +16,14 @@
 
 class Chef
   module Asadmin
+    def encode_parameters(properties)
+      "'#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(":")}'"
+    end
+
+    def escape_property(string)
+      string.gsub('\\', '\\\\').gsub(':', '\\:').gsub('""', '\\""')
+    end
+
     def asadmin_command(command, remote_command = true)
       args = []
       args << "--terse" if new_resource.terse
