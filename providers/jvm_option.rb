@@ -17,11 +17,18 @@
 include Chef::Asadmin
 
 action :set do
+  option = escape_property(new_resource.jvm_option)
+
+  command = []
+  command << "create-jvm-options"
+  command << "--"
+  command << "'#{option}'"
+
   bash "asadmin_jvm_option #{new_resource.jvm_option}" do
-    not_if "#{asadmin_command('list-jvm-options')} | grep -x -- '#{new_resource.jvm_option}'"
+    not_if "#{asadmin_command('list-jvm-options')} | grep -x -- '#{option}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
-    code asadmin_jvm_option(new_resource.jvm_option)
+    code asadmin_command(command.join(' '))
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 end

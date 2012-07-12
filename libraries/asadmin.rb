@@ -38,11 +38,6 @@ class Chef
       "#{node['glassfish']['base_dir']}/glassfish/bin/asadmin #{args.join(" ")} #{command}"
     end
 
-    def asadmin_jvm_option(jvm_option)
-      # There is a need to escape : with a \
-      asadmin_command("create-jvm-options -- '#{jvm_option.gsub(':', '\:')}'")
-    end
-
     def asadmin_set_web_env_entry(webapp, key, value, type)
       value_string = value.nil? ? "--ignoreDescriptorItem" : "--value=#{value} --type #{type}"
       asadmin_command("set-web-env-entry --name=#{key} #{value_string} #{webapp}")
