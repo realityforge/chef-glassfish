@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-actions :run
+actions :set
 
 attribute :jvm_option, :kind_of => String, :name_attribute => true
 
@@ -28,5 +28,5 @@ attribute :admin_port, :kind_of => Integer, :default => 4848
 
 def initialize( *args )
   super
-  @action = :run
+  @action = :set
 end

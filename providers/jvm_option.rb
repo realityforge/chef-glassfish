@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :run do
+action :set do
   bash "asadmin_jvm_option #{new_resource.jvm_option}" do
     not_if "#{asadmin_command('list-jvm-options')} | grep -x -- '#{new_resource.jvm_option}'"
     user node['glassfish']['user']
