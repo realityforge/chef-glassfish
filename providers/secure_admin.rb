@@ -22,6 +22,7 @@ action :enable do
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command("enable-secure-admin")
+    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 end
 
@@ -31,5 +32,6 @@ action :disable do
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command("disable-secure-admin")
+    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 end
