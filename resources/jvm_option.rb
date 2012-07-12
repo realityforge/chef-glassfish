@@ -17,6 +17,7 @@
 actions :set
 
 attribute :jvm_option, :kind_of => String, :name_attribute => true
+attribute :target, :kind_of => String, :default => nil
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false

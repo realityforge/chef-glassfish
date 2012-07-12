@@ -21,6 +21,7 @@ action :set do
 
   command = []
   command << "create-jvm-options"
+  command << "--target" << new_resource.target if new_resource.target
   command << "--"
   command << "'#{option}'"
 
