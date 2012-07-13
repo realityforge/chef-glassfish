@@ -4,7 +4,8 @@
             `glassfish_property`, `glassfish_auth_realm`, `glassfish_jdbc_connection_pool`
 * Bug     : Ensure that the glassfish domain is restarted if a a support library is added.
 * Change  : Update the `glassfish_jvm_option` resource to support the target attribute.
-* Enhance : Support the delete action on the `glassfish_auth_realm` resource.
+* Enhance : Support the delete action on the following resources;
+            `glassfish_auth_realm`, `glassfish_jdbc_connection_pool`.
 * Enhance : Add a `glassfish_secure_admin` resource that either enables or disables remote administration.
 * Bug     : Ensure unzip package is installed otherwise the initial install will fail.
 * Bug     : Fix bug where a failure during package install could leave the system in an unrecoverable state as the
