@@ -14,12 +14,13 @@
 # limitations under the License.
 #
 
-actions :run
+actions :set, :unset
 
 attribute :webapp, :kind_of => String, :required => true
-attribute :key, :kind_of => String, :required => true
-attribute :value, :kind_of => String, :required => true
-attribute :value_type, :kind_of => String, :required => true
+attribute :name, :kind_of => String, :required => true
+attribute :type, :kind_of => String, :default => "java.lang.String"
+attribute :value, :kind_of => String, :default => nil
+attribute :description, :kind_of => String, :default => nil
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
@@ -31,5 +32,5 @@ attribute :admin_port, :kind_of => Integer, :default => 4848
 
 def initialize( *args )
   super
-  @action = :run
+  @action = :set
 end

@@ -1,6 +1,7 @@
 ## v0.0.46:
 
-* Change  : Convert the following resources to using more strongly typed attributes;
+* Enhance : Support the unset action on the `glassfish_web_env_entry` resource.
+* Change  : Convert the following resources to using more strongly typed attributes; `glassfish_web_env_entry`,
             `glassfish_property`, `glassfish_auth_realm`, `glassfish_jdbc_connection_pool`, `glassfish_jdbc_resource`.
 * Bug     : Ensure that the glassfish domain is restarted if a a support library is added.
 * Change  : Update the `glassfish_jvm_option` resource to support the target attribute.

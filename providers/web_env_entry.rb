@@ -16,11 +16,37 @@
 
 include Chef::Asadmin
 
-action :run do
-  bash "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.key}" do
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -x -- '#{new_resource.key}'"
+action :set do
+  command = []
+  command << "set-web-env-entry"
+  command << "--name" << new_resource.name
+  command << "--type" << new_resource.type
+  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  if new_resource.value.nil?
+    command << "--ignoreDescriptorItem"
+  else
+    command << "'--value=#{new_resource.value}'"
+  end
+  command << new_resource.webapp
+
+  bash "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || "description not specified"})'"
     user node['glassfish']['user']
     group node['glassfish']['group']
-    code asadmin_set_web_env_entry(new_resource.webapp, new_resource.key, new_resource.value, new_resource.value_type)
+    code asadmin_command(command.join(' '))
+  end
+end
+
+action :unset do
+  command = []
+  command << "unset-web-env-entry"
+  command << "--name" << new_resource.name
+  command << new_resource.webapp
+
+  bash "asadmin_unset-web-env-entry #{new_resource.name}" do
+    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -x -- '#{new_resource.name}'"
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
   end
 end

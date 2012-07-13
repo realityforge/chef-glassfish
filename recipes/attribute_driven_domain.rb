@@ -184,6 +184,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         end
         if configuration['web_env_entries']
           configuration['web_env_entries'].each_pair do |key, value|
+            hash = value.is_a?(Hash) ? value : {'value' => value}
             glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
               domain_name domain_key
               admin_port admin_port if admin_port
@@ -191,9 +192,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
               password_file password_file if password_file
               secure secure if secure
               webapp deployable_key
-              key key
-              value value
-              value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
+              name key
+              type hash['type'] if hash['type']
+              value hash['value'] if hash['value']
+              description hash['description'] if hash['description']
             end
           end
         end
