@@ -127,8 +127,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
-        configuration['config'].each_pair do |key, value|
-          self.send(key, value)
+        configuration['config'].each_pair do |config_key, value|
+          self.send(config_key, value)
         end if configuration['config']
       end
       if configuration['resources']
@@ -140,8 +140,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             password_file password_file if password_file
             secure secure if secure
             connectionpoolid key
-            resource_configuration.each_pair do |key, value|
-              self.send(key, value)
+            resource_configuration.each_pair do |config_key, value|
+              self.send(config_key, value)
             end
           end
         end
