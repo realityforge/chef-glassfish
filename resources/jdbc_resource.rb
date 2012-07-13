@@ -14,10 +14,14 @@
 # limitations under the License.
 #
 
-actions :create
+actions :create, :delete
 
 attribute :resource_name, :kind_of => String, :name_attribute => true
-attribute :parameters, :kind_of => Array, :default => []
+attribute :connectionpoolid, :kind_of => String, :required => true
+attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => nil
+attribute :target, :kind_of => String, :default => nil
+attribute :description, :kind_of => String, :default => nil
+attribute :properties, :kind_of => Hash, :default => {}
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false

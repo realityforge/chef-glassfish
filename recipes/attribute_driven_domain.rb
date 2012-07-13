@@ -133,15 +133,16 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
       end
       if configuration['resources']
         configuration['resources'].each_pair do |resource_name, resource_configuration|
-          params = ["--connectionpoolid #{key}"]
-          params += resource_configuration['parameters'] if resource_configuration['parameters']
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
             admin_port admin_port if admin_port
             username username if username
             password_file password_file if password_file
             secure secure if secure
-            parameters params
+            connectionpoolid key
+            resource_configuration.each_pair do |key, value|
+              self.send(key, value)
+            end
           end
         end
       end

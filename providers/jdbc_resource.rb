@@ -17,10 +17,34 @@
 include Chef::Asadmin
 
 action :create do
+
+  command = []
+  command << "create-jdbc-resource"
+  command << "--connectionpoolid" << new_resource.connectionpoolid
+  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << "--enabled=#{enabled}" if new_resource.enabled
+  command << "--target" << new_resource.target if new_resource.target
+  command << new_resource.name
+
   bash "asadmin_create_jdbc_resource #{new_resource.name}" do
     not_if "#{asadmin_command('list-jdbc-resources')} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
-    code asadmin_command("create-jdbc-resource #{new_resource.parameters.join(' ')} #{new_resource.name}")
+    code asadmin_command(command.join(' '))
+  end
+end
+
+action :delete do
+  command = []
+  command << "delete-jdbc-resource"
+  command << "--target" << new_resource.target if new_resource.target
+  command << new_resource.name
+
+  bash "asadmin_delete_jdbc_resource #{new_resource.name}" do
+    only_if "#{asadmin_command('list-jdbc-resources')} | grep -x -- '#{new_resource.name}'"
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
   end
 end
