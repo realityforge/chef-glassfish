@@ -1,4 +1,4 @@
-## v0.0.46:
+## v0.4.46:
 
 * Enhance : Support the unset action on the `glassfish_web_env_entry` resource.
 * Change  : Convert the following resources to using more strongly typed attributes; `glassfish_web_env_entry`,
