@@ -150,14 +150,16 @@ value must also be specified.
 
 ### Actions
 
-- :run: Execute the command.
+- :set: Set the value as entry.
+- :unset: Remove the entry.
 
 ### Attribute Parameters
 
 - webapp: the name of the web application name.
-- key: the key name of the web env entry.
+- name: the key name of the web env entry.
 - value: the value of the entry. May be nil.
-- value_type: the java type name of env entry.
+- type: the java type name of env entry. Defaults to "java.lang.String".
+- description: a description of the entry.
 - All of the common attribute parameters.
 
 ### Example
@@ -165,9 +167,9 @@ value must also be specified.
     # List all the domains on the server
     glassfish_web_env_entry "Set IntegrationServerURL" do
        domain_name 'my_domain'
-       key 'IntegrationServerURL'
+       name 'IntegrationServerURL'
        value 'http://example.com/Foo'
-       value_type 'java.lang.String'
+       type 'java.lang.String'
     end
 
 `glassfish_auth_realm`
