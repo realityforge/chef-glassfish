@@ -1,5 +1,6 @@
 ## v0.0.46:
 
+* Bug     : Ensure that the glassfish domain is restarted if a a support library is added.
 * Change  : Update the `glassfish_jvm_option` resource to support the target attribute.
 * Change  : Convert the `glassfish_property` resource to using more strongly types attributes.
 * Enhance : Support the delete action on the `glassfish_auth_realm` resource.

@@ -207,6 +207,7 @@ action :create do
         owner node['glassfish']['user']
         group node['glassfish']['group']
         action :create_if_missing
+        notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :immediately
       end
     end
   end
