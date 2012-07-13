@@ -151,15 +151,20 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
 
   if definition['custom_resources']
     definition['custom_resources'].each_pair do |key, value|
-      glassfish_custom_resource "custom-resource #{key}" do
+      hash = value.is_a?(Hash) ? value : {'value' => value}
+      glassfish_custom_resource key.to_s do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
         password_file password_file if password_file
         secure secure if secure
-        key key
-        value value
-        value_type value.is_a?(String) ? "java.lang.String" : value.is_a?(Fixnum) ? "java.lang.Integer" : (raise "Unknown env type #{value.inspect}")
+        target hash['target'] if hash['target']
+        enabled hash['enabled'] if hash['enabled']
+        description hash['description'] if hash['description']
+        properties hash['properties'] if hash['properties']
+        restype hash['restype'] if hash['restype']
+        restype hash['factoryclass'] if hash['factoryclass']
+        value hash['value'] if hash['value']
       end
     end
   end

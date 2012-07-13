@@ -42,10 +42,6 @@ class Chef
       value_string = value.nil? ? "--ignoreDescriptorItem" : "--value=#{value} --type #{type}"
       asadmin_command("set-web-env-entry --name=#{key} #{value_string} #{webapp}")
     end
-
-    def asadmin_create_custom_resource(key, value, type, factory_class = "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory")
-      asadmin_command("create-custom-resource --factoryclass #{factory_class} --restype #{type} --property \"value=#{value.gsub(':','\:')}\" #{key}")
-    end
   end
 end
 

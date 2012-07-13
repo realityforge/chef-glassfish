@@ -14,11 +14,16 @@
 # limitations under the License.
 #
 
-actions :run
+actions :create, :delete
 
-attribute :key, :kind_of => String, :required => true
-attribute :value, :kind_of => String, :required => true
-attribute :value_type, :kind_of => String, :required => true
+attribute :jndi_name, :kind_of => String, :name_attribute => true
+attribute :target, :kind_of => String, :default => nil
+attribute :restype, :kind_of => String, :default => "java.lang.String"
+attribute :factoryclass, :kind_of => String, :default => "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory"
+attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => nil
+attribute :description, :kind_of => String, :default => nil
+attribute :properties, :kind_of => Hash, :default => {}
+attribute :value, :kind_of => String, :default => nil
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
@@ -30,5 +35,5 @@ attribute :admin_port, :kind_of => Integer, :default => 4848
 
 def initialize( *args )
   super
-  @action = :run
+  @action = :create
 end
