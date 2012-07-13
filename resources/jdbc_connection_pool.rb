@@ -17,7 +17,54 @@
 actions :create
 
 attribute :pool_name, :kind_of => String, :name_attribute => true
-attribute :parameters, :kind_of => Array, :default => []
+
+STRING_ATTRIBUTES = [:datasourceclassname, :initsql, :sqltracelisteners, :driverclassname, :validationclassname, :target, :validationtable]
+STRING_ATTRIBUTES.each do |key|
+  attribute key, :kind_of => String, :default => nil
+end
+
+NUMERIC_ATTRIBUTES = [:steadypoolsize,
+                      :maxpoolsize,
+                      :maxwait,
+                      :poolresize,
+                      :idletimeout,
+                      :validateatmostonceperiod,
+                      :leaktimeout,
+                      :statementleaktimeout,
+                      :creationretryattempts,
+                      :creationretryinterval,
+                      :statementtimeout,
+                      :maxconnectionusagecount,
+                      :statementcachesize]
+
+NUMERIC_ATTRIBUTES.each do |key|
+  attribute key, :kind_of => [Fixnum, String], :regex => /^[0-9]+$/, :default => nil
+end
+
+BOOLEAN_ATTRIBUTES = [:isisolationguaranteed,
+                      :isconnectvalidatereq,
+                      :failconnection,
+                      :allownoncomponentcallers,
+                      :nontransactionalconnections,
+                      :statmentleakreclaim,
+                      :leakreclaim,
+                      :lazyconnectionenlistment,
+                      :lazyconnectionassociation,
+                      :associatewiththread,
+                      :matchconnections,
+                      :ping,
+                      :pooling,
+                      :wrapjdbcobjects]
+
+BOOLEAN_ATTRIBUTES.each do |key|
+  attribute key, :equal_to => [true, false, 'true', 'false'], :default => nil
+end
+
+attribute :description, :kind_of => String, :default => nil
+attribute :properties, :kind_of => Hash, :default => {}
+attribute :restype, :equal_to => ['java.sql.Driver', 'javax.sql.DataSource', 'javax.sql.XADataSource', 'javax.sql.ConnectionPoolDataSource'], :default => nil
+attribute :isolationlevel, :equal_to => ['read-uncommitted', 'read-committed', 'repeatable-read', 'serializable']
+attribute :validationmethod, :equal_to => ['auto-commit', 'meta-data', 'table', 'custom-validation']
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false

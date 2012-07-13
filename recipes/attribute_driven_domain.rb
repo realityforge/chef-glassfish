@@ -127,7 +127,9 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
-        parameters configuration['parameters']
+        configuration['config'].each_pair do |key, value|
+          self.send(key, value)
+        end if configuration['config']
       end
       if configuration['resources']
         configuration['resources'].each_pair do |resource_name, resource_configuration|

@@ -17,10 +17,27 @@
 include Chef::Asadmin
 
 action :create do
+
+  parameters = [:restype, :isolationlevel, :validationmethod] +
+    ::Chef::Resource::GlassfishJdbcConnectionPool::STRING_ATTRIBUTES +
+    ::Chef::Resource::GlassfishJdbcConnectionPool::NUMERIC_ATTRIBUTES +
+    ::Chef::Resource::GlassfishJdbcConnectionPool::BOOLEAN_ATTRIBUTES
+
+  command = []
+  command << "create-jdbc-connection-pool"
+  parameters.each do |key|
+    command << "--#{key}=#{new_resource.send(key)}" if new_resource.send(key)
+  end
+
+  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << new_resource.name
+
+
   bash "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
     not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
-    code asadmin_command("create-jdbc-connection-pool #{new_resource.parameters.join(' ')} #{new_resource.name}")
+    code asadmin_command(command.join(' '))
   end
 end
