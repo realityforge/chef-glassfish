@@ -5,6 +5,8 @@
 * Bug     : Fix the documentation for the `glassfish_web_env_entry` resource.
 * Bug     : Ensure that the destroy action of the `glassfish_domain` resource runs as the correct user.
 * Enhance : Add enable and disable actions to the `glassfish_deployable` resource.
+* Enhance : Update the `glassfish_deployable` resource with several new attributes to configure different options
+            during deployment.
 
 ## v0.4.46:
 

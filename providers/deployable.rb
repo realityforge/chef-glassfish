@@ -21,48 +21,69 @@ def version_file
 end
 
 action :deploy do
-
-  ruby_block "create_#{new_resource.component_name}_version_file" do
-    block do
-      ::File.open(version_file, 'w') do |f2|
-        f2.puts new_resource.version
-      end
-    end
+  file version_file do
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    content new_resource.version.to_s
     action :nothing
   end
 
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{::File.basename(new_resource.url)}"
   remote_file cached_package_filename do
     source new_resource.url
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
     mode "0600"
     action :create_if_missing
   end
 
-  execute "deploy application #{new_resource.component_name}" do
-    not_if do
-      ((`#{asadmin_command('list-applications')}` =~ /#{new_resource.component_name} /) != nil) && ((`cat #{version_file}` =~ /^#{new_resource.version}$/) != nil)
-    end
+  bash "deploy application #{new_resource.component_name}" do
+    not_if "#{asadmin_command('list-applications')} | grep -q -- '#{new_resource.component_name} ' && grep -v -q  '^#{new_resource.version}}$' #{version_file}"
 
-    command = ""
-    command << "deploy "
-    command << "--name #{new_resource.component_name} "
-    command << "--enabled=#{new_resource.enabled} "
-    command << "--upload=#{new_resource.upload} "
-    command << "--force=#{new_resource.force} "
-    command << "--type #{new_resource.type} " if new_resource.type
-    command << "--contextroot=#{new_resource.context_root} " if new_resource.context_root
-    command << "--virtualservers=#{new_resource.virtual_servers.join(",")} "
+    command = []
+    command << "deploy"
+    command << "--target" << new_resource.target if new_resource.target
+    command << "--name" << new_resource.component_name
+    command << "--enabled=#{new_resource.enabled}"
+    command << "--upload=true"
+    command << "--force=true"
+    command << "--type" << new_resource.type if new_resource.type
+    command << "--contextroot=#{new_resource.context_root}" if new_resource.context_root
+    command << "--generatermistubs=#{new_resource.generate_rmi_stubs}"
+    command << "--availabilityenabled=#{new_resource.availability_enabled}"
+    command << "--lbenabled=#{new_resource.lb_enabled}"
+    command << "--keepstate=#{new_resource.keep_state}"
+    command << "--verify=#{new_resource.verify}"
+    command << "--precompilejsp=#{new_resource.precompile_jsp}"
+    command << "--asyncreplication=#{new_resource.async_replication}"
+    command << "--properties" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+    command << "--virtualservers=#{new_resource.virtual_servers.join(",")}" unless new_resource.virtual_servers.empty?
     command << cached_package_filename
 
-    command asadmin_command(command)
-    notifies :create, resources(:ruby_block => "create_#{new_resource.component_name}_version_file"), :immediately
+    #TODO  [--deploymentplan deployment_plan]
+
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
+    notifies :create, resources(:file => version_file), :immediately
   end
 end
 
 action :undeploy do
-  execute "undeploy application #{new_resource.component_name}" do
+  command = []
+  command << "undeploy"
+  command << "--cascade=true"
+  command << "--target" << new_resource.target if new_resource.target
+  command << new_resource.component_name
+
+  bash "asadmin_undeploy #{new_resource.component_name}" do
     only_if "#{asadmin_command('list-applications')} | grep -- '#{new_resource.component_name} '"
-    command asadmin_command("undeploy #{new_resource.component_name}")
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
+  end
+end
 
 action :disable do
   command = []
