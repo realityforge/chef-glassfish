@@ -63,5 +63,31 @@ action :undeploy do
   execute "undeploy application #{new_resource.component_name}" do
     only_if "#{asadmin_command('list-applications')} | grep -- '#{new_resource.component_name} '"
     command asadmin_command("undeploy #{new_resource.component_name}")
+
+action :disable do
+  command = []
+  command << "disable"
+  command << "--target" << new_resource.target if new_resource.target
+  command << new_resource.component_name
+
+  bash "asadmin_disable #{new_resource.component_name}" do
+    only_if "#{asadmin_command('list-applications --long')} | grep '#{new_resource.component_name} ' | grep enabled"
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
+  end
+end
+
+action :enable do
+  command = []
+  command << "enable"
+  command << "--target" << new_resource.target if new_resource.target
+  command << new_resource.component_name
+
+  bash "asadmin_enable #{new_resource.component_name}" do
+    not_if "#{asadmin_command('list-applications --long')} | grep #{new_resource.component_name} | grep enabled"
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code asadmin_command(command.join(' '))
   end
 end
