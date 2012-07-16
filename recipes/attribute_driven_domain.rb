@@ -85,9 +85,9 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   ## that are provided by OSGi
   ##
   if definition['deployables']
-    definition['deployables'].each_pair do |deployable_key, configuration|
+    definition['deployables'].each_pair do |component_name, configuration|
       if configuration['type'] && configuration['type'].to_s == 'osgi'
-        glassfish_deployable deployable_key.to_s do
+        glassfish_deployable component_name.to_s do
           domain_name domain_key
           admin_port admin_port if admin_port
           username username if username
@@ -170,9 +170,9 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['deployables']
-    definition['deployables'].each_pair do |deployable_key, configuration|
+    definition['deployables'].each_pair do |component_name, configuration|
       if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
-        glassfish_deployable deployable_key.to_s do
+        glassfish_deployable component_name.to_s do
           domain_name domain_key
           admin_port admin_port if admin_port
           username username if username
@@ -185,13 +185,13 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         if configuration['web_env_entries']
           configuration['web_env_entries'].each_pair do |key, value|
             hash = value.is_a?(Hash) ? value : {'value' => value}
-            glassfish_web_env_entry "#{domain_key}: #{deployable_key} set #{key}" do
+            glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
               domain_name domain_key
               admin_port admin_port if admin_port
               username username if username
               password_file password_file if password_file
               secure secure if secure
-              webapp deployable_key
+              webapp component_name
               name key
               type hash['type'] if hash['type']
               value hash['value'] if hash['value']

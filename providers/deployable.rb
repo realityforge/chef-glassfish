@@ -17,12 +17,12 @@
 include Chef::Asadmin
 
 def version_file
-  "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.deployable_key}.VERSION"
+  "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
 end
 
 action :deploy do
 
-  ruby_block "create_#{new_resource.deployable_key}_version_file" do
+  ruby_block "create_#{new_resource.component_name}_version_file" do
     block do
       ::File.open(version_file, 'w') do |f2|
         f2.puts new_resource.version
@@ -38,14 +38,14 @@ action :deploy do
     action :create_if_missing
   end
 
-  execute "deploy application #{new_resource.deployable_key}" do
+  execute "deploy application #{new_resource.component_name}" do
     not_if do
-      ((`#{asadmin_command('list-applications')}` =~ /#{new_resource.deployable_key} /) != nil) && ((`cat #{version_file}` =~ /^#{new_resource.version}$/) != nil)
+      ((`#{asadmin_command('list-applications')}` =~ /#{new_resource.component_name} /) != nil) && ((`cat #{version_file}` =~ /^#{new_resource.version}$/) != nil)
     end
 
     command = ""
     command << "deploy "
-    command << "--name #{new_resource.deployable_key} "
+    command << "--name #{new_resource.component_name} "
     command << "--enabled=#{new_resource.enabled} "
     command << "--upload=#{new_resource.upload} "
     command << "--force=#{new_resource.force} "
@@ -55,13 +55,13 @@ action :deploy do
     command << cached_package_filename
 
     command asadmin_command(command)
-    notifies :create, resources(:ruby_block => "create_#{new_resource.deployable_key}_version_file"), :immediately
+    notifies :create, resources(:ruby_block => "create_#{new_resource.component_name}_version_file"), :immediately
   end
 end
 
 action :undeploy do
-  execute "undeploy application #{new_resource.deployable_key}" do
-    only_if "#{asadmin_command('list-applications')} | grep -- '#{new_resource.deployable_key} '"
-    command asadmin_command("undeploy #{new_resource.deployable_key}")
+  execute "undeploy application #{new_resource.component_name}" do
+    only_if "#{asadmin_command('list-applications')} | grep -- '#{new_resource.component_name} '"
+    command asadmin_command("undeploy #{new_resource.component_name}")
   end
 end

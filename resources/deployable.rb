@@ -16,7 +16,7 @@
 
 actions :deploy, :undeploy
 
-attribute :deployable_key, :kind_of => String, :name_attribute => true
+attribute :component_name, :kind_of => String, :name_attribute => true
 attribute :version, :kind_of => String, :required => true
 attribute :url, :kind_of => String, :required => true
 attribute :enabled, :kind_of => [TrueClass, FalseClass], :default => true

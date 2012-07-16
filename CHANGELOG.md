@@ -1,5 +1,7 @@
 ## v0.4.47:
 
+* Change  : Rename deployable_key to component_name for the `glassfish_deployable` resource to bring it inline with
+            GlassFish documentation.
 * Bug     : Fix the documentation for the `glassfish_web_env_entry` resource.
 
 ## v0.4.46:
