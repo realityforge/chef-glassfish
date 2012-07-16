@@ -219,13 +219,15 @@ action :create do
 end
 
 action :destroy do
-  execute "destroy domain" do
+  bash "destroy domain #{new_resource.domain_name}" do
     only_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | grep -- '#{new_resource.domain_name} '"
     command_string = []
 
     command_string << "#{asadmin_command("stop-domain #{domain_dir_arg} #{new_resource.domain_name}", false)} 2> /dev/null > /dev/null"
     command_string << asadmin_command("delete-domain #{domain_dir_arg} #{new_resource.domain_name}", false)
 
-    command command_string.join("\n")
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code command_string.join("\n")
   end
 end
