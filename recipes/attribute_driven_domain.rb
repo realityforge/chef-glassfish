@@ -181,6 +181,18 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           version configuration['version']
           url configuration['url']
           context_root configuration['context_root'] if configuration['context_root']
+          target configuration['target'] if configuration['target']
+          enabled configuration['enabled'] if configuration['enabled']
+          generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+          virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+          availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+          keep_state configuration['keep_state'] if configuration['keep_state']
+          verify configuration['verify'] if configuration['verify']
+          precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+          async_replication configuration['async_replication'] if configuration['async_replication']
+          properties configuration['properties'] if configuration['properties']
+          descriptors configuration['descriptors'] if configuration['descriptors']
+          lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
         end
         if configuration['web_env_entries']
           configuration['web_env_entries'].each_pair do |key, value|
