@@ -21,7 +21,7 @@ attribute :version, :kind_of => String, :required => true
 attribute :target, :kind_of => String, :default => nil
 attribute :url, :kind_of => String, :required => true
 attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true
-attribute :type, :equal_to => [:osgi, nil], :default => nil
+attribute :type, :equal_to => [:osgi, 'osgi', nil], :default => nil
 attribute :context_root, :kind_of => String, :default => nil
 attribute :virtual_servers, :kind_of => Array, :default => []
 attribute :generate_rmi_stubs, :equal_to => [true, false, 'true', 'false'], :default => false
