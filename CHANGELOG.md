@@ -1,5 +1,6 @@
 ## v0.4.47:
 
+* Enhance : Update resources so that they notify if any of the sub-resources have changed.
 * Change  : Rename deployable_key to component_name for the `glassfish_deployable` resource to bring it inline with
             GlassFish documentation.
 * Bug     : Fix the documentation for the `glassfish_web_env_entry` resource.

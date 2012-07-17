@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :create do
+notifying_action :create do
 
   command = []
   command << "create-jdbc-resource"
@@ -35,7 +35,7 @@ action :create do
   end
 end
 
-action :delete do
+notifying_action :delete do
   command = []
   command << "delete-jdbc-resource"
   command << "--target" << new_resource.target if new_resource.target

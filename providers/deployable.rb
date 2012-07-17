@@ -20,7 +20,7 @@ def version_file
   "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
 end
 
-action :deploy do
+notifying_action :deploy do
   file version_file do
     owner node['glassfish']['user']
     group node['glassfish']['group']
@@ -70,7 +70,7 @@ action :deploy do
   end
 end
 
-action :undeploy do
+notifying_action :undeploy do
   command = []
   command << "undeploy"
   command << "--cascade=true"
@@ -85,7 +85,7 @@ action :undeploy do
   end
 end
 
-action :disable do
+notifying_action :disable do
   command = []
   command << "disable"
   command << "--target" << new_resource.target if new_resource.target
@@ -99,7 +99,7 @@ action :disable do
   end
 end
 
-action :enable do
+notifying_action :enable do
   command = []
   command << "enable"
   command << "--target" << new_resource.target if new_resource.target

@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :create do
+notifying_action :create do
   command = []
   command << "create-auth-realm"
   command << "--target" << new_resource.target if new_resource.target
@@ -36,7 +36,7 @@ action :create do
   end
 end
 
-action :delete do
+notifying_action :delete do
   command = []
   command << "delete-auth-realm"
   command << "--target" << new_resource.target if new_resource.target

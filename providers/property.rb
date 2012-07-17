@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :set do
+notifying_action :set do
   bash "asadmin_set #{new_resource.key}=#{new_resource.value}" do
     not_if "#{asadmin_command("list #{new_resource.key}=#{new_resource.value}")} | grep -x -- '#{new_resource.key}=#{new_resource.value}'"
     user node['glassfish']['user']

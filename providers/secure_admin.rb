@@ -16,7 +16,12 @@
 
 include Chef::Asadmin
 
-action :enable do
+notifying_action :enable do
+  service "glassfish-#{new_resource.domain_name}" do
+    supports :restart => true
+    action :nothing
+  end
+
   bash "asadmin_enable-secure-admin" do
     only_if "#{asadmin_command('get secure-admin.enabled')} | grep -x -- 'secure-admin.enabled=false'"
     user node['glassfish']['user']
@@ -26,7 +31,12 @@ action :enable do
   end
 end
 
-action :disable do
+notifying_action :disable do
+  service "glassfish-#{new_resource.domain_name}" do
+    supports :restart => true
+    action :nothing
+  end
+
   bash "asadmin_disable-secure-admin" do
     only_if "#{asadmin_command('get secure-admin.enabled')} | grep -x -- 'secure-admin.enabled=true'"
     user node['glassfish']['user']

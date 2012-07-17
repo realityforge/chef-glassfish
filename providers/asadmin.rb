@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :run do
+notifying_action :run do
   bash "asadmin #{new_resource.command}" do
     user node['glassfish']['user']
     group node['glassfish']['group']

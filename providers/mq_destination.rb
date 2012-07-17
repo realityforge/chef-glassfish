@@ -16,7 +16,7 @@
 
 include Chef::Imqcmd
 
-action :create do
+notifying_action :create do
   Chef::Log.info "Creating MQ Destination #{new_resource.destination_name}"
 
   bash "imqcmd_create_#{new_resource.queue ? "queue" : "topic"} #{new_resource.destination_name}" do
@@ -45,7 +45,7 @@ action :create do
 end
 
 
-action :destroy do
+notifying_action :destroy do
   bash "imqcmd_create_#{new_resource.queue ? "queue" : "topic"} #{new_resource.destination_name}" do
     only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null"
     user node['glassfish']['user']

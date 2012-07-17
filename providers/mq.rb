@@ -80,7 +80,7 @@ def mq_config_settings(resource)
   configs
 end
 
-action :create do
+notifying_action :create do
   requires_authbind = false
   requires_authbind ||= new_resource.port < 1024
   requires_authbind ||= new_resource.admin_port < 1024
@@ -297,7 +297,7 @@ action :create do
   end
 end
 
-action :destroy do
+notifying_action :destroy do
   service "omq-#{new_resource.instance}" do
     action [:stop]
   end

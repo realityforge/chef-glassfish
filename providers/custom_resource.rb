@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :create do
+notifying_action :create do
   command = []
   command << "create-custom-resource"
   command << "--restype" << new_resource.restype
@@ -38,7 +38,7 @@ action :create do
   end
 end
 
-action :delete do
+notifying_action :delete do
   command = []
   command << "delete-custom-resource"
   command << "--target" << new_resource.target if new_resource.target

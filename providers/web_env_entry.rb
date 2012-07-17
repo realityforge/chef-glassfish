@@ -16,7 +16,7 @@
 
 include Chef::Asadmin
 
-action :set do
+notifying_action :set do
   command = []
   command << "set-web-env-entry"
   command << "--name" << new_resource.name
@@ -37,7 +37,7 @@ action :set do
   end
 end
 
-action :unset do
+notifying_action :unset do
   command = []
   command << "unset-web-env-entry"
   command << "--name" << new_resource.name

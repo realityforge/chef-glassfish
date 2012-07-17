@@ -108,7 +108,7 @@ def replace_in_domain_file(key, value)
   "sed -i 's/#{key}/#{value}/g' #{node['glassfish']['domains_dir']}/#{new_resource.domain_name}/config/domain.xml 2> /dev/null > /dev/null"
 end
 
-action :create do
+notifying_action :create do
   requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
 
   directory node['glassfish']['domains_dir'] do
@@ -218,7 +218,7 @@ action :create do
   end
 end
 
-action :destroy do
+notifying_action :destroy do
   bash "destroy domain #{new_resource.domain_name}" do
     only_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | grep -- '#{new_resource.domain_name} '"
     command_string = []
