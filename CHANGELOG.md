@@ -1,3 +1,5 @@
+## v0.4.48:
+
 ## v0.4.47:
 
 * Enhance : Add support for configuration of many more parameters for `glassfish_deployable` resource, including
