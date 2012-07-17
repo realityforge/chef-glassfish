@@ -32,6 +32,7 @@ attribute :verify, :equal_to => [true, false, 'true', 'false'], :default => fals
 attribute :precompile_jsp, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :async_replication, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :properties, :kind_of => Hash, :default => {}
+attribute :descriptors, :kind_of => Hash, :default => {}
 
 attribute :domain_name, :kind_of => String, :required => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false

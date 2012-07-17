@@ -16,11 +16,24 @@
 
 include Chef::Asadmin
 
-def version_file
-  "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
+def generate_plan_digest()
+  require 'digest/md5'
+
+  plan_digest = ::Digest::MD5.new
+  content = new_resource.descriptors.keys.sort.collect do |key|
+    digest = ::Digest::MD5.new
+    ::File.foreach(new_resource.descriptors[key]) do |s|
+      digest.update(s)
+    end
+    "#{key}=#{digest.hexdigest}"
+  end.join("\n")
+  plan_digest.update(content)
+  plan_digest.hexdigest
 end
 
 notifying_action :deploy do
+  version_file = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
+
   file version_file do
     owner node['glassfish']['user']
     group node['glassfish']['group']
@@ -36,6 +49,38 @@ notifying_action :deploy do
     group node['glassfish']['group']
     mode "0600"
     action :create_if_missing
+  end
+
+  deployment_plan = nil
+  unless new_resource.descriptors.empty?
+    deployment_plan = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.deployment-plan.jar"
+
+    bash deployment_plan do
+      deployment_plan_dir = "#{Chef::Config[:file_cache_path]}/#{::File.basename(deployment_plan, '.jar')}"
+      command = []
+      command << "rm -rf #{deployment_plan_dir}"
+      command << "mkdir -p #{deployment_plan_dir}"
+      command << "cd #{deployment_plan_dir}"
+      new_resource.descriptors.collect do |key, file|
+        if ::File.dirname(key) != ''
+          command << "mkdir -p #{::File.dirname(key)}"
+        end
+        command << "cp #{file} #{key}"
+      end
+      command << "jar -cf #{deployment_plan} ."
+      command << "chown #{node['glassfish']['user']}:#{node['glassfish']['group']} #{deployment_plan}"
+      code command.join(" &&\n ")
+      action :nothing
+    end
+
+    file "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.config.VERSION" do
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+      mode "0600"
+      action :create
+      content generate_plan_digest()
+      notifies :run, resources(:bash => deployment_plan), :immediately
+    end
   end
 
   bash "deploy application #{new_resource.component_name}" do
@@ -59,9 +104,8 @@ notifying_action :deploy do
     command << "--asyncreplication=#{new_resource.async_replication}"
     command << "--properties" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
     command << "--virtualservers=#{new_resource.virtual_servers.join(",")}" unless new_resource.virtual_servers.empty?
+    command << "--deploymentplan" << deployment_plan if deployment_plan
     command << cached_package_filename
-
-    #TODO  [--deploymentplan deployment_plan]
 
     user node['glassfish']['user']
     group node['glassfish']['group']
