@@ -1,5 +1,7 @@
 ## v0.4.47:
 
+* Enhance : Add support for configuration of many more parameters for `glassfish_deployable` resource, including
+            generation of a deployment plan.
 * Enhance : Update resources so that they notify if any of the sub-resources have changed.
 * Change  : Rename deployable_key to component_name for the `glassfish_deployable` resource to bring it inline with
             GlassFish documentation.
