@@ -1,6 +1,7 @@
 ## v0.4.48:
 
 * Change  : Remove the jdbc/__default resource and the associated DerbyPool resource.
+* Enhance : Support a minimum memory size when configuring domains.
 
 ## v0.4.47:
 
