@@ -16,6 +16,12 @@ start() {
         <% @listen_ports.each do |listen_port| %>
         while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -eq 0 ]
         do
+            i=$(( $i + 1 ))
+            echo -n "."
+            if test $i -gt 60; then
+                echo "Error"
+                exit 53
+            fi
             sleep 1
         done
         <% end %>
@@ -31,6 +37,12 @@ stop() {
         <% @listen_ports.each do |listen_port| %>
         while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -ne 0 ]
         do
+            i=$(( $i + 1 ))
+            echo -n "."
+            if test $i -gt 60; then
+                echo "Error"
+                exit 53
+            fi
             sleep 1
         done
         <% end %>

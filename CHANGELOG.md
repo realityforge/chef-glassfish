@@ -1,5 +1,7 @@
 ## v0.4.49:
 
+* Enhance : Abort the init script if it fails to start up for "too long" (Currently 60s).
+
 ## v0.4.48:
 
 * Change  : Remove the jdbc/__default resource and the associated DerbyPool resource.
