@@ -1,5 +1,6 @@
 ## v0.4.49:
 
+* Bug     : Fix bug introduced in v0.4.48 relating to how the minimum memory is set.
 * Enhance : Abort the init script if it fails to start up for "too long" (Currently 60s).
 
 ## v0.4.48:

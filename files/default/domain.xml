@@ -130,7 +130,7 @@
         <jvm-options>-XX:ParallelGCThreads=%%%CPU_NODE_COUNT%%%</jvm-options>
         <jvm-options>-XX:MaxPermSize=%%%MAX_PERM_SIZE%%%m</jvm-options>
         <jvm-options>-Xss%%%MAX_STACK_SIZE%%%k</jvm-options>
-        <jvm-options>-Xmx%%%MIN_MEM_SIZE%%%m</jvm-options>
+        <jvm-options>-Xms%%%MIN_MEM_SIZE%%%m</jvm-options>
         <jvm-options>-Xmx%%%MAX_MEM_SIZE%%%m</jvm-options>
         <jvm-options>-Djava.awt.headless=true</jvm-options>
         <jvm-options>-Djavax.management.builder.initial=com.sun.enterprise.v3.admin.AppServerMBeanServerBuilder</jvm-options>
