@@ -1,7 +1,10 @@
 # Ignore IDEA project files
-*.iml
-*.ipr
-*.iws
+/*.iml
+/*.ipr
+/*.iws
 
 # Ignore the generated json file
-metadata.json
+/metadata.json
+
+# Ignore the patch file generated when integrating changes
+/patch.*
