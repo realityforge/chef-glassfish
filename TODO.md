@@ -1,5 +1,2 @@
-* Implement notifications for LWRP
-* Stop using the attribute configurations in asadmin and instead pass them as parameters to all LWRPs
-* Fix the LWRPs so that they have better config rather than parameters
-* Stop using node attributes to define queues/topics/acls to define destinations in mq provider
-* Consider converting guards to ruby code
+* Startup domain explicitly and take control of jvm parameters similar to the way described in http://java.net/projects/glassfish/lists/dev/archive/2012-02/message/10
+* Ensure JMX works as advertised. Maybe require -Djava.rmi.server.hostname=Glassfish_Server_External_IP_Address -Djava.net.preferIPv4Stack=true
