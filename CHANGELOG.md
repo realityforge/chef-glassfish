@@ -1,3 +1,5 @@
+## v0.4.49:
+
 ## v0.4.48:
 
 * Change  : Remove the jdbc/__default resource and the associated DerbyPool resource.
