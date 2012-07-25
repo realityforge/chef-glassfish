@@ -159,7 +159,7 @@ notifying_action :create do
     args << "--instanceport #{new_resource.port}"
     args << "--adminport #{new_resource.admin_port}"
     args << "--nopassword=false" if new_resource.username
-    args <<  domain_dir_arg
+    args << domain_dir_arg
     command_string = []
     command_string << (requires_authbind ? "authbind --deep " : "") + asadmin_command("create-domain #{args.join(' ')} #{new_resource.domain_name}", false)
     command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node['cpu'].size - 2)
@@ -189,7 +189,7 @@ notifying_action :create do
     cookbook 'glassfish'
     owner node['glassfish']['user']
     group node['glassfish']['group']
-    variables(:logging_properties  => default_logging_properties.merge(new_resource.logging_properties))
+    variables(:logging_properties => default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 
@@ -199,7 +199,7 @@ notifying_action :create do
     cookbook 'glassfish'
     owner node['glassfish']['user']
     group node['glassfish']['group']
-    variables(:realm_types  => default_realm_confs.merge(new_resource.realm_types))
+    variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 
