@@ -1,5 +1,6 @@
 ## v0.5.0:
 
+* Bug     : Replace init.d script with upstart script to eases service management.
 * Bug     : Fix failure with mq LWRP's destroy action resulting from incorrect provider specified.
 
 ## v0.4.49:

@@ -100,6 +100,50 @@ def default_realm_confs
   }
 end
 
+def default_jvm_options
+  [
+    # JVM options
+    "-XX:+UnlockDiagnosticVMOptions",
+    "-XX:MaxPermSize=#{new_resource.max_perm_size}m",
+    #"-XX:PermSize=64m",
+    "-Xss#{new_resource.max_stack_size}k",
+    "-Xms#{new_resource.min_memory}m",
+    "-Xmx#{new_resource.max_memory}m",
+    "-XX:NewRatio=2",
+    "-client",
+    "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
+    "-Djava.endorsed.dirs=#{node['glassfish']['base_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
+
+    "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
+    "-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory",
+    "-Dcom.sun.aas.installRoot=#{node['glassfish']['base_dir']}/glassfish",
+    "-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as",
+    "-DANTLR_USE_DIRECT_CLASS_LOADING=true",
+    "-Djava.awt.headless=true",
+    "-Djdbc.drivers=org.apache.derby.jdbc.ClientDriver",
+    "-javaagent:#{node['glassfish']['base_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
+
+    #osgi_jvm_options
+    "-Dosgi.shell.telnet.maxconn=1",
+    "-Dfelix.fileinstall.disableConfigSave=false",
+    "-Dfelix.fileinstall.dir=#{node['glassfish']['base_dir']}/glassfish/modules/autostart/",
+    "-Dosgi.shell.telnet.port=6666",
+    "-Dfelix.fileinstall.log.level=2",
+    "-Dfelix.fileinstall.poll=5000",
+    "-Dosgi.shell.telnet.ip=127.0.0.1",
+    "-Dfelix.fileinstall.bundles.startTransient=true",
+    "-Dfelix.fileinstall.bundles.new.start=true",
+    "-Dgosh.args=--nointeractive",
+
+    #security_jvm_options
+    "-Djavax.net.ssl.keyStore=#{domain_dir_path}/config/keystore.jks",
+    "-Djava.security.policy=#{domain_dir_path}/config/server.policy",
+    "-Djavax.net.ssl.trustStore=#{domain_dir_path}/config/cacerts.jks",
+    "-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as",
+    "-Djava.security.auth.login.config=#{domain_dir_path}/config/login.conf",
+  ]
+end
+
 def domain_dir_path
   "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
 end
@@ -114,6 +158,47 @@ end
 
 notifying_action :create do
   requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
+
+  args = default_jvm_options.dup
+  args += new_resource.extra_jvm_options
+  args << "-cp"
+  args << "#{node['glassfish']['base_dir']}/glassfish/modules/glassfish.jar"
+  args << "com.sun.enterprise.glassfish.bootstrap.ASMain"
+  args << "-domainname"
+  args << new_resource.domain_name
+  args << "-instancename"
+  args << "server"
+  args << "-verbose"
+  args << "false"
+  args << "-debug"
+  args << "false"
+  args << "-upgrade"
+  args << "false"
+  args << "-type"
+  args << "DAS"
+  args << "-domaindir"
+  args << domain_dir_path
+=begin
+  args << "-read-stdin"
+  args << "false"
+
+  args << "-asadmin-classname"
+  args << "com.sun.enterprise.admin.cli.AsadminMain"
+
+  args << "-asadmin-classpath"
+  args << "#{node['glassfish']['base_dir']}/glassfish/modules/admin-cli.jar"
+-asadmin-args
+--host,,,localhost,,,--port,,,4848,,,--secure=false,,,--terse=true,,,--echo=false,,,--interactive=true,,,start-domain,,,--verbose=false,,,--debug=false,,,--domaindir,,,/home/pdonald/Applications/glassfish3.1.2/glassfish/domains,,,domain1
+=end
+
+  template "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
+    source "glassfish-upstart.conf.erb"
+    mode "0644"
+    cookbook 'glassfish'
+
+    variables(:resource => new_resource, :args => args, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
+  end
+
 
   directory node['glassfish']['domains_dir'] do
     owner node['glassfish']['user']
@@ -131,13 +216,6 @@ notifying_action :create do
       mode "0600"
       variables :password => new_resource.password
     end
-  end
-
-  template "/etc/init.d/glassfish-#{new_resource.domain_name}" do
-    source "glassfish-init.d-script.erb"
-    mode "0755"
-    cookbook 'glassfish'
-    variables(:domain_name => new_resource.domain_name, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
   end
 
   authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
@@ -179,6 +257,7 @@ notifying_action :create do
   end
 
   service "glassfish-#{new_resource.domain_name}" do
+    provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true
     action [:start]
   end
@@ -218,6 +297,7 @@ notifying_action :create do
   end
 
   service "glassfish-#{new_resource.domain_name}" do
+    provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true
     action [:start]
   end
@@ -234,5 +314,8 @@ notifying_action :destroy do
     user node['glassfish']['user']
     group node['glassfish']['group']
     code command_string.join("\n")
+  end
+  file "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
+    action :delete
   end
 end

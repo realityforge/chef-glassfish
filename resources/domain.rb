@@ -22,6 +22,8 @@ attribute :max_perm_size, :kind_of => Integer, :default => 96
 attribute :max_stack_size, :kind_of => Integer, :default => 128
 attribute :port, :kind_of => Integer, :default => 8080
 attribute :admin_port, :kind_of => Integer, :default => 4848
+attribute :extra_jvm_options, :kind_of => Array, :default => []
+attribute :env_variables, :kind_of => Hash, :default => {}
 
 attribute :domain_name, :kind_of => String, :name_attribute => true
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
