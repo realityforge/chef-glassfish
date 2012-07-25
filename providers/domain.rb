@@ -114,6 +114,8 @@ def default_jvm_options
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
     "-Djava.endorsed.dirs=#{node['glassfish']['base_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
 
+      # Configuration to enable effective JMX management
+    "-Djava.rmi.server.hostname=#{node['fqdn']}",
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
     "-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory",
     "-Dcom.sun.aas.installRoot=#{node['glassfish']['base_dir']}/glassfish",

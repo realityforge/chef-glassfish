@@ -1,5 +1,7 @@
 ## v0.5.1:
 
+* Change  : Set the rmi hostname to the fully qualified domain name.
+
 ## v0.5.0:
 
 * Enhance : Support specifying environment variables for the glassfish domain using the attribute driven recipe.
