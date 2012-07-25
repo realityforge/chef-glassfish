@@ -1,5 +1,6 @@
 ## v0.5.0:
 
+* Enhance : Support specifying environment variables for the glassfish domain using the attribute driven recipe.
 * Change  : Remove the `glassfish_jvm_option` LWRP as the functionality is now provided via the `glassfish_domain` LWRP.
 * Enhance : Sort output in configuration files to avoid incorrect service restarts due to non-deterministic ordering.
 * Bug     : Replace init.d script with upstart script to eases service management.
