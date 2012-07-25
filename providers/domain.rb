@@ -100,12 +100,16 @@ def default_realm_confs
   }
 end
 
+def domain_dir_path
+  "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
+end
+
 def domain_dir_arg
   "--domaindir #{node['glassfish']['domains_dir']}"
 end
 
 def replace_in_domain_file(key, value)
-  "sed -i 's/#{key}/#{value}/g' #{node['glassfish']['domains_dir']}/#{new_resource.domain_name}/config/domain.xml 2> /dev/null > /dev/null"
+  "sed -i 's/#{key}/#{value}/g' #{domain_dir_path}/config/domain.xml 2> /dev/null > /dev/null"
 end
 
 notifying_action :create do
@@ -170,7 +174,7 @@ notifying_action :create do
     code command_string.join("\n")
   end
 
-  file "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}/docroot/index.html" do
+  file "#{domain_dir_path}/docroot/index.html" do
     action :delete
   end
 
@@ -179,7 +183,7 @@ notifying_action :create do
     action [:start]
   end
 
-  template "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}/config/logging.properties" do
+  template "#{domain_dir_path}/config/logging.properties" do
     source "logging.properties.erb"
     mode "0400"
     cookbook 'glassfish'
@@ -189,7 +193,7 @@ notifying_action :create do
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 
-  template "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}/config/login.conf" do
+  template "#{domain_dir_path}/config/login.conf" do
     source "login.conf.erb"
     mode "0400"
     cookbook 'glassfish'
@@ -201,7 +205,7 @@ notifying_action :create do
 
   if new_resource.extra_libraries
     new_resource.extra_libraries.each do |extra_library|
-      library_location = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}/lib/ext/#{::File.basename(extra_library)}"
+      library_location = "#{domain_dir_path}/lib/ext/#{::File.basename(extra_library)}"
       remote_file library_location do
         source extra_library
         mode "0640"
