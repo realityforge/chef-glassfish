@@ -116,6 +116,8 @@ def default_jvm_options
 
       # Configuration to enable effective JMX management
     "-Djava.rmi.server.hostname=#{node['fqdn']}",
+    "-Djava.net.preferIPv4Stack=true",
+
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
     "-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory",
     "-Dcom.sun.aas.installRoot=#{node['glassfish']['base_dir']}/glassfish",

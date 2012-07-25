@@ -1,6 +1,7 @@
 ## v0.5.1:
 
 * Change  : Set the rmi hostname to the fully qualified domain name.
+* Change  : Force the networking layer to use ipv4 so as not to interfere JMX interoperability.
 
 ## v0.5.0:
 
