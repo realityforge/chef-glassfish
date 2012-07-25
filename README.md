@@ -77,6 +77,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to 128.
 - port: the port on which the HTTP service will bind. Defaults to 8080.
 - extra_libraries: an array of URLs for libraries that should be added to the domains classpath.
+- extra_jvm_options: an array of extra arguments to pass the JVM. Defaults to [].
+- env_variables: A hash of environment variables set when running the domain. Defaults to {}.
 - logging_properties: a hash of properties that will be merged into logging.properties. Use this to send logs to
   syslog or graylog.
 - realm_types: an map of names to realm implementation classes that is merged into the default realm types.
