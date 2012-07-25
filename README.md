@@ -182,11 +182,6 @@ TODO
 
 TODO
 
-`glassfish_jvm_option`
-----------------------
-
-TODO
-
 `glassfish_deployable`
 ----------------------
 
