@@ -197,6 +197,7 @@ notifying_action :create do
     cookbook 'glassfish'
 
     variables(:resource => new_resource, :args => args, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
+    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 
 
@@ -291,7 +292,7 @@ notifying_action :create do
         owner node['glassfish']['user']
         group node['glassfish']['group']
         action :create_if_missing
-        notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :immediately
+        notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
       end
     end
   end
