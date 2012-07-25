@@ -184,18 +184,6 @@ notifying_action :create do
   args << "DAS"
   args << "-domaindir"
   args << domain_dir_path
-=begin
-  args << "-read-stdin"
-  args << "false"
-
-  args << "-asadmin-classname"
-  args << "com.sun.enterprise.admin.cli.AsadminMain"
-
-  args << "-asadmin-classpath"
-  args << "#{node['glassfish']['base_dir']}/glassfish/modules/admin-cli.jar"
--asadmin-args
---host,,,localhost,,,--port,,,4848,,,--secure=false,,,--terse=true,,,--echo=false,,,--interactive=true,,,start-domain,,,--verbose=false,,,--debug=false,,,--domaindir,,,/home/pdonald/Applications/glassfish3.1.2/glassfish/domains,,,domain1
-=end
 
   template "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
     source "glassfish-upstart.conf.erb"
