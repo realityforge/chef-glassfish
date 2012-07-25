@@ -200,7 +200,6 @@ notifying_action :create do
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 
-
   directory node['glassfish']['domains_dir'] do
     owner node['glassfish']['user']
     group node['glassfish']['group']
