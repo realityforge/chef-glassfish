@@ -1,3 +1,7 @@
+## v0.5.0:
+
+* Bug     : Fix failure with mq LWRP's destroy action resulting from incorrect provider specified.
+
 ## v0.4.49:
 
 * Bug     : Fix bug introduced in v0.4.48 relating to how the minimum memory is set.

@@ -278,6 +278,7 @@ notifying_action :create do
   end
 
   service "omq-#{new_resource.instance}" do
+    provider Chef::Provider::Service::Upstart
     action [:start]
   end
 
@@ -299,6 +300,7 @@ end
 
 notifying_action :destroy do
   service "omq-#{new_resource.instance}" do
+    provider Chef::Provider::Service::Upstart
     action [:stop]
   end
 
