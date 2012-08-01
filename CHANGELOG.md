@@ -1,3 +1,5 @@
+## v0.5.2:
+
 ## v0.5.1:
 
 * Change  : Set the rmi hostname to the fully qualified domain name.
