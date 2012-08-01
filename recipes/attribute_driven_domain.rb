@@ -183,6 +183,22 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           end
         end
       end
+      if resource_configuration['admin-objects']
+        resource_configuration['admin-objects'].each_pair do |admin_object_key, admin_object_configuration|
+          admin_object_key = admin_object_key.to_s
+          glassfish_admin_object admin_object_key do
+            domain_name domain_key
+            admin_port admin_port if admin_port
+            username username if username
+            password_file password_file if password_file
+            secure secure if secure
+            raname resource_adapter_key
+            admin_object_configuration.each_pair do |config_key, value|
+              self.send(config_key, value)
+            end
+          end
+        end
+      end
     end
   end
 
