@@ -1,7 +1,7 @@
 ## v0.5.2:
 
 * Enhance : Ensure non properties are supported in "properties" parameter passed to various resources.
-* Enhance : Add resource `glassfish_resource_adapter_config`.
+* Enhance : Add the resources: `glassfish_resource_adapter` and `glassfish_connector_connection_pool`.
 
 ## v0.5.1:
 
