@@ -21,7 +21,7 @@ class Chef
     end
 
     def escape_property(string)
-      string.gsub('\\', '\\\\').gsub(':', '\\:').gsub('""', '\\""')
+      string.to_s.gsub('\\', '\\\\').gsub(':', '\\:').gsub('""', '\\""')
     end
 
     def asadmin_command(command, remote_command = true)
