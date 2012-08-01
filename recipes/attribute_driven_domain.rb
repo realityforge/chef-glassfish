@@ -139,18 +139,18 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  if definition['resource_adapter_configs']
-    definition['resource_adapter_configs'].each_pair do |key, configuration|
-      key = key.to_s
-      glassfish_resource_adapter_config key do
+  if definition['resource_adapters']
+    definition['resource_adapters'].each_pair do |resource_adapter_key, resource_configuration|
+      resource_adapter_key = resource_adapter_key.to_s
+      glassfish_resource_adapter resource_adapter_key do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
         password_file password_file if password_file
         secure secure if secure
-        configuration['config'].each_pair do |config_key, value|
+        resource_configuration['config'].each_pair do |config_key, value|
           self.send(config_key, value)
-        end if configuration['config']
+        end if resource_configuration['config']
       end
     end
   end
