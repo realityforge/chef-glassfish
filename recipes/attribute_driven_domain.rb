@@ -166,6 +166,21 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
               self.send(config_key, value)
             end if pool_configuration['config']
           end
+          if pool_configuration['resources']
+            pool_configuration['resources'].each_pair do |resource_name, resource_configuration|
+              glassfish_connector_resource resource_name.to_s do
+                domain_name domain_key
+                admin_port admin_port if admin_port
+                username username if username
+                password_file password_file if password_file
+                secure secure if secure
+                poolname pool_key.to_s
+                resource_configuration.each_pair do |config_key, value|
+                  self.send(config_key, value)
+                end
+              end
+            end
+          end
         end
       end
     end
