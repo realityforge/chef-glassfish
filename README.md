@@ -199,6 +199,11 @@ TODO
 
 TODO
 
+`glassfish_resource_adapter_config`
+--------------------------------
+
+TODO
+
 `glassfish_property`
 --------------------
 

@@ -1,5 +1,7 @@
 ## v0.5.2:
 
+* Enhance : Add resource `glassfish_resource_adapter_config`.
+
 ## v0.5.1:
 
 * Change  : Set the rmi hostname to the fully qualified domain name.
