@@ -1,5 +1,10 @@
 ## v0.5.4:
 
+* Bug     : Revert the default the value of `node['openmq']['extra_libraries']` to be an empty hash as simplifies
+            attribute merges and restores compatibility with the v0.0.45 of cookbook.
+* Change  : Update the attribute_driven_domain recipe so that domain takes  a hash for the 'extra_libraries'
+            configuration to make it easy to merge attribute data from multiple sources.
+
 ## v0.5.3:
 
 * Enhance : Add the a LWRP: `glassfish_javamail_resource`.

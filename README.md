@@ -28,7 +28,7 @@ Attributes
 * `node['glassfish']['domains_dir']` - The directory in which the GlassFish domains are stored. Defaults to "/usr/local/glassfish-3.1.2/glassfish/domains".
 * `node['glassfish']['domains']` - A map that describes zero or more GlassFish application domains. Used to drive the `attribtue_driven_domain` recipe.
 * `node['openmq']['instances']` - A map that describes zero or more message broker instances. Used to drive the `attribtue_driven_mq` recipe.
-* `node['openmq']['extra_libraries']` - A list of URLs to jars to place on the OpenMQ classpath.
+* `node['openmq']['extra_libraries']` - A has of URLs to jars to place on the OpenMQ classpath.
 * `node['openmq']['var_home']` - The directory in which the OpenMQ instances are stored. Defaults to "/var/omq".
 
 Usage
@@ -76,7 +76,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - max_perm_size: The amount of perm gen memory to allocate to the domain in MiB. Defaults to 96.
 - max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to 128.
 - port: the port on which the HTTP service will bind. Defaults to 8080.
-- extra_libraries: an array of URLs for libraries that should be added to the domains classpath.
+- extra_libraries: an array of URLs of libraries that should be added to the domains classpath.
 - extra_jvm_options: an array of extra arguments to pass the JVM. Defaults to [].
 - env_variables: A hash of environment variables set when running the domain. Defaults to {}.
 - logging_properties: a hash of properties that will be merged into logging.properties. Use this to send logs to

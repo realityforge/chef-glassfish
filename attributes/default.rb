@@ -23,6 +23,6 @@ default['glassfish']['base_dir'] = "/usr/local/glassfish-#{version}"
 default['glassfish']['domains_dir'] = "/usr/local/glassfish-#{version}/glassfish/domains"
 default['glassfish']['domains'] = Mash.new
 
-default['openmq']['extra_libraries'] = []
+default['openmq']['extra_libraries'] = Mash.new
 default['openmq']['instances'] = Mash.new
 default['openmq']['var_home'] = '/var/omq'

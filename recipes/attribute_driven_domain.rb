@@ -40,7 +40,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     password_file password_file if password_file
     secure secure if secure
     password definition['config']['password'] if definition['config']['password']
-    extra_libraries definition['extra_libraries'] if definition['extra_libraries']
+    extra_libraries definition['extra_libraries'].values if definition['extra_libraries']
     logging_properties definition['logging_properties'] if definition['logging_properties']
     realm_types definition['realm_types'] if definition['realm_types']
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
