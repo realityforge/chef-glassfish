@@ -222,6 +222,21 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
+  if definition['javamail-resources']
+    definition['javamail-resources'].each_pair do |key, javamail_configuration|
+      glassfish_javamail_resource key.to_s do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        javamail_configuration.each_pair do |config_key, value|
+          self.send(config_key, value)
+        end
+      end
+    end
+  end
+
   if definition['deployables']
     definition['deployables'].each_pair do |component_name, configuration|
       if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
