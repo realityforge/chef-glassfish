@@ -1,3 +1,5 @@
+## v0.5.4:
+
 ## v0.5.3:
 
 * Enhance : Add the a LWRP: `glassfish_javamail_resource`.
