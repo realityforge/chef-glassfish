@@ -1,3 +1,5 @@
+## v0.5.5:
+
 ## v0.5.4:
 
 * Bug     : Revert the default the value of `node['openmq']['extra_libraries']` to be an empty hash as simplifies
