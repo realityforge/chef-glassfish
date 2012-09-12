@@ -1,3 +1,5 @@
+## v0.5.6:
+
 ## v0.5.5:
 
 * Bug     : Fix the version checking in the `glassfish_deployable` LWRP that had an extra brace.
