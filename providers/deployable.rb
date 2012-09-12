@@ -84,7 +84,7 @@ notifying_action :deploy do
   end
 
   bash "deploy application #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications')} | grep -q -- '#{new_resource.component_name} ' && grep -v -q  '^#{new_resource.version}}$' #{version_file}"
+    not_if "#{asadmin_command('list-applications')} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{new_resource.version}$' #{version_file}"
 
     command = []
     command << "deploy"

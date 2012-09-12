@@ -1,5 +1,7 @@
 ## v0.5.5:
 
+* Bug     : Fix the version checking in the `glassfish_deployable` LWRP that had an extra brace.
+
 ## v0.5.4:
 
 * Bug     : Revert the default the value of `node['openmq']['extra_libraries']` to be an empty hash as simplifies
