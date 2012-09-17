@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'digest/sha1'
 
 include Chef::Asadmin
 
@@ -33,12 +34,13 @@ end
 
 notifying_action :deploy do
   version_file = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
+  version_value = new_resource.version ? new_resource.version.to_s : Digest::SHA1.hexdigest(new_resource.url)
 
   file version_file do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0600"
-    content new_resource.version.to_s
+    content version_value
     action :nothing
   end
 
@@ -84,7 +86,7 @@ notifying_action :deploy do
   end
 
   bash "deploy application #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications')} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{new_resource.version}$' #{version_file}"
+    not_if "#{asadmin_command('list-applications')} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{version_value}$' #{version_file}"
 
     command = []
     command << "deploy"

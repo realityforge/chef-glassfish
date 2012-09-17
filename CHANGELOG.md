@@ -1,5 +1,8 @@
 ## v0.5.6:
 
+* Enhance : Make the the 'version' attribute on the `glassfish_deployable` LWRP optional and derive it from the url
+            if not specified.
+
 ## v0.5.5:
 
 * Bug     : Fix the version checking in the `glassfish_deployable` LWRP that had an extra brace.

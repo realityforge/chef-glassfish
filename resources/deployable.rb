@@ -17,7 +17,7 @@
 actions :deploy, :undeploy, :enable, :disable
 
 attribute :component_name, :kind_of => String, :name_attribute => true
-attribute :version, :kind_of => String, :required => true
+attribute :version, :kind_of => String, :default => nil
 attribute :target, :kind_of => String, :default => nil
 attribute :url, :kind_of => String, :required => true
 attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true
