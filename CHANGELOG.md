@@ -1,5 +1,7 @@
 ## v0.5.6:
 
+* Change  : Rename the attribute tree used to define javamail resources in the `glassfish::attribute_driven_domain`
+            recipe from `javamail-resources` to `javamail_resources`.
 * Change  : Cache the deployable and deployment plan using the 'version' attribute on the `glassfish_deployable`
             LWRP rather than the basename of the URL as the url may not necessarily be unique.
 * Enhance : Make the the 'version' attribute on the `glassfish_deployable` LWRP optional and derive it from the url

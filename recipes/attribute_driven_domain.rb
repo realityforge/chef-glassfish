@@ -222,8 +222,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  if definition['javamail-resources']
-    definition['javamail-resources'].each_pair do |key, javamail_configuration|
+  if definition['javamail_resources']
+    definition['javamail_resources'].each_pair do |key, javamail_configuration|
       glassfish_javamail_resource key.to_s do
         domain_name domain_key
         admin_port admin_port if admin_port
