@@ -1,3 +1,5 @@
+## v0.5.8:
+
 ## v0.5.6:
 
 * Change  : Rename the attribute tree used to define javamail resources in the `glassfish::attribute_driven_domain`
