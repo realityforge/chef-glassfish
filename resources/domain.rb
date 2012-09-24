@@ -36,7 +36,4 @@ attribute :extra_libraries, :kind_of => Array, :default => []
 attribute :logging_properties, :kind_of => Hash, :default => {}
 attribute :realm_types, :kind_of => Hash, :default => {}
 
-def initialize( *args )
-  super
-  @action = :create
-end
+default_action :create

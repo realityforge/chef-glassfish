@@ -1,5 +1,8 @@
 ## v0.5.8:
 
+* Change  : Use default_action DSL rather than constructor to specify default actions for LWRPs. This means the plugin
+            requires Chef v0.10.10 or higher.
+
 ## v0.5.6:
 
 * Change  : Rename the attribute tree used to define javamail resources in the `glassfish::attribute_driven_domain`

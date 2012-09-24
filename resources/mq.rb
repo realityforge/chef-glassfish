@@ -42,7 +42,4 @@ attribute :jms_port, :kind_of => Integer, :default => 7678
 attribute :jmx_port, :kind_of => Integer, :default => nil
 attribute :stomp_port, :kind_of => Integer, :default => nil
 
-def initialize( *args )
-  super
-  @action = :create
-end
+default_action :create

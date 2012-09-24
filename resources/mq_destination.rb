@@ -25,7 +25,4 @@ attribute :port, :kind_of => Integer, :required => true
 attribute :username, :kind_of => String, :default => 'imqadmin'
 attribute :passfile, :kind_of => String, :required => true
 
-def initialize( *args )
-  super
-  @action = :create
-end
+default_action :create
