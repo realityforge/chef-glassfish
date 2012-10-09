@@ -14,16 +14,16 @@
 # limitations under the License.
 #
 
-include_recipe "java"
+include_recipe 'java'
 
 group node['glassfish']['group'] do
 end
 
 user node['glassfish']['user'] do
-  comment "GlassFish Application Server"
+  comment 'GlassFish Application Server'
   gid node['glassfish']['group']
   home node['glassfish']['base_dir']
-  shell "/bin/bash"
+  shell '/bin/bash'
 end
 
 package_url = node['glassfish']['package_url']
@@ -32,13 +32,13 @@ cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{base_package_file
 
 remote_file cached_package_filename do
   source package_url
-  mode "0600"
+  mode '0600'
   action :create_if_missing
 end
 
-package "unzip"
+package 'unzip'
 
-bash "unpack_glassfish" do
+bash 'unpack_glassfish' do
     code <<-EOF
 rm -rf /tmp/glassfish
 mkdir /tmp/glassfish
@@ -57,7 +57,7 @@ EOF
 end
 
 cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/domain.xml" do
-  source "domain.xml"
+  source 'domain.xml'
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0644
