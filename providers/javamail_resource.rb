@@ -29,7 +29,7 @@ notifying_action :create do
   command << "--transprotocolclass" << new_resource.transprotocolclass if new_resource.transprotocolclass
   command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
   command << "--description" << "'#{new_resource.description}'" if new_resource.description
-  command << "--debug=#{debug}" if new_resource.debug
+  command << "--debug=#{new_resource.debug}" if new_resource.debug
   command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << "--target" << new_resource.target if new_resource.target
   command << new_resource.jndi_name
