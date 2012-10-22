@@ -20,6 +20,10 @@ class Chef
       "'#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(":")}'"
     end
 
+    def asadmin_target_flag
+      new_resource.target ? "--target #{new_resource.target}" : ''
+    end
+
     def escape_property(string)
       string.to_s.gsub('\\', '\\\\').gsub(':', '\\:').gsub('""', '\\""')
     end

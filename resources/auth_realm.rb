@@ -17,7 +17,7 @@
 actions :create, :delete
 
 attribute :realm_name, :kind_of => String, :name_attribute => true
-attribute :target, :kind_of => String, :default => nil
+attribute :target, :kind_of => String, :default => 'server'
 attribute :classname, :kind_of => String, :required => true
 attribute :jaas_context, :kind_of => String, :required => true
 attribute :assign_groups, :kind_of => String, :default => nil

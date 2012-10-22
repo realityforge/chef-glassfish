@@ -87,11 +87,11 @@ notifying_action :deploy do
   end
 
   bash "deploy application #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications')} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{version_value}$' #{version_file}"
+    not_if "#{asadmin_command('list-applications')} #{asadmin_target_flag} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{version_value}$' #{version_file}"
 
     command = []
     command << "deploy"
-    command << "--target" << new_resource.target if new_resource.target
+    command << asadmin_target_flag
     command << "--name" << new_resource.component_name
     command << "--enabled=#{new_resource.enabled}"
     command << "--upload=true"
@@ -121,11 +121,11 @@ notifying_action :undeploy do
   command = []
   command << "undeploy"
   command << "--cascade=true"
-  command << "--target" << new_resource.target if new_resource.target
+  command << asadmin_target_flag
   command << new_resource.component_name
 
   bash "asadmin_undeploy #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications')} | grep -- '#{new_resource.component_name} '"
+    only_if "#{asadmin_command('list-applications')} #{asadmin_target_flag}| grep -- '#{new_resource.component_name} '"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -135,11 +135,11 @@ end
 notifying_action :disable do
   command = []
   command << "disable"
-  command << "--target" << new_resource.target if new_resource.target
+  command << asadmin_target_flag
   command << new_resource.component_name
 
   bash "asadmin_disable #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications --long')} | grep '#{new_resource.component_name} ' | grep enabled"
+    only_if "#{asadmin_command('list-applications --long')} #{asadmin_target_flag} | grep '#{new_resource.component_name} ' | grep enabled"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -149,11 +149,11 @@ end
 notifying_action :enable do
   command = []
   command << "enable"
-  command << "--target" << new_resource.target if new_resource.target
+  command << asadmin_target_flag
   command << new_resource.component_name
 
   bash "asadmin_enable #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications --long')} | grep #{new_resource.component_name} | grep enabled"
+    not_if "#{asadmin_command('list-applications --long')} #{asadmin_target_flag} | grep #{new_resource.component_name} | grep enabled"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))

@@ -19,9 +19,8 @@ include Chef::Asadmin
 notifying_action :create do
   command = []
   command << "create-auth-realm"
-  command << "--target" << new_resource.target if new_resource.target
+  command << asadmin_target_flag
   command << "--classname" << new_resource.classname
-  command << "--target" << new_resource.target if new_resource.target
   properties = new_resource.properties.dup
   properties['jaas-context'] = new_resource.jaas_context
   properties['assign-groups'] = new_resource.assign_groups if new_resource.assign_groups
@@ -29,7 +28,7 @@ notifying_action :create do
   command << new_resource.name
 
   bash "asadmin_create_auth_realm #{new_resource.name}" do
-    not_if "#{asadmin_command('list-auth-realms')} | grep -x -- '#{new_resource.name}'"
+    not_if "#{asadmin_command('list-auth-realms')} #{asadmin_target_flag} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -39,11 +38,11 @@ end
 notifying_action :delete do
   command = []
   command << "delete-auth-realm"
-  command << "--target" << new_resource.target if new_resource.target
+  command << asadmin_target_flag
   command << new_resource.name
 
   bash "asadmin_delete_auth_realm #{new_resource.name}" do
-    only_if "#{asadmin_command('list-auth-realms')} | grep -x -- '#{new_resource.name}'"
+    only_if "#{asadmin_command('list-auth-realms')} #{asadmin_target_flag} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))

@@ -17,7 +17,7 @@
 actions :create, :delete
 
 attribute :jndi_name, :kind_of => String, :name_attribute => true
-attribute :target, :kind_of => String, :default => nil
+attribute :target, :kind_of => String, :default => 'server'
 attribute :mailhost, :kind_of => String, :required => true
 attribute :mailuser, :kind_of => String, :required => true
 attribute :fromaddress, :kind_of => String, :required => true

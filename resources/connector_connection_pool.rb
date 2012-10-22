@@ -22,10 +22,8 @@ attribute :description, :kind_of => String, :default => nil
 attribute :raname, :kind_of => String, :required => true
 attribute :connectiondefinition, :kind_of => String, :required => true
 
-STRING_ATTRIBUTES = [:description, :target]
-STRING_ATTRIBUTES.each do |key|
-  attribute key, :kind_of => String, :default => nil
-end
+attribute :description, :kind_of => String, :default => nil
+attribute :target, :kind_of => String, :default => 'server'
 
 NUMERIC_ATTRIBUTES = [:steadypoolsize,
                       :maxpoolsize,

@@ -17,7 +17,7 @@
 actions :create, :delete
 
 attribute :jndi_name, :kind_of => String, :name_attribute => true
-attribute :target, :kind_of => String, :default => nil
+attribute :target, :kind_of => String, :default => 'server'
 attribute :restype, :kind_of => String, :default => "java.lang.String"
 attribute :factoryclass, :kind_of => String, :default => "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory"
 attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true

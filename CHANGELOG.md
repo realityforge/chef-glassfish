@@ -4,6 +4,8 @@
             requires Chef v0.10.10 or higher.
 * Bug     : Fix the usage of the enabled flag in several resource centric LWRPs. Submitted By Adrian Stanila.
 * Bug     : Fix the usage of the debug flag in the javamail resource LWRP.
+* Bug     : Fix the usage of the target flag in several resource centric LWRPs. Ensure the guard conditions pass the
+            correct target flag. Submitted By Adrian Stanila.
 
 ## v0.5.6:
 
