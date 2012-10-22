@@ -20,7 +20,7 @@ attribute :jndi_name, :kind_of => String, :name_attribute => true
 attribute :target, :kind_of => String, :default => nil
 attribute :restype, :kind_of => String, :default => "java.lang.String"
 attribute :factoryclass, :kind_of => String, :default => "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory"
-attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => nil
+attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :description, :kind_of => String, :default => nil
 attribute :properties, :kind_of => Hash, :default => {}
 attribute :value, :kind_of => String, :default => nil

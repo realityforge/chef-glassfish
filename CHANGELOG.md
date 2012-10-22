@@ -2,6 +2,7 @@
 
 * Change  : Use default_action DSL rather than constructor to specify default actions for LWRPs. This means the plugin
             requires Chef v0.10.10 or higher.
+* Bug     : Fix the usage of the enabled flag in several resource centric LWRPs. Submitted By Adrian Stanila.
 
 ## v0.5.6:
 

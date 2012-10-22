@@ -18,7 +18,7 @@ actions :create, :delete
 
 attribute :resource_name, :kind_of => String, :name_attribute => true
 attribute :poolname, :kind_of => String, :required => true
-attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => nil
+attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :target, :kind_of => String, :default => nil
 attribute :objecttype, :kind_of => String, :default => nil
 attribute :description, :kind_of => String, :default => nil

@@ -26,7 +26,7 @@ attribute :storeprotocolclass, :kind_of => String, :required => nil
 attribute :transprotocol, :kind_of => String, :required => nil
 attribute :transprotocolclass, :kind_of => String, :required => nil
 attribute :debug, :equal_to => [true, false, 'true', 'false'], :default => nil
-attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => nil
+attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :description, :kind_of => String, :default => nil
 attribute :properties, :kind_of => Hash, :default => {}
 

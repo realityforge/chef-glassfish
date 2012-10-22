@@ -22,7 +22,7 @@ notifying_action :create do
   command << "--restype" << new_resource.restype
   factoryclass = new_resource.factoryclass || "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory"
   command << "--factoryclass" << factoryclass
-  command << "--enabled=#{enabled}" if new_resource.enabled
+  command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << "--description" << "'#{new_resource.description}'" if new_resource.description
   properties = new_resource.properties.dup
   properties['value'] = new_resource.value if new_resource.value

@@ -25,7 +25,7 @@ notifying_action :create do
   command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
   command << "--description" << "'#{new_resource.description}'" if new_resource.description
   command << "--classname" << new_resource.classname if new_resource.classname
-  command << "--enabled=#{enabled}" if new_resource.enabled
+  command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << "--target" << new_resource.target if new_resource.target
   command << new_resource.name
 
