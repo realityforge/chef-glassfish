@@ -87,7 +87,7 @@ notifying_action :deploy do
   end
 
   bash "deploy application #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications')} #{asadmin_target_flag} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{version_value}$' #{version_file}"
+    not_if "#{asadmin_command('list-applications')} #{new_resource.target} | grep -q -- '#{new_resource.component_name} ' && grep -q '^#{version_value}$' #{version_file}"
 
     command = []
     command << "deploy"
@@ -125,7 +125,7 @@ notifying_action :undeploy do
   command << new_resource.component_name
 
   bash "asadmin_undeploy #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications')} #{asadmin_target_flag}| grep -- '#{new_resource.component_name} '"
+    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -139,7 +139,7 @@ notifying_action :disable do
   command << new_resource.component_name
 
   bash "asadmin_disable #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications --long')} #{asadmin_target_flag} | grep '#{new_resource.component_name} ' | grep enabled"
+    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -153,7 +153,7 @@ notifying_action :enable do
   command << new_resource.component_name
 
   bash "asadmin_enable #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications --long')} #{asadmin_target_flag} | grep #{new_resource.component_name} | grep enabled"
+    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
