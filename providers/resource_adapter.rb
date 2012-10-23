@@ -25,11 +25,10 @@ notifying_action :create do
   command << "--objecttype" << new_resource.objecttype if new_resource.objecttype
 
   command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << asadmin_target_flag
   command << new_resource.resource_adapter_name
 
   bash "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    not_if "#{asadmin_command('list-resource-adapter-configs')} #{asadmin_target_flag} | grep -x -- '#{new_resource.resource_adapter_name}'"
+    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -x -- '#{new_resource.resource_adapter_name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -39,11 +38,10 @@ end
 notifying_action :delete do
   command = []
   command << "delete-resource-adapter-config"
-  command << asadmin_target_flag
   command << new_resource.resource_adapter_name
 
   bash "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    only_if "#{asadmin_command('list-resource-adapter-configs')} #{asadmin_target_flag} | grep -x -- '#{new_resource.resource_adapter_name}'"
+    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -x -- '#{new_resource.resource_adapter_name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))

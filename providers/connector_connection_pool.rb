@@ -30,12 +30,11 @@ notifying_action :create do
 
   command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
   command << "--description" << "'#{new_resource.description}'" if new_resource.description
-  command << asadmin_target_flag
   command << new_resource.pool_name
 
 
   bash "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
-    not_if "#{asadmin_command('list-connector-connection-pools')} #{asadmin_target_flag} | grep -x -- '#{new_resource.pool_name}'"
+    not_if "#{asadmin_command('list-connector-connection-pools')} | grep -x -- '#{new_resource.pool_name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -45,12 +44,11 @@ end
 notifying_action :delete do
   command = []
   command << "delete-connector-connection-pool"
-  command << asadmin_target_flag
   command << "--cascade=true"
   command << new_resource.pool_name
 
   bash "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
-    only_if "#{asadmin_command('list-connector-connection-pools')} #{asadmin_target_flag} | grep -x -- '#{new_resource.pool_name}'"
+    only_if "#{asadmin_command('list-connector-connection-pools')} | grep -x -- '#{new_resource.pool_name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))

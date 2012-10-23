@@ -17,7 +17,6 @@
 actions :create, :delete
 
 attribute :resource_adapter_name, :kind_of => String, :name_attribute => true
-attribute :target, :kind_of => String, :default => 'server'
 attribute :threadpoolid, :kind_of => String, :default => nil
 attribute :objecttype, :kind_of => String, :default => nil
 attribute :properties, :kind_of => Hash, :default => {}

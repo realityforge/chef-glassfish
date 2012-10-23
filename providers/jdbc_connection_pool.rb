@@ -31,12 +31,11 @@ notifying_action :create do
 
   command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
   command << "--description" << "'#{new_resource.description}'" if new_resource.description
-  command << asadmin_target_flag
   command << new_resource.name
 
 
   bash "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
-    not_if "#{asadmin_command('list-jdbc-connection-pools')} #{asadmin_target_flag} | grep -x -- '#{new_resource.name}'"
+    not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -46,12 +45,11 @@ end
 notifying_action :delete do
   command = []
   command << "delete-jdbc-connection-pool"
-  command << asadmin_target_flag
   command << "--cascade=true"
   command << new_resource.name
 
   bash "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do
-    only_if "#{asadmin_command('list-jdbc-connection-pools')} #{asadmin_target_flag} | grep -x -- '#{new_resource.name}'"
+    only_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -x -- '#{new_resource.name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))

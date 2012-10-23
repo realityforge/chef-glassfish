@@ -60,7 +60,6 @@ BOOLEAN_ATTRIBUTES.each do |key|
   attribute key, :equal_to => [true, false, 'true', 'false'], :default => nil
 end
 
-attribute :target, :kind_of => String, :default => 'server'
 attribute :description, :kind_of => String, :default => nil
 attribute :properties, :kind_of => Hash, :default => {}
 attribute :restype, :equal_to => ['java.sql.Driver', 'javax.sql.DataSource', 'javax.sql.XADataSource', 'javax.sql.ConnectionPoolDataSource'], :default => nil
