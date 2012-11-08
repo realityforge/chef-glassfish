@@ -1,5 +1,7 @@
 ## v0.5.8:
 
+* Enhance : Add in a `search_driven_domain` recipe to simplify the collection of data for the
+            `attribute_driven_domain` recipe.
 * Change  : Make jaas_context optional in the `glassfish_auth_realm` LWRP. Submitted By Adrian Stanila.
 * Change  : Use default_action DSL rather than constructor to specify default actions for LWRPs. This means the plugin
             requires Chef v0.10.10 or higher.
