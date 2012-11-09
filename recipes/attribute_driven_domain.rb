@@ -410,7 +410,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
       end
     end
     unless found
-      glassfish_connector_resource existing do
+      glassfish_admin_object existing do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
