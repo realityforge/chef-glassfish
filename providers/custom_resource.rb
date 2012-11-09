@@ -45,7 +45,7 @@ notifying_action :delete do
   command << new_resource.jndi_name
 
   bash "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
-    only_if "#{asadmin_command("get resources.custom-resource.#{new_resource.jndi_name}.property.value")} | grep -x -- 'resources.custom-resource.#{new_resource.jndi_name}.property.value='"
+    only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -x -- '#{new_resource.jndi_name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
