@@ -280,20 +280,6 @@ notifying_action :create do
     notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
   end
 
-  if new_resource.extra_libraries
-    new_resource.extra_libraries.each do |extra_library|
-      library_location = "#{domain_dir_path}/lib/ext/#{::File.basename(extra_library)}"
-      remote_file library_location do
-        source extra_library
-        mode "0640"
-        owner node['glassfish']['user']
-        group node['glassfish']['group']
-        action :create_if_missing
-        notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
-      end
-    end
-  end
-
   service "glassfish-#{new_resource.domain_name}" do
     provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true

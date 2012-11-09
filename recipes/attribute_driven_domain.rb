@@ -66,11 +66,23 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     password_file password_file if password_file
     secure secure if secure
     password definition['config']['password'] if definition['config']['password']
-    extra_libraries definition['extra_libraries'].values if definition['extra_libraries']
     logging_properties definition['logging_properties'] if definition['logging_properties']
     realm_types definition['realm_types'] if definition['realm_types']
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
+  end
+
+  if definition['extra_libraries']
+    definition['extra_libraries'].values.each do |value|
+      glassfish_library value do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        library_type 'ext'
+      end
+    end
   end
 
   glassfish_secure_admin "#{domain_key}: secure_admin" do

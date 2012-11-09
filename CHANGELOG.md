@@ -1,5 +1,7 @@
 ## v0.5.8:
 
+* Change  : Remove extra_libraries parameter from the `glassfish_domain` LWRP and replace it's use in the
+            `attribute_driven_domain` recipe with uses of the `glassfish_library` LWRP.
 * Enhance : Add a `glassfish_library` LWRP that can add and remove libraries of various types to the instance.
 * Change  : Update the `attribute_driven_domain` recipe to use the key 'admin_objects' rather than 'admin-objects'.
 * Enhance : Update the `glassfish_secure_admin` LWRP to immediately restart the service if invoked.
