@@ -16,6 +16,32 @@
 
 include_recipe "glassfish::default"
 
+def gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, command)
+  if ::File.exist?("#{node['glassfish']['base_dir']}/glassfish/bin/asadmin")
+    output_file = "/tmp/glassfish.tmp"
+    ::File.delete(output_file) if ::File.exist?(output_file)
+    glassfish_asadmin "#{command} > #{output_file} 2> /dev/null" do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      terse true
+      echo false
+      ignore_failure true
+      returns [0, 1]
+      action :nothing
+    end.run_action(:run)
+
+    if ::File.exist?(output_file)
+      IO.readlines(output_file).collect { |line| line.scan(/^(\S+)/).flatten[0] }.each do |existing|
+        yield existing
+      end
+    end
+    ::File.delete(output_file)
+  end
+end
+
 node['glassfish']['domains'].each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
 
@@ -279,6 +305,207 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             end
           end
         end
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-applications") do |existing|
+    unless definition['deployables'] && definition['deployables'][existing]
+      glassfish_deployable existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :undeploy
+      end
+    end
+  end
+
+  if definition['deployables']
+    definition['deployables'].each_pair do |component_name, configuration|
+      gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-web-env-entry #{component_name}") do |existing|
+        unless configuration['web_env_entries'] && configuration['web_env_entries'][existing]
+          glassfish_web_env_entry "#{domain_key}: #{component_name} unset #{existing}" do
+            domain_name domain_key
+            admin_port admin_port if admin_port
+            username username if username
+            password_file password_file if password_file
+            secure secure if secure
+            webapp component_name
+            name existing
+            action :delete
+          end
+        end
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-resource-adapter-configs") do |existing|
+    unless definition['resource_adapters'] && definition['resource_adapters'][existing]
+      glassfish_resource_adapter existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-connector-connection-pools") do |existing|
+    found = false
+    if definition['resource_adapters']
+      definition['resource_adapters'].each_pair do |key, configuration|
+        if configuration['connection_pools'] && configuration['connection_pools'][existing]
+          found = true
+        end
+      end
+    end
+    unless found
+      glassfish_connector_connection_pool existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-connector-resources") do |existing|
+    found = false
+    if definition['resource_adapters']
+      definition['resource_adapters'].each_pair do |key, configuration|
+        if configuration['connection_pools']
+          configuration['connection_pools'].each_pair do |pool_name, pool_configuration|
+            if pool_configuration['resources'] && pool_configuration['resources'][existing]
+              found = true
+            end
+          end
+        end
+      end
+    end
+    unless found
+      glassfish_connector_resource existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-admin-objects") do |existing|
+    found = false
+    if definition['resource_adapters']
+      definition['resource_adapters'].each_pair do |key, configuration|
+        if configuration['admin-objects'] && configuration['admin-objects'][existing]
+          found = true
+        end
+      end
+    end
+    unless found
+      glassfish_connector_resource existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-jdbc-connection-pools") do |existing|
+    standard_pools = %w{__TimerPool}
+    unless definition['jdbc_connection_pools'] && definition['jdbc_connection_pools'][existing] || standard_pools.include?(existing)
+      glassfish_jdbc_connection_pool existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-jdbc-resources") do |existing|
+    found = false
+    if definition['jdbc_connection_pools']
+      definition['jdbc_connection_pools'].each_pair do |key, configuration|
+        if configuration['resources'] && configuration['resources'][existing]
+          found = true
+        end
+      end
+    end
+    standard_resources = %w{jdbc/__TimerPool}
+    unless found || standard_resources.include?(existing)
+      glassfish_jdbc_connection_pool existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-javamail-resources") do |existing|
+    unless definition['javamail_resources'] && definition['javamail_resources'][existing]
+      glassfish_javamail_resource existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-custom-resources") do |existing|
+    unless definition['custom_resources'] && definition['custom_resources'][existing]
+      glassfish_custom_resource existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-resource-adapter-configs") do |existing|
+    unless definition['resource_adapters'] && definition['resource_adapters'][existing]
+      glassfish_resource_adapter existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
+      end
+    end
+  end
+
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-auth-realms") do |existing|
+    standard_realms = %w{admin-realm file certificate}
+    unless definition['realms'] && definition['realms'][existing] || standard_realms.include?(existing)
+      glassfish_auth_realm existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        action :delete
       end
     end
   end

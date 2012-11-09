@@ -1,5 +1,7 @@
 ## v0.5.8:
 
+* Enhance : In the `attribute_driven_domain` recipe, delete sub-components that are no longer present in the node
+            configuration. The sub-components include things such as resources, realms, pools, deployables etc.
 * Bug     : Ensure that the delete action on the `glassfish_custom_resource` LWRP actually executes.
 * Enhance : Add returns parameter to the `glassfish_asadmin` LWRP that is directly applied to underlying bash resource.
 * Enhance : Pass through the ignore_failure flag on the `glassfish_asadmin` resource to the underlying resource.
