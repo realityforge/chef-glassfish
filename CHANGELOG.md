@@ -3,7 +3,10 @@
 * Change  : Remove extra_libraries parameter from the `glassfish_domain` LWRP and replace it's use in the
             `attribute_driven_domain` recipe with uses of the `glassfish_library` LWRP.
 * Enhance : Add a `glassfish_library` LWRP that can add and remove libraries of various types to the instance.
-* Change  : Update the `attribute_driven_domain` recipe to use the key 'admin_objects' rather than 'admin-objects'.
+* Change  : Update the `attribute_driven_domain` recipe to use the keys;
+            - 'admin_objects' rather than 'admin-objects'
+            - 'jaas_context' rather than 'jaas-context'
+            - 'assign_groups' rather than 'assign-groups'
 * Enhance : Update the `glassfish_secure_admin` LWRP to immediately restart the service if invoked.
 * Enhance : In the `attribute_driven_domain` recipe, delete sub-components that are no longer present in the node
             configuration. The sub-components include things such as resources, realms, pools, deployables etc.

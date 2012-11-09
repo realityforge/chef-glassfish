@@ -139,8 +139,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         secure secure if secure
         target configuration['target'] if configuration['target']
         classname configuration['classname'] if configuration['classname']
-        jaas_context configuration['jaas-context'] if configuration['jaas-context']
-        assign_groups configuration['assign-groups'] if configuration['assign-groups']
+        jaas_context configuration['jaas_context'] if configuration['jaas_context']
+        assign_groups configuration['assign_groups'] if configuration['assign_groups']
         properties configuration['properties'] if configuration['properties']
       end
     end
