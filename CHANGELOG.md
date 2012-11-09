@@ -1,5 +1,6 @@
 ## v0.5.8:
 
+* Enhance : Update the `glassfish_secure_admin` LWRP to immediately restart the service if invoked.
 * Enhance : In the `attribute_driven_domain` recipe, delete sub-components that are no longer present in the node
             configuration. The sub-components include things such as resources, realms, pools, deployables etc.
 * Bug     : Ensure that the delete action on the `glassfish_custom_resource` LWRP actually executes.
