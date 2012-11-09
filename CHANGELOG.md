@@ -1,5 +1,6 @@
 ## v0.5.8:
 
+* Enhance : Add a `glassfish_library` LWRP that can add and remove libraries of various types to the instance.
 * Change  : Update the `attribute_driven_domain` recipe to use the key 'admin_objects' rather than 'admin-objects'.
 * Enhance : Update the `glassfish_secure_admin` LWRP to immediately restart the service if invoked.
 * Enhance : In the `attribute_driven_domain` recipe, delete sub-components that are no longer present in the node
