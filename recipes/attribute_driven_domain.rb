@@ -209,8 +209,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           end
         end
       end
-      if resource_configuration['admin-objects']
-        resource_configuration['admin-objects'].each_pair do |admin_object_key, admin_object_configuration|
+      if resource_configuration['admin_objects']
+        resource_configuration['admin_objects'].each_pair do |admin_object_key, admin_object_configuration|
           admin_object_key = admin_object_key.to_s
           glassfish_admin_object admin_object_key do
             domain_name domain_key
@@ -404,7 +404,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     found = false
     if definition['resource_adapters']
       definition['resource_adapters'].each_pair do |key, configuration|
-        if configuration['admin-objects'] && configuration['admin-objects'][existing]
+        if configuration['admin_objects'] && configuration['admin_objects'][existing]
           found = true
         end
       end
