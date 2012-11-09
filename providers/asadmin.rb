@@ -20,6 +20,7 @@ notifying_action :run do
   bash "asadmin #{new_resource.command}" do
     user node['glassfish']['user']
     group node['glassfish']['group']
+    ignore_failure new_resource.ignore_failure
     code asadmin_command(new_resource.command)
   end
 end

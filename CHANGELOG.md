@@ -1,5 +1,6 @@
 ## v0.5.8:
 
+* Enhance : Pass through the ignore_failure flag on the `glassfish_asadmin` resource to the underlying resource.
 * Enhance : Add in a `search_driven_domain` recipe to simplify the collection of data for the
             `attribute_driven_domain` recipe.
 * Change  : Make jaas_context optional in the `glassfish_auth_realm` LWRP. Submitted By Adrian Stanila.
