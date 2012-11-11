@@ -19,11 +19,16 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     domain_key = domain_key.to_s
     databag_key = definition['discover']['type'] || domain_key
     query = definition['discover']['query'] || '*:*'
-    sort_key = definition['discover']['sort'] || 'X_CHEF_id_CHEF_X asc'
+    sort_key = definition['discover']['sort']
     entry_key = definition['discover']['entry_key'] || 'config'
 
     ::Chef::Log.info "Collecting data for GlassFish Domain #{domain_key} from indexes #{databag_key}"
-    ::Chef::SearchBlender.blend_search_results_into_node(node, databag_key, query, entry_key, "glassfish.domains.#{domain_key}")
+    ::Chef::SearchBlender.blend_search_results_into_node(node,
+                                                         databag_key,
+                                                         query,
+                                                         entry_key,
+                                                         "glassfish.domains.#{domain_key}",
+                                                         'sort' => sort_key)
   end
 end
 
