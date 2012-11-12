@@ -1,3 +1,5 @@
+## v0.5.10:
+
 ## v0.5.8:
 
 * Change  : Remove extra_libraries parameter from the `glassfish_domain` LWRP and replace it's use in the
