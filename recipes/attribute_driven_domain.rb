@@ -37,8 +37,8 @@ def gf_scan_existing_resources(domain_key, admin_port, username, password_file, 
       IO.readlines(output_file).collect { |line| line.scan(/^(\S+)/).flatten[0] }.each do |existing|
         yield existing
       end
+      ::File.delete(output_file)
     end
-    ::File.delete(output_file)
   end
 end
 
