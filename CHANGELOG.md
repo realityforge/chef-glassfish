@@ -1,5 +1,6 @@
 ## v0.5.10:
 * Bug     : Ensure that the sort key if any is passed to the blend_search_results_into_node method
+* Enhance : Add some default JVM options. (-Dfile.encoding=UTF-8 and -Djava.awt.headless=true)
 
 ## v0.5.8:
 

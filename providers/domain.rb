@@ -102,6 +102,12 @@ end
 
 def default_jvm_options
   [
+    # Don't rely on the JVMs default encoding
+    "-Dfile.encoding=UTF-8",
+
+    # Glassfish should be headless by default
+    "-Djava.awt.headless=true",
+
     # JVM options
     "-XX:+UnlockDiagnosticVMOptions",
     "-XX:MaxPermSize=#{new_resource.max_perm_size}m",
