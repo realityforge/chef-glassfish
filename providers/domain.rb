@@ -108,6 +108,9 @@ def default_jvm_options
     # Glassfish should be headless by default
     "-Djava.awt.headless=true",
 
+    # Remove the "Server" header altogether
+    "-Dproduct.name=\"\"",
+
     # JVM options
     "-XX:+UnlockDiagnosticVMOptions",
     "-XX:MaxPermSize=#{new_resource.max_perm_size}m",

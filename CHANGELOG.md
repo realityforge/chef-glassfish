@@ -3,6 +3,7 @@
 * Bug     : Avoid attempting to delete the list file if it does not exist. Bug can be expressed when glassfish is
             installed but not running or the domain does not exist.
 * Enhance : Add some default JVM options. (-Dfile.encoding=UTF-8 and -Djava.awt.headless=true)
+* Enhance : Default to not setting the server name in HTTP response by defaulting the product.name system property.
 
 ## v0.5.8:
 
