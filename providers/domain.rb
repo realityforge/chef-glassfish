@@ -263,12 +263,6 @@ notifying_action :create do
     action :delete
   end
 
-  service "glassfish-#{new_resource.domain_name}" do
-    provider Chef::Provider::Service::Upstart
-    supports :start => true, :restart => true, :stop => true
-    action [:start]
-  end
-
   template "#{domain_dir_path}/config/logging.properties" do
     source "logging.properties.erb"
     mode "0400"
@@ -290,8 +284,6 @@ notifying_action :create do
   end
 
   service "glassfish-#{new_resource.domain_name}" do
-    provider Chef::Provider::Service::Upstart
-    supports :start => true, :restart => true, :stop => true
     action [:start]
   end
 end
