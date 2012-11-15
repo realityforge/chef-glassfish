@@ -1,4 +1,5 @@
 ## v0.5.10:
+* Bug     : Fix bug due to looking for web_env_entries in osgi deployables. Resulted in errors in glassfish log.
 * Bug     : Ensure that the sort key if any is passed to the blend_search_results_into_node method
 * Bug     : Avoid attempting to delete the list file if it does not exist. Bug can be expressed when glassfish is
             installed but not running or the domain does not exist.

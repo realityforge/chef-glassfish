@@ -336,6 +336,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
 
   if definition['deployables']
     definition['deployables'].each_pair do |component_name, configuration|
+      next if configuration['type'] && configuration['type'].to_s == 'osgi'
       gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-web-env-entry #{component_name}") do |existing|
         unless configuration['web_env_entries'] && configuration['web_env_entries'][existing]
           glassfish_web_env_entry "#{domain_key}: #{component_name} unset #{existing}" do
