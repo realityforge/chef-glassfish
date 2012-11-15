@@ -1,4 +1,5 @@
 ## v0.5.10:
+* Bug     : Fix the guard in the `glassfish_property` LWRP so it will not execute if not needed.
 * Bug     : Fix bug that prevented the deletion of historic web_env_entries.
 * Bug     : Fix bug due to looking for web_env_entries in osgi deployables. Resulted in errors in glassfish log.
 * Bug     : Ensure that the sort key if any is passed to the blend_search_results_into_node method
