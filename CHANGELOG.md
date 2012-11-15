@@ -4,6 +4,7 @@
             installed but not running or the domain does not exist.
 * Enhance : Add some default JVM options. (-Dfile.encoding=UTF-8 and -Djava.awt.headless=true)
 * Enhance : Default to not setting the server name in HTTP response by defaulting the product.name system property.
+* Enhance : Expand the realm_types parameter of the domain to support chained configs, flags options in configuration.
 
 ## v0.5.8:
 
