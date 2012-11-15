@@ -347,7 +347,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             secure secure if secure
             webapp component_name
             name existing
-            action :delete
+            action :unset
           end
         end
       end
