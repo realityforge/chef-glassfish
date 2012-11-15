@@ -109,7 +109,7 @@ def default_jvm_options
     "-Djava.awt.headless=true",
 
     # Remove the "Server" header altogether
-    "-Dproduct.name=\"\"",
+    "-Dproduct.name=",
 
     # JVM options
     "-XX:+UnlockDiagnosticVMOptions",
