@@ -301,6 +301,7 @@ end
 notifying_action :destroy do
   service "omq-#{new_resource.instance}" do
     provider Chef::Provider::Service::Upstart
+    supports :start => true, :restart => true, :stop => true, :status => true
     action [:stop]
   end
 

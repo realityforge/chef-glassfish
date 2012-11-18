@@ -1,4 +1,5 @@
 ## v0.5.10:
+* Bug     : Ensure all services have the status flag enabled.
 * Bug     : Stop starting the glassfish service multiple times in the `glassfish_domain` LWRP and remove duplicate
             actions that caused issues in later versions of chef and how it interacted with upstart services.
 * Change  : Upgrade to the 3.1.2.2 version of Glassfish. There was several crippling bugs in the 3.1.2 version.

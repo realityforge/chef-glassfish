@@ -174,7 +174,7 @@ notifying_action :create do
 
   service "glassfish-#{new_resource.domain_name}" do
     provider Chef::Provider::Service::Upstart
-    supports :start => true, :restart => true, :stop => true
+    supports :start => true, :restart => true, :stop => true, :status => true
     action :nothing
   end
 

@@ -19,7 +19,7 @@ include Chef::Asadmin
 notifying_action :enable do
   service "glassfish-#{new_resource.domain_name}" do
     provider Chef::Provider::Service::Upstart
-    supports :restart => true
+    supports :restart => true, :status => true
     action :nothing
   end
 
@@ -35,7 +35,7 @@ end
 notifying_action :disable do
   service "glassfish-#{new_resource.domain_name}" do
     provider Chef::Provider::Service::Upstart
-    supports :restart => true
+    supports :restart => true, :status => true
     action :nothing
   end
 
