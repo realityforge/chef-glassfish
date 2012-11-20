@@ -1,4 +1,5 @@
 ## v0.5.10:
+* Enhance : Escape a more complete set of shell characters when escaping properties. Identified by Robin Wenglewski.
 * Change  : Support specification of the library_type in the extra_libraries section while evaluating the
             `attribute_driven_domain` recipe. Submitted by Robin Wenglewski.
 * Change  : Make glassfish user a system user.
