@@ -1,4 +1,5 @@
 ## v0.5.10:
+* Change  : Make glassfish user a system user.
 * Bug     : Ensure all services have the status flag enabled.
 * Bug     : Stop starting the glassfish service multiple times in the `glassfish_domain` LWRP and remove duplicate
             actions that caused issues in later versions of chef and how it interacted with upstart services.

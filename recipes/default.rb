@@ -24,6 +24,7 @@ user node['glassfish']['user'] do
   gid node['glassfish']['group']
   home node['glassfish']['base_dir']
   shell '/bin/bash'
+  system true
 end
 
 package_url = node['glassfish']['package_url']
