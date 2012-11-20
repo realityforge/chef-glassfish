@@ -1,4 +1,6 @@
 ## v0.5.10:
+* Change  : Support specification of the library_type in the extra_libraries section while evaluating the
+            `attribute_driven_domain` recipe. Submitted By Robin Wenglewski.
 * Change  : Make glassfish user a system user.
 * Bug     : Ensure all services have the status flag enabled.
 * Bug     : Stop starting the glassfish service multiple times in the `glassfish_domain` LWRP and remove duplicate
