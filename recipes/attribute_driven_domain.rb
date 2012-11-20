@@ -74,13 +74,16 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
 
   if definition['extra_libraries']
     definition['extra_libraries'].values.each do |config|
-      glassfish_library config['source'] do
+      config = config.is_a?(Hash) ? config : {'url' => config}
+      url = config['url']
+      library_type = config['type'] || 'ext'
+      glassfish_library url do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
         password_file password_file if password_file
         secure secure if secure
-        library_type (config['type'] || 'ext')
+        library_type library_type
       end
     end
   end
