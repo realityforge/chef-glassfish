@@ -15,6 +15,7 @@ setuid <%= node['glassfish']['user'] %>
 setgid <%= node['glassfish']['group'] %>
 respawn limit 15 5
 kill signal HUP
+umask 0077
 
 <% config_dir = "#{node['glassfish']['domains_dir']}/#{@resource.domain_name}/config" %>
 pre-start script
