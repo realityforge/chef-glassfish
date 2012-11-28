@@ -1,4 +1,5 @@
 ## v0.5.12:
+* Bug     : Fix regression where properties were not escaping the ':' character correctly.
 
 ## v0.5.10:
 * Enhance : Set umask to 0700 for services.
