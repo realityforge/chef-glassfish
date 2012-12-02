@@ -25,7 +25,7 @@ class Chef
     end
 
     def escape_property(string)
-      string.to_s.gsub(/([#{Regexp.escape('\/,:.!$%^&*|{}[]"`~;')}])/) {|match| "\\#{match}" }
+      string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) {|match| "\\#{match}" }
     end
 
     def asadmin_command(command, remote_command = true)
