@@ -12,7 +12,7 @@ recipe 'glassfish::attribute_driven_mq', 'Installs GlassFish OpenMQ brokers defi
 
 depends 'java'
 depends 'authbind'
-depends 'cutlery', '~> 0.1.0'
+depends 'cutlery', '~> 0.1'
 
 attribute 'glassfish/user',
   :display_name => 'GlassFish User',
