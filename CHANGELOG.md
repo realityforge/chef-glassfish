@@ -1,3 +1,5 @@
+## v0.5.14:
+
 ## v0.5.12:
 * Bug     : Fix regression where properties were not escaping the ':' or '=' characters correctly.
 
