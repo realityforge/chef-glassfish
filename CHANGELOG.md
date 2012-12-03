@@ -1,4 +1,5 @@
 ## v0.5.14:
+* Change  : Extract the utility code out into the 'cutlery' cookbook.
 
 ## v0.5.12:
 * Bug     : Fix regression where properties were not escaping the ':' or '=' characters correctly.

@@ -4,7 +4,7 @@ maintainer_email 'peter@realityforge.org'
 license          'Apache 2.0'
 description      'Installs/Configures GlassFish Application Server'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.5.13'
+version          '0.5.14'
 
 recipe 'glassfish::default', 'Installs and configures GlassFish'
 recipe 'glassfish::attribute_driven_domain', 'Installs GlassFish domains defined in the glassfish/domains attribute'
@@ -12,6 +12,7 @@ recipe 'glassfish::attribute_driven_mq', 'Installs GlassFish OpenMQ brokers defi
 
 depends 'java'
 depends 'authbind'
+depends 'cutlery', '~> 0.1.0'
 
 attribute 'glassfish/user',
   :display_name => 'GlassFish User',
