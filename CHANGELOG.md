@@ -1,3 +1,5 @@
+## v0.5.18:
+
 ## v0.5.16:
 * Change  : Stop using LWRPs to gather the scan the list of resources to delete in the `attribute_driven_domain`
             recipe and instead execute the code inline. Refactor the asadmin library to make it easier to
