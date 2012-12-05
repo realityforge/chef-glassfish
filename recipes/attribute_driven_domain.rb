@@ -17,28 +17,15 @@
 include_recipe "glassfish::default"
 
 def gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, command)
-  if ::File.exist?("#{node['glassfish']['base_dir']}/glassfish/bin/asadmin")
-    output_file = "/tmp/glassfish.tmp"
-    ::File.delete(output_file) if ::File.exist?(output_file)
-    glassfish_asadmin "#{command} > #{output_file} 2> /dev/null" do
-      domain_name domain_key
-      admin_port admin_port if admin_port
-      username username if username
-      password_file password_file if password_file
-      secure secure if secure
-      terse true
-      echo false
-      ignore_failure true
-      returns [0, 1]
-      action :nothing
-    end.run_action(:run)
+  options = {:remote_command => true, :terse => true, :echo => false}
+  options[:username] = username if username
+  options[:password_file] = password_file if password_file
+  options[:secure] = secure if secure
+  options[:admin_port] = admin_port if admin_port
 
-    if ::File.exist?(output_file)
-      IO.readlines(output_file).collect { |line| line.scan(/^(\S+)/).flatten[0] }.each do |existing|
-        yield existing
-      end
-      ::File.delete(output_file)
-    end
+  output = `#{Asadmin.asadmin_command(node, command, options)} 2> /dev/null`
+  output.split("\n").collect { |line| line.scan(/^(\S+)/).flatten[0] }.each do |existing|
+    yield existing
   end
 end
 
