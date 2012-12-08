@@ -241,6 +241,7 @@ notifying_action :create do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '"
 
     args = []
+    args << "--checkports=false"
     args << "--instanceport #{new_resource.port}"
     args << "--adminport #{new_resource.admin_port}"
     args << "--nopassword=false" if new_resource.username

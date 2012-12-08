@@ -1,4 +1,6 @@
 ## v0.5.18:
+* Change  : Avoid checking for port availability when creating the domain.
+
 
 ## v0.5.16:
 * Change  : Stop using LWRPs to gather the scan the list of resources to delete in the `attribute_driven_domain`
