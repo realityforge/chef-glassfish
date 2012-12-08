@@ -45,13 +45,18 @@ notifying_action :deploy do
     action :nothing
   end
 
-  cached_package_filename = "#{base_cache_name}#{::File.extname(new_resource.url)}"
-  remote_file cached_package_filename do
-    source new_resource.url
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0600"
-    action :create_if_missing
+  cached_package_filename = nil
+  if new_resource.url =~ /^file\:\/\//
+    cached_package_filename = new_resource.url[7,new_resource.url.length]
+  else
+    cached_package_filename = "#{base_cache_name}#{::File.extname(new_resource.url)}"
+    remote_file cached_package_filename do
+      source new_resource.url
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+      mode "0600"
+      action :create_if_missing
+    end
   end
 
   deployment_plan = nil

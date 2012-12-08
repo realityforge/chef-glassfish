@@ -1,4 +1,5 @@
 ## v0.5.18:
+* Change  : Support file:// urls in `glassfish_deployable` LWRP.
 * Change  : Avoid checking for port availability when creating the domain.
 
 
