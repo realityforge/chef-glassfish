@@ -60,34 +60,33 @@ notifying_action :deploy do
   end
 
   deployment_plan = nil
+  plan_digest = nil
   unless new_resource.descriptors.empty?
-    deployment_plan = "#{base_cache_name}.deployment-plan.jar"
+    plan_digest = generate_plan_digest()
+    deployment_plan = "#{base_cache_name}-deployment-plan.#{plan_digest}.jar"
+    deployment_plan_dir = "#{Chef::Config[:file_cache_path]}/#{::File.basename(deployment_plan, '.jar')}"
 
-    bash deployment_plan do
-      deployment_plan_dir = "#{Chef::Config[:file_cache_path]}/#{::File.basename(deployment_plan, '.jar')}"
-      command = []
-      command << "rm -rf #{deployment_plan_dir}"
-      command << "mkdir -p #{deployment_plan_dir}"
-      command << "cd #{deployment_plan_dir}"
+    bash "Create #{deployment_plan}" do
+      command = <<-CMD
+rm -rf #{deployment_plan_dir}
+mkdir -p #{deployment_plan_dir}
+cd #{deployment_plan_dir}
+      CMD
       new_resource.descriptors.collect do |key, file|
         if ::File.dirname(key) != ''
-          command << "mkdir -p #{::File.dirname(key)}"
+          command << "mkdir -p #{::File.dirname(key)}\n"
         end
-        command << "cp #{file} #{key}"
+        command << "cp #{file} #{key}\n"
       end
-      command << "jar -cf #{deployment_plan} ."
-      command << "chown #{node['glassfish']['user']}:#{node['glassfish']['group']} #{deployment_plan}"
-      code command.join(" &&\n ")
-      action :nothing
-    end
-
-    file "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.config.VERSION" do
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
-      mode "0600"
-      action :create
-      content generate_plan_digest()
-      notifies :run, resources(:bash => deployment_plan), :immediately
+      command << <<-CMD
+jar -cf #{deployment_plan} .
+chown #{node['glassfish']['user']}:#{node['glassfish']['group']} #{deployment_plan}
+chmod 0700 #{deployment_plan}
+rm -rf #{deployment_plan_dir}
+test -f #{deployment_plan}
+      CMD
+      code command
+      not_if { ::File.exists?(deployment_plan) }
     end
   end
 
