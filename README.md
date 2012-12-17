@@ -15,6 +15,7 @@ Requirements
 
 * `java` cookbook
 * `authbind` cookbook
+* `cutlery` cookbook
 
 Tested on Ubuntu 11
 
