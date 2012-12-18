@@ -1,4 +1,8 @@
 ## v0.5.18:
+* Change  : Attempting to redeploy the glassfish server in to a directory while an existing service is currently
+            running results in an error in usermod "usermod: user glassfish is currently logged in". Change the
+            default attributes for the home directory so that glassfish is always installed to a fixed location
+            to avoid this scenario in the future.
 * Change  : Support file:// urls in `glassfish_deployable` LWRP.
 * Change  : Avoid checking for port availability when creating the domain.
 * Change  : Rework the deployable so that the non-osgi components will store the version information as part

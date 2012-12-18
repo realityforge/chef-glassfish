@@ -14,13 +14,13 @@
 # limitations under the License.
 #
 
-default['glassfish']['user'] = "glassfish"
-default['glassfish']['group'] = "glassfish-admin"
+default['glassfish']['user'] = 'glassfish'
+default['glassfish']['group'] = 'glassfish-admin'
 
 version = "3.1.2.2"
 default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{version}/release/glassfish-#{version}.zip"
-default['glassfish']['base_dir'] = "/usr/local/glassfish-#{version}"
-default['glassfish']['domains_dir'] = "/usr/local/glassfish-#{version}/glassfish/domains"
+default['glassfish']['base_dir'] = '/usr/local/glassfish'
+default['glassfish']['domains_dir'] = '/usr/local/glassfish/glassfish/domains'
 default['glassfish']['domains'] = Mash.new
 
 default['openmq']['extra_libraries'] = Mash.new
