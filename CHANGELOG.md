@@ -1,7 +1,10 @@
 ## v0.5.18:
 * Change  : Support file:// urls in `glassfish_deployable` LWRP.
 * Change  : Avoid checking for port availability when creating the domain.
-
+* Change  : Rework the deployable so that the non-osgi components will store the version information as part
+            of the name. This avoids the scenario where redeploying the same application with a different
+            version could undeploy the existing application but fail to deploy the new version. The new approach
+            will enable the old version only when the new deployable successfully deploys.
 
 ## v0.5.16:
 * Change  : Stop using LWRPs to gather the scan the list of resources to delete in the `attribute_driven_domain`

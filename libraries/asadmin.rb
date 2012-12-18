@@ -40,6 +40,32 @@ class Chef
       Asadmin.asadmin_command(node, command, options)
     end
 
+
+    def self.generate_component_plan_digest(descriptors)
+      require 'digest/md5'
+
+      plan_digest = ::Digest::MD5.new
+      content = descriptors.keys.sort.collect do |key|
+        digest = ::Digest::MD5.new
+        ::File.foreach(descriptors[key]) do |s|
+          digest.update(s)
+        end
+        "#{key}=#{digest.hexdigest}"
+      end.join("\n")
+      plan_digest.update(content)
+      plan_digest.hexdigest
+    end
+
+    def self.versioned_component_name(component_name, version, url, descriptors)
+      version_value = version ? version.to_s : Digest::SHA1.hexdigest(url)
+      versioned_component_name = "#{component_name}:#{version_value}"
+      if descriptors.empty?
+        return versioned_component_name
+      else
+        return "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}"
+      end
+    end
+
     def self.asadmin_command(node, command, options = {})
       args = []
       args << "--terse" if options[:terse]

@@ -311,9 +311,32 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-applications") do |existing|
-    unless definition['deployables'] && definition['deployables'][existing]
-      glassfish_deployable existing do
+  gf_scan_existing_resources(domain_key, admin_port, username, password_file, secure, "list-applications") do |versioned_component_name|
+    name_parts = versioned_component_name.split(':')
+    key = name_parts[0]
+    version_parts = name_parts.size > 1 ? name_parts[1].split('+') : ['']
+    version = version_parts[0]
+    plan_version = name_parts.size > 1 ? version_parts[1] : nil
+
+    keep = false
+    if definition['deployables'] && definition['deployables'][key]
+      config = definition['deployables'][key]
+      # OSGi does not keep the version in the name so we need to store it on the filesystem
+      if config['type'].to_s == 'osgi'
+        version_file = "#{node['glassfish']['domains_dir']}/#{domain_key}_#{key}.VERSION"
+        keep = (File.readlines(version_file).join('').gsub(/\s/,'') == versioned_component_name) rescue false
+      else
+        if config['version'] == version || Digest::SHA1.hexdigest(config['url']) == version
+          if (!plan_version && (!config['descriptors'] || config['descriptors'].empty?)) ||
+            (Asadmin.generate_component_plan_digest(config['descriptors']) == plan_version)
+            keep = true
+          end
+        end
+      end
+    end
+
+    unless keep
+      glassfish_deployable versioned_component_name do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
