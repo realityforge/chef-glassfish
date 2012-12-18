@@ -1,3 +1,5 @@
+## v0.5.20:
+
 ## v0.5.18:
 * Change  : Attempting to redeploy the glassfish server in to a directory while an existing service is currently
             running results in an error in usermod "usermod: user glassfish is currently logged in". Change the
