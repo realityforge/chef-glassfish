@@ -30,8 +30,10 @@ end
 package_url = node['glassfish']['package_url']
 base_package_filename = File.basename(package_url)
 cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{base_package_filename}"
+check_proc = Proc.new { ::File.exists?( node['glassfish']['base_dir'] ) }
 
 remote_file cached_package_filename do
+  not_if { check_proc.call }
   source package_url
   mode '0600'
   action :create_if_missing
@@ -40,7 +42,8 @@ end
 package 'unzip'
 
 bash 'unpack_glassfish' do
-    code <<-EOF
+  not_if { check_proc.call }
+  code <<-EOF
 rm -rf /tmp/glassfish
 mkdir /tmp/glassfish
 cd /tmp/glassfish
@@ -54,7 +57,6 @@ chmod -R 0770 #{node['glassfish']['base_dir']}/glassfish/bin/
 rm -rf #{node['glassfish']['base_dir']}/glassfish/domains/domain1
 test -d #{node['glassfish']['base_dir']}
 EOF
-  not_if { ::File.exists?( node['glassfish']['base_dir'] ) }
 end
 
 cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/domain.xml" do

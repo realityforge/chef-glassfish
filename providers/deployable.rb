@@ -20,6 +20,25 @@ include Chef::Asadmin
 notifying_action :deploy do
   version_value = new_resource.version ? new_resource.version.to_s : Digest::SHA1.hexdigest(new_resource.url)
   base_cache_name = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{new_resource.component_name}_#{version_value}"
+  versioned_component_name = Asadmin.versioned_component_name(new_resource.component_name, new_resource.version, new_resource.url, new_resource.descriptors)
+
+  test_suffix = nil
+  version_file = nil
+
+  # Oh the pain. OSGi modules are not version suffixed so we need to store the version on the filesystem. Joy for feature parity.
+  if new_resource.type.to_s == 'osgi'
+    version_file = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
+    file version_file do
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+      mode "0600"
+      content versioned_component_name
+      action :nothing
+    end
+    test_suffix = "| grep -q '^#{versioned_component_name}$' #{version_file}"
+  end
+
+  check_command = "#{asadmin_command('list-applications')} #{new_resource.target} | grep -q -- '#{versioned_component_name} '#{test_suffix}"
 
   cached_package_filename = nil
   if new_resource.url =~ /^file\:\/\//
@@ -27,6 +46,7 @@ notifying_action :deploy do
   else
     cached_package_filename = "#{base_cache_name}#{::File.extname(new_resource.url)}"
     remote_file cached_package_filename do
+      not_if check_command
       source new_resource.url
       owner node['glassfish']['user']
       group node['glassfish']['group']
@@ -66,26 +86,8 @@ test -f #{deployment_plan}
     end
   end
 
-  versioned_component_name = Asadmin.versioned_component_name(new_resource.component_name, new_resource.version, new_resource.url, new_resource.descriptors)
-
-  test_suffix = nil
-  version_file = nil
-
-  # Oh the pain. OSGi modules are not version suffixed so we need to store the version on the filesystem. Joy for feature parity.
-  if new_resource.type.to_s == 'osgi'
-    version_file = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
-    file version_file do
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
-      mode "0600"
-      content versioned_component_name
-      action :nothing
-    end
-    test_suffix = "| grep -q '^#{versioned_component_name}$' #{version_file}"
-  end
-
   bash "deploy application #{versioned_component_name}" do
-    not_if "#{asadmin_command('list-applications')} #{new_resource.target} | grep -q -- '#{versioned_component_name} '#{test_suffix}"
+    not_if check_command
 
     command = []
     command << "deploy"

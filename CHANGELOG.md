@@ -1,4 +1,6 @@
 ## v0.5.20:
+* Change  : Avoid downloading remote artifacts (deployables, libraries and base install) if they will not
+            actually be used by adding some not_if guards.
 
 ## v0.5.18:
 * Change  : Attempting to redeploy the glassfish server in to a directory while an existing service is currently

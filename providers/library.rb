@@ -22,8 +22,10 @@ end
 
 notifying_action :add do
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
+  check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
 
   directory ::File.dirname(cached_package_filename) do
+    not_if check_command
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode '0700'
@@ -31,6 +33,7 @@ notifying_action :add do
   end
 
   remote_file cached_package_filename do
+    not_if check_command
     source new_resource.url
     owner node['glassfish']['user']
     group node['glassfish']['group']
@@ -45,7 +48,7 @@ notifying_action :add do
   command << cached_package_filename
 
   bash "asadmin_add-library #{new_resource.url}" do
-    not_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
+    not_if check_command
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
