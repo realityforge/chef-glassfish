@@ -204,7 +204,7 @@ notifying_action :create do
     cookbook 'glassfish'
 
     variables(:resource => new_resource, :args => args, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
-    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
   end
 
   directory node['glassfish']['domains_dir'] do
@@ -271,7 +271,7 @@ notifying_action :create do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     variables(:logging_properties => default_logging_properties.merge(new_resource.logging_properties))
-    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
   end
 
   template "#{domain_dir_path}/config/login.conf" do
@@ -281,7 +281,7 @@ notifying_action :create do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
-    notifies :restart, resources(:service => "glassfish-#{new_resource.domain_name}"), :delayed
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
   end
 
   service "glassfish-#{new_resource.domain_name}" do

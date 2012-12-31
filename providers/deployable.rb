@@ -114,7 +114,7 @@ test -f #{deployment_plan}
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
     if new_resource.type.to_s == 'osgi'
-      notifies :create, resources(:file => version_file), :immediately
+      notifies :create, "file[#{version_file}]", :immediately
     end
   end
 end

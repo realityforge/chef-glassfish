@@ -211,7 +211,7 @@ notifying_action :create do
       mode "0400"
       action :create
       content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
-      notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
+      notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
     end
 
     file "#{instance_dir}/etc/jmxremote.password" do
@@ -220,7 +220,7 @@ notifying_action :create do
       mode "0400"
       action :create
       content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
-      notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
+      notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
     end
   end
 
@@ -246,7 +246,7 @@ notifying_action :create do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     variables(:configs => mq_config_settings(new_resource))
-    notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
+    notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
   end
 
   template "#{instance_dir}/etc/logging.properties" do
@@ -256,7 +256,7 @@ notifying_action :create do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     variables(:logging_properties => new_resource.logging_properties)
-    notifies :restart, resources(:service => "omq-#{new_resource.instance}"), :delayed
+    notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
   end
 
   template "#{instance_dir}/etc/passwd" do

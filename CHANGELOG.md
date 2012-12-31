@@ -1,4 +1,5 @@
 ## v0.5.20:
+* Change  : Prefer new notification syntax.
 * Change  : Avoid downloading remote artifacts (deployables, libraries and base install) if they will not
             actually be used by adding some not_if guards.
 
