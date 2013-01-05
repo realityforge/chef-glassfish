@@ -68,8 +68,8 @@ class Chef
 
     def self.asadmin_command(node, command, options = {})
       args = []
-      args << "--terse" if options[:terse]
-      args << "--echo" if options[:echo]
+      args << "--terse=#{!!options[:terse]}"
+      args << "--echo=#{!!options[:echo]}"
       args << "--user #{options[:username]}" if options[:username]
       args << "--passwordfile=#{options[:password_file]}" if options[:password_file]
       if options[:remote_command].nil? || options[:remote_command]
