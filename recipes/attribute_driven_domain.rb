@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-include_recipe "glassfish::default"
+include_recipe 'glassfish::default'
 
 def gf_scan_existing_resources(admin_port, username, password_file, secure, command)
   options = {:remote_command => true, :terse => true, :echo => false}
@@ -40,7 +40,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   password_file = username ? "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" : nil
 
   if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
-    include_recipe "authbind"
+    include_recipe 'authbind'
   end
 
   glassfish_domain domain_key do
@@ -311,7 +311,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-applications") do |versioned_component_name|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-applications') do |versioned_component_name|
     name_parts = versioned_component_name.split(':')
     key = name_parts[0]
     version_parts = name_parts.size > 1 ? name_parts[1].split('+') : ['']
@@ -367,7 +367,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-resource-adapter-configs") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-resource-adapter-configs') do |existing|
     unless definition['resource_adapters'] && definition['resource_adapters'][existing]
       glassfish_resource_adapter existing do
         domain_name domain_key
@@ -380,7 +380,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-connector-connection-pools") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-connection-pools') do |existing|
     found = false
     if definition['resource_adapters']
       definition['resource_adapters'].each_pair do |key, configuration|
@@ -401,7 +401,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-connector-resources") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-resources') do |existing|
     found = false
     if definition['resource_adapters']
       definition['resource_adapters'].each_pair do |key, configuration|
@@ -426,7 +426,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-admin-objects") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-admin-objects') do |existing|
     found = false
     if definition['resource_adapters']
       definition['resource_adapters'].each_pair do |key, configuration|
@@ -447,7 +447,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-jdbc-connection-pools") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-connection-pools') do |existing|
     standard_pools = %w{__TimerPool}
     unless definition['jdbc_connection_pools'] && definition['jdbc_connection_pools'][existing] || standard_pools.include?(existing)
       glassfish_jdbc_connection_pool existing do
@@ -461,7 +461,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-jdbc-resources") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-resources') do |existing|
     found = false
     if definition['jdbc_connection_pools']
       definition['jdbc_connection_pools'].each_pair do |key, configuration|
@@ -483,7 +483,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-javamail-resources") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-javamail-resources') do |existing|
     unless definition['javamail_resources'] && definition['javamail_resources'][existing]
       glassfish_javamail_resource existing do
         domain_name domain_key
@@ -496,7 +496,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-custom-resources") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-custom-resources') do |existing|
     unless definition['custom_resources'] && definition['custom_resources'][existing]
       glassfish_custom_resource existing do
         domain_name domain_key
@@ -509,7 +509,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-resource-adapter-configs") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-resource-adapter-configs') do |existing|
     unless definition['resource_adapters'] && definition['resource_adapters'][existing]
       glassfish_resource_adapter existing do
         domain_name domain_key
@@ -522,7 +522,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 
-  gf_scan_existing_resources(admin_port, username, password_file, secure, "list-auth-realms") do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-auth-realms') do |existing|
     standard_realms = %w{admin-realm file certificate}
     unless definition['realms'] && definition['realms'][existing] || standard_realms.include?(existing)
       glassfish_auth_realm existing do
