@@ -253,7 +253,7 @@ notifying_action :create do
     command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
     command_string << replace_in_domain_file("%%%MAX_MEM_SIZE%%%", new_resource.max_memory)
     command_string << replace_in_domain_file("%%%MIN_MEM_SIZE%%%", new_resource.min_memory)
-    command_string << asadmin_command("verify-domain-xml #{new_resource.domain_name}", false)
+    command_string << asadmin_command("verify-domain-xml #{domain_dir_arg} #{new_resource.domain_name}", false)
 
     user node['glassfish']['user']
     group node['glassfish']['group']

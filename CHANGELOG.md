@@ -1,5 +1,6 @@
 ## v0.5.20:
 * Bug     : Ensure terse and echo flags are correctly passed to asadmin command.
+* Fix     : Ensure that alternative domain paths are supported.
 * Change  : Prefer new notification syntax.
 * Change  : Avoid downloading remote artifacts (deployables, libraries and base install) if they will not
             actually be used by adding some not_if guards.
