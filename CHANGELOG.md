@@ -1,3 +1,5 @@
+## v0.5.22:
+
 ## v0.5.20:
 * Bug     : Ensure terse and echo flags are correctly passed to asadmin command.
 * Fix     : Ensure that alternative domain paths are supported.
