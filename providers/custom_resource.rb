@@ -31,10 +31,28 @@ notifying_action :create do
   command << new_resource.jndi_name
 
   bash "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
-    not_if "#{asadmin_command("get resources.custom-resource.#{new_resource.jndi_name}.property.value")} | grep -x -- 'resources.custom-resource.#{new_resource.jndi_name}.property.value=#{escape_property(new_resource.value)}'"
+    not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -x -- '#{new_resource.jndi_name}'"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
+  end
+
+  sets = {'factory-class' => factoryclass, 'res-type' => new_resource.restype}
+  properties.each_pair do |key, value|
+    sets["property.#{key}"] = value
+  end
+  sets['enabled'] = !!new_resource.enabled
+  sets.each_pair do |key, value|
+    variable = "resources.custom-resource.#{new_resource.jndi_name}.#{key}"
+    glassfish_property "#{variable}=#{value}" do
+      domain_name new_resource.domain_name
+      admin_port new_resource.admin_port
+      username new_resource.username
+      password_file new_resource.password_file
+      secure new_resource.secure
+      key variable
+      value value.to_s
+    end
   end
 end
 

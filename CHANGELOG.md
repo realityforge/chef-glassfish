@@ -1,4 +1,5 @@
 ## v0.5.22:
+* Bug     : Ensure that changes to custom resources are updated on the glassfish server if required.
 
 ## v0.5.20:
 * Bug     : Ensure terse and echo flags are correctly passed to asadmin command.
