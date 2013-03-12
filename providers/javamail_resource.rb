@@ -16,7 +16,9 @@
 
 include Chef::Asadmin
 
-notifying_action :create do
+use_inline_resources
+
+action :create do
 
   command = []
   command << "create-javamail-resource"
@@ -42,7 +44,7 @@ notifying_action :create do
   end
 end
 
-notifying_action :delete do
+action :delete do
   command = []
   command << "delete-javamail-resource"
   command << asadmin_target_flag

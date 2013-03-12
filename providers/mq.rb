@@ -80,7 +80,9 @@ def mq_config_settings(resource)
   configs
 end
 
-notifying_action :create do
+use_inline_resources
+
+action :create do
   requires_authbind = false
   requires_authbind ||= new_resource.port < 1024
   requires_authbind ||= new_resource.admin_port < 1024
@@ -298,7 +300,7 @@ notifying_action :create do
   end
 end
 
-notifying_action :destroy do
+action :destroy do
   service "omq-#{new_resource.instance}" do
     provider Chef::Provider::Service::Upstart
     supports :start => true, :restart => true, :stop => true, :status => true

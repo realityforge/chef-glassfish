@@ -16,7 +16,9 @@
 
 include Chef::Asadmin
 
-notifying_action :create do
+use_inline_resources
+
+action :create do
 
   parameters = [:restype, :isolationlevel, :validationmethod] +
     ::Chef::Resource::GlassfishJdbcConnectionPool::STRING_ATTRIBUTES +
@@ -42,7 +44,7 @@ notifying_action :create do
   end
 end
 
-notifying_action :delete do
+action :delete do
   command = []
   command << "delete-jdbc-connection-pool"
   command << "--cascade=true"

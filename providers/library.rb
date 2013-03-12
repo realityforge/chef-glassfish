@@ -20,7 +20,9 @@ def type_flag
   "--type #{new_resource.library_type}"
 end
 
-notifying_action :add do
+use_inline_resources
+
+action :add do
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
   check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
 
@@ -55,7 +57,7 @@ notifying_action :add do
   end
 end
 
-notifying_action :remove do
+action :remove do
   command = []
   command << "remove-library"
   command << type_flag

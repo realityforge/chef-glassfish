@@ -1,4 +1,5 @@
 ## v0.5.22:
+* Change  : Replace the use of cutlery's notifying_action with Chef 11's use_inline_resources method.
 * Bug     : Ensure that changes to custom resources are updated on the glassfish server if required.
 
 ## v0.5.20:
