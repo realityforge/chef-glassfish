@@ -18,7 +18,7 @@ Pester us if we don't get your Pull Requests merged in a timely fashion. :)
 * Ensure your commit messages help others understand what you are doing and why.
 * Check for unnecessary whitespace with `git diff --check` before committing.
 
-# Additional Resources
+## Additional Resources
 
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
