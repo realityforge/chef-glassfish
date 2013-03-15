@@ -1,4 +1,5 @@
 ## v0.5.24:
+* Bug     : Stop trying to undeploy non-existent resources when server is not upa at start of chef run.
 
 ## v0.5.22:
 * Change  : Replace the use of cutlery's notifying_action with Chef 11's use_inline_resources method.

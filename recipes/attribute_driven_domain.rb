@@ -24,8 +24,9 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   options[:admin_port] = admin_port if admin_port
 
   output = `#{Asadmin.asadmin_command(node, command, options)} 2> /dev/null`
+  return if output =~ /^Nothing to list.*/ || output =~ /^No such local command.*/
   lines = output.split("\n")
-  return if lines.size == 1 && lines == 'Nothing to list'
+
   lines.each do |line|
     existing = line.scan(/^(\S+)/).flatten[0]
     yield existing
