@@ -34,6 +34,14 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
 end
 
 node['glassfish']['domains'].each_pair do |domain_key, definition|
+  if definition['recipes'] && definition['recipes']['before']
+    definition['recipes']['before'].each do |recipe|
+      include_recipe recipe
+    end
+  end
+end
+
+node['glassfish']['domains'].each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
@@ -537,6 +545,14 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         secure secure if secure
         action :delete
       end
+    end
+  end
+end
+
+node['glassfish']['domains'].each_pair do |domain_key, definition|
+  if definition['recipes'] && definition['recipes']['after']
+    definition['recipes']['after'].each do |recipe|
+      include_recipe recipe
     end
   end
 end
