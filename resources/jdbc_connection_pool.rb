@@ -18,7 +18,12 @@ actions :create, :delete
 
 attribute :pool_name, :kind_of => String, :name_attribute => true
 
-STRING_ATTRIBUTES = [:datasourceclassname, :initsql, :sqltracelisteners, :driverclassname, :validationclassname, :validationtable]
+STRING_ATTRIBUTES = [:datasourceclassname,
+                     :initsql,
+                     :sqltracelisteners,
+                     :driverclassname,
+                     :validationclassname,
+                     :validationtable]
 STRING_ATTRIBUTES.each do |key|
   attribute key, :kind_of => String, :default => nil
 end
@@ -62,7 +67,12 @@ end
 
 attribute :description, :kind_of => String, :default => nil
 attribute :properties, :kind_of => Hash, :default => {}
-attribute :restype, :equal_to => ['java.sql.Driver', 'javax.sql.DataSource', 'javax.sql.XADataSource', 'javax.sql.ConnectionPoolDataSource'], :default => nil
+attribute :restype,
+          :equal_to => ['java.sql.Driver',
+                        'javax.sql.DataSource',
+                        'javax.sql.XADataSource',
+                        'javax.sql.ConnectionPoolDataSource'],
+          :default => nil
 attribute :isolationlevel, :equal_to => ['read-uncommitted', 'read-committed', 'repeatable-read', 'serializable']
 attribute :validationmethod, :equal_to => ['auto-commit', 'meta-data', 'table', 'custom-validation']
 
