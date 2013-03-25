@@ -30,7 +30,7 @@ end
 package_url = node['glassfish']['package_url']
 base_package_filename = File.basename(package_url)
 cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{base_package_filename}"
-check_proc = Proc.new { ::File.exists?( node['glassfish']['base_dir'] ) }
+check_proc = Proc.new { ::File.exists?(node['glassfish']['base_dir']) }
 
 remote_file cached_package_filename do
   not_if { check_proc.call }
