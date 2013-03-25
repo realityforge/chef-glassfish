@@ -44,7 +44,7 @@ action :deploy do
 
   cached_package_filename = nil
   if new_resource.url =~ /^file\:\/\//
-    cached_package_filename = new_resource.url[7,new_resource.url.length]
+    cached_package_filename = new_resource.url[7, new_resource.url.length]
   else
     cached_package_filename = "#{base_cache_name}#{::File.extname(new_resource.url)}"
     remote_file cached_package_filename do

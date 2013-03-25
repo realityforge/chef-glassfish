@@ -340,7 +340,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
       # OSGi does not keep the version in the name so we need to store it on the filesystem
       if config['type'].to_s == 'osgi'
         version_file = "#{node['glassfish']['domains_dir']}/#{domain_key}_#{key}.VERSION"
-        keep = (File.readlines(version_file).join('').gsub(/\s/,'') == versioned_component_name) rescue false
+        keep = (File.readlines(version_file).join('').gsub(/\s/, '') == versioned_component_name) rescue false
       else
         if config['version'] == version || Digest::SHA1.hexdigest(config['url']) == version
           if (!plan_version && (!config['descriptors'] || config['descriptors'].empty?)) ||

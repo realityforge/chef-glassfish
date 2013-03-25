@@ -17,7 +17,7 @@
 actions :add, :remove
 
 attribute :url, :kind_of => String, :name_attribute => true
-attribute :library_type, :equal_to => ['common','ext','app'], :default => 'common'
+attribute :library_type, :equal_to => ['common', 'ext', 'app'], :default => 'common'
 attribute :upload, :equal_to => [true, false, 'true', 'false'], :default => true
 
 attribute :domain_name, :kind_of => String, :required => true
