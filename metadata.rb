@@ -38,13 +38,13 @@ attribute 'glassfish/base_dir',
   :display_name => 'GlassFish Base Directory',
   :description => 'The base directory of the GlassFish install',
   :type => 'string',
-  :default => '/usr/local/glassfish-3.1.2'
+  :default => '/usr/local/glassfish'
 
 attribute 'glassfish/domains_dir',
   :display_name => 'GlassFish Domain Directory',
   :description => 'The directory containing all the domain definitions',
   :type => 'string',
-  :default => '/usr/local/glassfish-3.1.2/glassfish/domains'
+  :default => '/usr/local/glassfish/glassfish/domains'
 
 attribute 'glassfish/domains',
   :display_name => 'GlassFish Domain Definitions',
