@@ -10,6 +10,8 @@ recipe 'glassfish::default', 'Installs and configures GlassFish'
 recipe 'glassfish::attribute_driven_domain', 'Installs GlassFish domains defined in the glassfish/domains attribute'
 recipe 'glassfish::attribute_driven_mq', 'Installs GlassFish OpenMQ brokers defined in the openmq/instances attribute'
 
+supports 'ubuntu'
+
 depends 'java'
 depends 'authbind'
 depends 'cutlery', '~> 0.1'
