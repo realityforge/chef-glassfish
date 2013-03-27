@@ -30,7 +30,6 @@ used when there is not yet a resource defined in this cookbook for executing an 
 #>
 =end
 
-
 actions :run
 
 #<> @attribute command The command to execute.
