@@ -19,12 +19,19 @@ actions :set
 attribute :key, :kind_of => String, :required => true
 attribute :value, :kind_of => String, :required => true
 
+#<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :required => true
+#<> @attribute terse Use terse output from the underlying asadmin.
 attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
+#<> @attribute echo If true, echo commands supplied to asadmin.
 attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
+#<> @attribute username The username to use when communicating with the domain.
 attribute :username, :kind_of => String, :default => nil
+#<> @attribute password_file The file in which the password must be stored assigned to appropriate key.
 attribute :password_file, :kind_of => String, :default => nil
+#<> @attribute secure If true use SSL when communicating with the domain for administration.
 attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
+#<> @attribute admin_port The port on which the web management console is bound.
 attribute :admin_port, :kind_of => Integer, :default => 4848
 
 default_action :set
