@@ -14,6 +14,17 @@
 # limitations under the License.
 #
 
+=begin
+#<
+Downloads, and extracts the glassfish binaries, creates the glassfish user and group.
+
+Does not create any Application Server or Message Broker instances. This recipe is not
+typically included directly but is included transitively through either <code>glassfish::attribute_driven_domain</code>
+or <code>glassfish::attribute_driven_mq</code>.
+#>
+=end
+
+
 include_recipe 'java'
 
 group node['glassfish']['group'] do
