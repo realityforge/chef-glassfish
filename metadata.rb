@@ -7,9 +7,9 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.5.23'
 
 recipe 'glassfish::default', 'Installs the GlassFish binaries.'
-recipe 'glassfish::attribute_driven_domain', 'Configures 0 or more GlassFish domains defined in the glassfish/domains attribute and includes the glassfish::default recipe.'
-recipe 'glassfish::search_driven_domain', 'Searches indexes, merges the results into the node attributes and includes the glassfish::attribute_driven_domain recipe.'
-recipe 'glassfish::attribute_driven_mq', 'Configures 0 or more GlassFish OpenMQ brokers defined in the openmq/instances attribute and includes the glassfish::default recipe.'
+recipe 'glassfish::attribute_driven_domain', 'Configures 0 or more GlassFish domains using the glassfish/domains attribute.'
+recipe 'glassfish::search_driven_domain', 'Configures 0 or more GlassFish domains using search to generate the configuration.'
+recipe 'glassfish::attribute_driven_mq', 'Configures 0 or more GlassFish OpenMQ brokers using the openmq/instances attribute.'
 
 supports 'ubuntu'
 
