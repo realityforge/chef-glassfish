@@ -14,6 +14,12 @@
 # limitations under the License.
 #
 
+=begin
+#<
+The `attribute_driven_mq` recipe interprets attributes on the node and defines the resources described in the attributes.
+#>
+=end
+
 include_recipe "glassfish::default"
 
 node['openmq']['extra_libraries'].values.each do |extra_library|

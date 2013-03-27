@@ -14,6 +14,12 @@
 # limitations under the License.
 #
 
+=begin
+#<
+The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
+#>
+=end
+
 include_recipe 'glassfish::default'
 
 def gf_scan_existing_resources(admin_port, username, password_file, secure, command)
