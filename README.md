@@ -20,60 +20,21 @@ application domains and OpenMQ broker instances.
 
 # Attributes
 
-<table>
-  <tr>
-    <td>Attribute</td>
-    <td>Description</td>
-    <td>Default</td>
-  </tr>
-  <tr>
-    <td><code>node['glassfish']['user']</code></td>
-    <td>The user that GlassFish executes as</td>
-    <td><code>glassfish</code></td>
-  </tr>
-  <tr>
-    <td><code>node['glassfish']['group']</code></td>
-    <td>The group allowed to manage GlassFish domains</td>
-    <td><code>glassfish-admin</code></td>
-  </tr>
-  <tr>
-    <td><code>node['glassfish']['package_url']</code></td>
-    <td>The url to the GlassFish install package</td>
-    <td><code>http://dlc.sun.com.edgesuite.net/glassfish/3.1.2/release/glassfish-3.1.2.zip</code></td>
-  </tr>
-  <tr>
-    <td><code>node['glassfish']['base_dir']</code></td>
-    <td>The base directory of the GlassFish install</td>
-    <td><code>/usr/local/glassfish</code></td>
-  </tr>
-  <tr>
-    <td><code>node['glassfish']['domains_dir']</code></td>
-    <td>The directory containing all the domain definitions</td>
-    <td><code>/usr/local/glassfish/glassfish/domains</code></td>
-  </tr>
-  <tr>
-    <td><code>node['glassfish']['domains']</code></td>
-    <td>A map of domain definitions that drive the instantiation of a domain</td>
-    <td><code>{}</code></td>
-  </tr>
-  <tr>
-    <td><code>node['openmq']['instances']</code></td>
-    <td>A map of broker definitions that drive the instantiation of a OpenMQ broker</td>
-    <td><code>{}</code></td>
-  </tr>
-  <tr>
-    <td><code>node['openmq']['extra_libraries']</code></td>
-    <td>A list of URLs to jars that are added to brokers classpath</td>
-    <td><code>{}</code></td>
-  </tr>
-</table>
+* `node['glassfish']['user']` - The user that GlassFish executes as. Defaults to `glassfish`.
+* `node['glassfish']['group']` - The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
+* `node['glassfish']['package_url']` - The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/3.1.2/release/glassfish-3.1.2.zip`.
+* `node['glassfish']['base_dir']` - The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
+* `node['glassfish']['domains_dir']` - The directory containing all the domain definitions. Defaults to `/usr/local/glassfish/glassfish/domains`.
+* `node['glassfish']['domains']` - A map of domain definitions that drive the instantiation of a domain. Defaults to `{}`.
+* `node['openmq']['instances']` - A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `{}`.
+* `node['openmq']['extra_libraries']` - A list of URLs to jars that are added to brokers classpath. Defaults to `{}`.
 
 # Recipes
 
 * [glassfish::default](#glassfishdefault) - Installs the GlassFish binaries.
-* [glassfish::attribute_driven_domain](#glassfishattribute_driven_domain) - Configures 0 or more GlassFish domains defined in the glassfish/domains attribute and includes the glassfish::default recipe.
-* glassfish::search_driven_domain - Searches indexes, merges the results into the node attributes and includes the glassfish::attribute_driven_domain recipe.
-* [glassfish::attribute_driven_mq](#glassfishattribute_driven_mq) - Configures 0 or more GlassFish OpenMQ brokers defined in the openmq/instances attribute and includes the glassfish::default recipe.
+* [glassfish::attribute_driven_domain](#glassfishattribute_driven_domain) - Configures 0 or more GlassFish domains using the glassfish/domains attribute.
+* glassfish::search_driven_domain - Configures 0 or more GlassFish domains using search to generate the configuration.
+* [glassfish::attribute_driven_mq](#glassfishattribute_driven_mq) - Configures 0 or more GlassFish OpenMQ brokers using the openmq/instances attribute.
 
 ## glassfish::default
 
