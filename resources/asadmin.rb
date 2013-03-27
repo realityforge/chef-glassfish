@@ -45,6 +45,7 @@ attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
 #<> @attribute username The username to use when communicating with the domain.
 attribute :username, :kind_of => String, :default => nil
+#<> @attribute password_file The file in which the password must be stored assigned to appropriate key.
 attribute :password_file, :kind_of => String, :default => nil
 #<> @attribute secure If true use SSL when communicating with the domain for administration.
 attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
