@@ -639,6 +639,6 @@ value must also be specified.
 
 # License and Maintainer
 
-Maintainer:: Peter Donald (<peter@realityforge.org>)
+Maintainer:: Peter Donald
 
 License:: Apache 2.0
