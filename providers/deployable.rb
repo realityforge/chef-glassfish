@@ -19,30 +19,17 @@ include Chef::Asadmin
 
 use_inline_resources
 
+def versioned_name
+  @deployed_name ||= Asadmin.versioned_component_name(new_resource.component_name, new_resource.type, new_resource.version, new_resource.url, new_resource.descriptors)
+end
+
 action :deploy do
   raise "Must specify url" unless new_resource.url
 
   version_value = new_resource.version ? new_resource.version.to_s : Digest::SHA1.hexdigest(new_resource.url)
   base_cache_name = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{new_resource.component_name}_#{version_value}"
-  versioned_component_name = Asadmin.versioned_component_name(new_resource.component_name, new_resource.version, new_resource.url, new_resource.descriptors)
 
-  test_suffix = nil
-  version_file = nil
-
-  # Oh the pain. OSGi modules are not version suffixed so we need to store the version on the filesystem. Joy for feature parity.
-  if new_resource.type.to_s == 'osgi'
-    version_file = "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}_#{new_resource.component_name}.VERSION"
-    file version_file do
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
-      mode "0600"
-      content versioned_component_name
-      action :nothing
-    end
-    test_suffix = "| grep -q '^#{versioned_component_name}$' #{version_file}"
-  end
-
-  check_command = "#{asadmin_command('list-applications')} #{new_resource.target} | grep -q -- '#{versioned_component_name} '#{test_suffix}"
+  check_command = "#{asadmin_command('list-applications')} #{new_resource.target} | grep -q -- '#{versioned_name} '"
 
   cached_package_filename = nil
   if new_resource.url =~ /^file\:\/\//
@@ -89,13 +76,13 @@ test -f #{deployment_plan}
     end
   end
 
-  bash "deploy application #{versioned_component_name}" do
+  bash "deploy application #{versioned_name}" do
     not_if check_command
 
     command = []
     command << "deploy"
     command << asadmin_target_flag
-    command << "--name" << versioned_component_name
+    command << "--name" << versioned_name
     command << "--enabled=#{new_resource.enabled}"
     command << "--upload=true"
     command << "--force=true"
@@ -116,9 +103,6 @@ test -f #{deployment_plan}
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
-    if new_resource.type.to_s == 'osgi'
-      notifies :create, "file[#{version_file}]", :immediately
-    end
   end
 end
 
@@ -127,10 +111,10 @@ action :undeploy do
   command << "undeploy"
   command << "--cascade=true"
   command << asadmin_target_flag
-  command << new_resource.component_name
+  command << versioned_name
 
-  bash "asadmin_undeploy #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '"
+  bash "asadmin_undeploy #{versioned_name}" do
+    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{versioned_name} '"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -141,10 +125,10 @@ action :disable do
   command = []
   command << "disable"
   command << asadmin_target_flag
-  command << new_resource.component_name
+  command << versioned_name
 
-  bash "asadmin_disable #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled"
+  bash "asadmin_disable #{versioned_name}" do
+    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{versioned_name} ' | grep enabled"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))
@@ -155,10 +139,10 @@ action :enable do
   command = []
   command << "enable"
   command << asadmin_target_flag
-  command << new_resource.component_name
+  command << versioned_name
 
-  bash "asadmin_enable #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled"
+  bash "asadmin_enable #{versioned_name}" do
+    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{versioned_name} | grep enabled"
     user node['glassfish']['user']
     group node['glassfish']['group']
     code asadmin_command(command.join(' '))

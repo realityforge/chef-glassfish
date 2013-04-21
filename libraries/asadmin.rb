@@ -56,14 +56,15 @@ class Chef
       plan_digest.hexdigest
     end
 
-    def self.versioned_component_name(component_name, version, url, descriptors)
+    def self.versioned_component_name(component_name, component_type, version, url, descriptors)
+      return component_name if version.nil? && url.nil?
       version_value = version ? version.to_s : Digest::SHA1.hexdigest(url)
       versioned_component_name = "#{component_name}:#{version_value}"
-      if descriptors.empty?
-        return versioned_component_name
-      else
-        return "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}"
+      if descriptors && !descriptors.empty?
+        versioned_component_name = "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}"
       end
+      versioned_component_name = versioned_component_name.gsub(':', '_') if component_type.to_s == 'osgi'
+      versioned_component_name
     end
 
     def self.asadmin_command(node, command, options = {})
