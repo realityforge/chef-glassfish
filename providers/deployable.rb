@@ -60,7 +60,6 @@ action :deploy do
   end
 
   deployment_plan = nil
-  plan_digest = nil
   unless new_resource.descriptors.empty?
     plan_digest = Asadmin.generate_component_plan_digest(new_resource.descriptors)
     deployment_plan = "#{base_cache_name}-deployment-plan.#{plan_digest}.jar"
