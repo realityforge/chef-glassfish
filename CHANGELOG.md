@@ -1,4 +1,6 @@
 ## v0.5.24:
+* Enhance : Don't require the url parameter in the `glassfish_deployable` LWRP as it is only required
+            for the deploy action.
 * Enhance : Add the ability to hook into the configuration of domains in `attribute_driven_domain` recipe
             by adding recipes to include before and after a domain is configured.
 * Bug     : Stop trying to undeploy non-existent resources when server is not upa at start of chef run.
