@@ -318,8 +318,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
         "java.util.logging.ConsoleHandler.level" => "INFO",
         "gelf4j.logging.GelfHandler.level" => "ALL",
         "gelf4j.logging.GelfHandler.host" => 'graylog.example.org',
-        "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyDomain"}',
-        "gelf4j.logging.GelfHandler.compressedChunking" => false,
+        "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyDomain"}'
       }
     end
 
@@ -495,8 +494,7 @@ Creates an OpenMQ message broker instance, creates an OS-level service and start
           "java.util.logging.ConsoleHandler.level" => "INFO",
           "gelf4j.logging.GelfHandler.level" => "ALL",
           "gelf4j.logging.GelfHandler.host" => 'graylog.example.org',
-          "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyInstance"}',
-          "gelf4j.logging.GelfHandler.compressedChunking" => false,
+          "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyInstance"}'
       }
       users { 'MyApp' => 'MyAppsPassword', 'MyOtherApp' => 'S3Cr37' }
       queues { 'MySystem.MyMessageQueue' => {'XMLSchemaURIList' => 'http://example.com/...'} }
