@@ -4,7 +4,7 @@ maintainer_email 'peter@realityforge.org'
 license          'Apache 2.0'
 description      'Installs/Configures GlassFish Application Server'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.5.24'
+version          '0.5.25'
 
 recipe 'glassfish::default', 'Installs the GlassFish binaries.'
 recipe 'glassfish::attribute_driven_domain', 'Configures 0 or more GlassFish domains using the glassfish/domains attribute.'

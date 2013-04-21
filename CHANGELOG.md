@@ -1,3 +1,5 @@
+## v0.5.26:
+
 ## v0.5.24:
 * Bug     : Fix the `attribute_driven_domain` to avoid undeploying OSGi deployables every secodn run.
 * Change  : Append versions to the name of OSGi components rather than storing the version on the
