@@ -218,6 +218,7 @@ action :create do
 
   if new_resource.password_file
     template new_resource.password_file do
+      cookbook 'glassfish'
       only_if { new_resource.password }
       source "password.erb"
       owner node['glassfish']['user']
