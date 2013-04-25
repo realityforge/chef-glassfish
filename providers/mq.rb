@@ -288,6 +288,11 @@ action :create do
   destinations.merge!(new_resource.queues)
   destinations.merge!(new_resource.topics)
 
+  glassfish_mq_ensure_running 'wait for initialization' do
+    host 'localhost'
+    port new_resource.port
+  end
+
   destinations.each_pair do |key, config|
     glassfish_mq_destination key do
       queue new_resource.queues.keys.include?(key)

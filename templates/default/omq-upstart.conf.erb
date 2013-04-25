@@ -20,23 +20,3 @@ pre-start script
 end script
 
 exec su <%= node['glassfish']['user'] %> -c '<%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= node['openmq']['var_home'] %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"'
-
-# Uglies to wait until the broker is actually up before completion of the 'start'
-post-start script
-  <% @listen_ports.sort.each do |listen_port| %>
-  while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -eq 0 ]
-  do
-    sleep 1
-  done
-  <% end %>
-end script
-
-# Uglies to wait until the broker is actually up before completion of the 'stop'
-post-stop script
-  <% @listen_ports.sort.each do |listen_port| %>
-  while [ $(netstat -nl | grep -c '0.0.0.0:<%= listen_port %> ') -ne 0 ]
-  do
-    sleep 1
-  done
-  <% end %>
-end script
