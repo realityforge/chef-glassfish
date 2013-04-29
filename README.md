@@ -68,6 +68,7 @@ The `attribute_driven_mq` recipe interprets attributes on the node and defines t
 * [glassfish_library](#glassfish_library)
 * [glassfish_mq](#glassfish_mq) - Creates an OpenMQ message broker instance, creates an OS-level service and starts the service.
 * [glassfish_mq_destination](#glassfish_mq_destination) - Creates or deletes a queue or a topic in an OpenMQ message broker instance.
+* [glassfish_mq_ensure_running](#glassfish_mq_ensure_running) - Ensures that a OpenMQ message broker instance has had a chance to finish starting before proceeding.
 * [glassfish_property](#glassfish_property)
 * [glassfish_resource_adapter](#glassfish_resource_adapter)
 * [glassfish_secure_admin](#glassfish_secure_admin) - Enable or disable secure admin flag on the GlassFish server which enables/disables remote administration.
@@ -254,7 +255,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - component_name: 
 - version:  Defaults to <code>nil</code>.
 - target:  Defaults to <code>"server"</code>.
-- url: 
+- url:  Defaults to <code>nil</code>.
 - enabled:  Defaults to <code>true</code>.
 - type:  Defaults to <code>nil</code>.
 - context_root:  Defaults to <code>nil</code>.
@@ -290,7 +291,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - min_memory:  Defaults to <code>512</code>.
 - max_memory: The amount of heap memory to allocate to the domain in MiB. Defaults to <code>512</code>.
 - max_perm_size: The amount of perm gen memory to allocate to the domain in MiB. Defaults to <code>96</code>.
-- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>128</code>.
+- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>256</code>.
 - port: The port on which the HTTP service will bind. Defaults to <code>8080</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - extra_jvm_options: An array of extra arguments to pass the JVM. Defaults to <code>[]</code>.
@@ -534,6 +535,27 @@ Creates or deletes a queue or a topic in an OpenMQ message broker instance.
       port 7676
       username 'imqadmin'
       passfile '/etc/omq/omqadmin.pass'
+    end
+
+## glassfish_mq_ensure_running
+
+Ensures that a OpenMQ message broker instance has had a chance to finish starting before proceeding.
+
+### Actions
+
+- run: Block until the broker has come online. Default action.
+
+### Attribute Parameters
+
+- host: The host on which the broker runs.
+- port: The port on which the broker listens.
+
+### Examples
+
+    # Wait for OpenMQ broker to start
+    glassfish_mq_ensure_running "wait for broker" do
+      host "localhost"
+      port 7676
     end
 
 ## glassfish_property
