@@ -2,6 +2,8 @@
 
 * Bug     : Fix for glassfish\_domain resource sourcing template from cookbook
             where it is used.
+* Bug     : Added mq\_ensure\_running resource to replace upstart check which
+            was causing issues on IPv6 enabled hosts. ~ Jordan Hagan
 
 ## v0.5.24:
 * Bug     : Fix the `attribute_driven_domain` to avoid undeploying OSGi deployables every secodn run.
