@@ -14,6 +14,11 @@
 # limitations under the License.
 #
 
+# TODO: Configure the hostname on which the services run.
+# See http://docs.oracle.com/cd/E19148-01/819-4467/aeont/index.html and hostname
+# properties. The glassfish_mq_ensure_running should also be adapted to use this
+# configuration
+
 def mq_config_settings(resource)
   configs = {}
   configs["imq.log.timezone"] = node["tz"] || "GMT"
