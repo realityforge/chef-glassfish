@@ -288,7 +288,7 @@ action :create do
   destinations.merge!(new_resource.queues)
   destinations.merge!(new_resource.topics)
 
-  glassfish_mq_ensure_running 'wait for initialization' do
+  glassfish_mq_ensure_running "omq-#{new_resource.instance} - wait for initialization" do
     host 'localhost'
     port new_resource.port
   end
