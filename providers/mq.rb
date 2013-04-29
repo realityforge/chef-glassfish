@@ -286,9 +286,17 @@ action :create do
   destinations.merge!(new_resource.queues)
   destinations.merge!(new_resource.topics)
 
-  glassfish_mq_ensure_running "omq-#{new_resource.instance} - wait for initialization" do
-    host node['fqdn']
-    port new_resource.port
+  listen_ports = [new_resource.port]
+  listen_ports << new_resource.jmx_port if new_resource.jmx_port
+  listen_ports << new_resource.admin_port if new_resource.admin_port
+  listen_ports << new_resource.jms_port if new_resource.jms_port
+  listen_ports << new_resource.stomp_port if new_resource.stomp_port
+
+  listen_ports.each do |listen_port|
+    glassfish_mq_ensure_running "omq-#{new_resource.instance} - #{node['fqdn']}:#{listen_port} - wait for initialization" do
+      host node['fqdn']
+      port listen_port
+    end
   end
 
   destinations.each_pair do |key, config|
