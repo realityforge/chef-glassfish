@@ -55,7 +55,7 @@ end
 
 attribute :properties, :kind_of => Hash, :default => {}
 
-attribute :transactionsupport, :equal_to => [' XATransaction', 'LocalTransaction', 'NoTransaction']
+attribute :transactionsupport, :equal_to => ['XATransaction', 'LocalTransaction', 'NoTransaction']
 
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :required => true

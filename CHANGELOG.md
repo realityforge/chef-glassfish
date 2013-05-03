@@ -1,5 +1,7 @@
 ## v0.5.26:
-
+* Bug     : Fix allowable values of `transactionsupport` parameter to include
+            `XATransaction` rather than ` XATransaction` in
+            `glassfish_connector_connection_pool`.
 * Bug     : Fix for glassfish\_domain resource sourcing template from cookbook
             where it is used.
 * Bug     : Added mq\_ensure\_running resource to replace upstart check which
