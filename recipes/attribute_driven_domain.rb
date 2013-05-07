@@ -262,7 +262,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         description hash['description'] if hash['description']
         properties hash['properties'] if hash['properties']
         restype hash['restype'] if hash['restype']
-        restype hash['factoryclass'] if hash['factoryclass']
+        factoryclass hash['factoryclass'] if hash['factoryclass']
         value hash['value'] if hash['value']
       end
     end

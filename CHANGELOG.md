@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Bug     : Fix configuration of `factoryclass` parameter on
+            `glassfish_custom_resource` in `attribute_driven_domain` recipe.
+            Submitted by Ian Caughley.
 * Bug     : Fix allowable values of `transactionsupport` parameter to include
             `XATransaction` rather than ` XATransaction` in
             `glassfish_connector_connection_pool`.
