@@ -225,9 +225,9 @@ action :create do
   end
 
   directory node['glassfish']['domains_dir'] do
-    owner new_resource.system_user
-    group new_resource.system_group
-    mode "0700"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0555"
     recursive true
   end
 
