@@ -1,4 +1,5 @@
 ## v0.5.26:
+* Change  : Default the 'glassfish/domains_dir' attribute to /srv/glassfish.
 * Bug     : Fix configuration of `factoryclass` parameter on
             `glassfish_custom_resource` in `attribute_driven_domain` recipe.
             Submitted by Ian Caughley.

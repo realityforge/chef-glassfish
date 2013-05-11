@@ -24,7 +24,7 @@ application domains and OpenMQ broker instances.
 * `node['glassfish']['group']` - The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
 * `node['glassfish']['package_url']` - The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/3.1.2/release/glassfish-3.1.2.zip`.
 * `node['glassfish']['base_dir']` - The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
-* `node['glassfish']['domains_dir']` - The directory containing all the domain definitions. Defaults to `/usr/local/glassfish/glassfish/domains`.
+* `node['glassfish']['domains_dir']` - The directory containing all the domain definitions. Defaults to `/srv/glassfish`.
 * `node['glassfish']['domains']` - A map of domain definitions that drive the instantiation of a domain. Defaults to `{}`.
 * `node['openmq']['instances']` - A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `{}`.
 * `node['openmq']['extra_libraries']` - A list of URLs to jars that are added to brokers classpath. Defaults to `{}`.
