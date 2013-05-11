@@ -28,8 +28,8 @@ action :add do
 
   directory ::File.dirname(cached_package_filename) do
     not_if check_command
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode '0700'
     recursive true
   end
@@ -37,8 +37,8 @@ action :add do
   remote_file cached_package_filename do
     not_if check_command
     source new_resource.url
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode '0600'
     action :create_if_missing
   end
@@ -51,8 +51,8 @@ action :add do
 
   bash "asadmin_add-library #{new_resource.url}" do
     not_if check_command
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -65,8 +65,8 @@ action :remove do
 
   bash "asadmin_remove-library #{new_resource.url}" do
     only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end

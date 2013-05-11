@@ -21,8 +21,8 @@ use_inline_resources
 action :set do
   bash "asadmin_set #{new_resource.key}=#{new_resource.value}" do
     not_if "#{asadmin_command("get #{new_resource.key}")} | grep -x -- '#{new_resource.key}=#{new_resource.value}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
   end
 end

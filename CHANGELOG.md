@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Enhance : Support the specification of different system users for each
+            glassfish domain in all the LWRPs and the
+            `attribute_driven_domain` recipe.
 * Change  : Default the 'glassfish/domains_dir' attribute to /srv/glassfish.
 * Bug     : Fix configuration of `factoryclass` parameter on
             `glassfish_custom_resource` in `attribute_driven_domain` recipe.

@@ -62,4 +62,15 @@ attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
 #<> @attribute admin_port The port on which the web management console is bound.
 attribute :admin_port, :kind_of => Integer, :default => 4848
 
+#<> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
+attribute :system_user, :kind_of => String, :default => nil
+#<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
+attribute :system_group, :kind_of => String, :default => nil
+
 default_action :set
+
+def initialize(*args)
+  super
+  @system_user = node['glassfish']['user']
+  @system_group = node['glassfish']['group']
+end

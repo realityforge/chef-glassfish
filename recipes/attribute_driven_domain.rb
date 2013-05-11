@@ -56,6 +56,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   username = definition['config']['username']
   secure = definition['config']['secure']
   password_file = username ? "#{node['glassfish']['domains_dir']}/#{domain_key}_admin_passwd" : nil
+  system_username = definition['config']['system_user']
+  system_group = definition['config']['system_group']
 
   if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
     include_recipe 'authbind'
@@ -75,6 +77,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     realm_types definition['realm_types'] if definition['realm_types']
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
+    system_user system_username if system_username
+    system_group system_group if system_group
   end
 
   if definition['extra_libraries']
@@ -88,6 +92,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         library_type library_type
       end
     end
@@ -99,6 +105,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     username username if username
     password_file password_file if password_file
     secure secure if secure
+    system_user system_username if system_username
+    system_group system_group if system_group
     action ('true' == definition['config']['remote_access'].to_s) ? :enable : :disable
   end
 
@@ -110,6 +118,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         key key
         value value
       end
@@ -129,6 +139,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           username username if username
           password_file password_file if password_file
           secure secure if secure
+          system_user system_username if system_username
+          system_group system_group if system_group
           version configuration['version']
           url configuration['url']
           type :osgi
@@ -145,6 +157,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         target configuration['target'] if configuration['target']
         classname configuration['classname'] if configuration['classname']
         jaas_context configuration['jaas_context'] if configuration['jaas_context']
@@ -163,6 +177,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         configuration['config'].each_pair do |config_key, value|
           self.send(config_key, value)
         end if configuration['config']
@@ -175,6 +191,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             username username if username
             password_file password_file if password_file
             secure secure if secure
+            system_user system_username if system_username
+            system_group system_group if system_group
             connectionpoolid key
             resource_configuration.each_pair do |config_key, value|
               self.send(config_key, value)
@@ -194,6 +212,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         resource_configuration['config'].each_pair do |config_key, value|
           self.send(config_key, value)
         end if resource_configuration['config']
@@ -207,6 +227,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             username username if username
             password_file password_file if password_file
             secure secure if secure
+            system_user system_username if system_username
+            system_group system_group if system_group
             raname resource_adapter_key
             pool_configuration['config'].each_pair do |config_key, value|
               self.send(config_key, value)
@@ -220,6 +242,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
                 username username if username
                 password_file password_file if password_file
                 secure secure if secure
+                system_user system_username if system_username
+                system_group system_group if system_group
                 poolname pool_key.to_s
                 resource_configuration.each_pair do |config_key, value|
                   self.send(config_key, value)
@@ -238,6 +262,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             username username if username
             password_file password_file if password_file
             secure secure if secure
+            system_user system_username if system_username
+            system_group system_group if system_group
             raname resource_adapter_key
             admin_object_configuration.each_pair do |config_key, value|
               self.send(config_key, value)
@@ -257,6 +283,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         target hash['target'] if hash['target']
         enabled hash['enabled'] if hash['enabled']
         description hash['description'] if hash['description']
@@ -276,6 +304,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         javamail_configuration.each_pair do |config_key, value|
           self.send(config_key, value)
         end
@@ -292,6 +322,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           username username if username
           password_file password_file if password_file
           secure secure if secure
+          system_user system_username if system_username
+          system_group system_group if system_group
           version configuration['version']
           url configuration['url']
           context_root configuration['context_root'] if configuration['context_root']
@@ -317,6 +349,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
               username username if username
               password_file password_file if password_file
               secure secure if secure
+              system_user system_username if system_username
+              system_group system_group if system_group
               webapp component_name
               name key
               type hash['type'] if hash['type']
@@ -374,6 +408,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :undeploy
       end
     end
@@ -394,6 +430,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             username username if username
             password_file password_file if password_file
             secure secure if secure
+            system_user system_username if system_username
+            system_group system_group if system_group
             webapp component_name
             name existing
             action :unset
@@ -415,6 +453,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -440,6 +480,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -465,6 +507,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -486,6 +530,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -503,6 +549,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -525,6 +573,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -538,6 +588,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -551,6 +603,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -564,6 +618,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end
@@ -578,6 +634,8 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         username username if username
         password_file password_file if password_file
         secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
         action :delete
       end
     end

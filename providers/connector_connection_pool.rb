@@ -37,8 +37,8 @@ action :create do
 
   bash "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
     not_if "#{asadmin_command('list-connector-connection-pools')} | grep -x -- '#{new_resource.pool_name}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -51,8 +51,8 @@ action :delete do
 
   bash "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
     only_if "#{asadmin_command('list-connector-connection-pools')} | grep -x -- '#{new_resource.pool_name}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end

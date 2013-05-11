@@ -98,46 +98,46 @@ action :create do
   instance_dir = "#{node['openmq']['var_home']}/instances/#{new_resource.instance}"
 
   directory node['openmq']['var_home'] do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
   end
 
   directory "#{node['openmq']['var_home']}/instances" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
   end
 
   directory instance_dir do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
   end
 
   directory "#{instance_dir}/etc" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
   end
 
   directory "#{instance_dir}/log" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
   end
 
   # Not sure why this is required... but something runs service as root which created this file as root owned
   file "#{instance_dir}/log/log.txt" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
     action :touch
   end
 
   directory "#{instance_dir}/props" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
   end
 
@@ -166,35 +166,35 @@ action :create do
   if new_resource.port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Port #{new_resource.port}" do
       port new_resource.port
-      user node['glassfish']['user']
+      user new_resource.system_user
     end
   end
 
   if new_resource.jmx_port && new_resource.jmx_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ JMX Port #{new_resource.jmx_port}" do
       port new_resource.jmx_port
-      user node['glassfish']['user']
+      user new_resource.system_user
     end
   end
 
   if new_resource.admin_port && new_resource.admin_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Admin Port #{new_resource.admin_port}" do
       port new_resource.admin_port
-      user node['glassfish']['user']
+      user new_resource.system_user
     end
   end
 
   if new_resource.jms_port && new_resource.jms_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ JMS Port #{new_resource.jms_port}" do
       port new_resource.jms_port
-      user node['glassfish']['user']
+      user new_resource.system_user
     end
   end
 
   if new_resource.stomp_port && new_resource.stomp_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Stomp Port #{new_resource.stomp_port}" do
       port new_resource.stomp_port
-      user node['glassfish']['user']
+      user new_resource.system_user
     end
   end
 
@@ -206,8 +206,8 @@ action :create do
 
   if new_resource.jmx_port
     file "#{instance_dir}/etc/jmxremote.access" do
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
+      owner new_resource.system_user
+      group new_resource.system_group
       mode "0400"
       action :create
       content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
@@ -215,8 +215,8 @@ action :create do
     end
 
     file "#{instance_dir}/etc/jmxremote.password" do
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
+      owner new_resource.system_user
+      group new_resource.system_group
       mode "0400"
       action :create
       content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
@@ -243,8 +243,8 @@ action :create do
     source "config.properties.erb"
     mode "0600"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     variables(:configs => mq_config_settings(new_resource))
     notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
   end
@@ -253,8 +253,8 @@ action :create do
     source "logging.properties.erb"
     mode "0400"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     variables(:logging_properties => new_resource.logging_properties)
     notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
   end
@@ -263,8 +263,8 @@ action :create do
     source "passwd.erb"
     mode "0400"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     variables(:users => new_resource.users)
   end
 
@@ -272,8 +272,8 @@ action :create do
     source "accesscontrol.properties.erb"
     mode "0400"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     variables(:rules => new_resource.access_control_rules)
   end
 

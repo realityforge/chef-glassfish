@@ -172,6 +172,21 @@ end
 use_inline_resources
 
 action :create do
+  if new_resource.system_group != node['glassfish']['group']
+    group new_resource.system_group do
+    end
+  end
+
+  if new_resource.system_user != node['glassfish']['user']
+    user new_resource.system_user do
+      comment "GlassFish #{new_resource.domain_name} Domain"
+      gid new_resource.system_group
+      home "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
+      shell '/bin/bash'
+      system true
+    end
+  end
+
   requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
 
   service "glassfish-#{new_resource.domain_name}" do
@@ -210,8 +225,8 @@ action :create do
   end
 
   directory node['glassfish']['domains_dir'] do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     mode "0700"
     recursive true
   end
@@ -221,8 +236,8 @@ action :create do
       cookbook 'glassfish'
       only_if { new_resource.password }
       source "password.erb"
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
+      owner new_resource.system_user
+      group new_resource.system_group
       mode "0600"
       variables :password => new_resource.password
     end
@@ -231,13 +246,13 @@ action :create do
   authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
     only_if { new_resource.port < 1024 }
     port new_resource.port
-    user node['glassfish']['user']
+    user new_resource.system_user
   end
 
   authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
     only_if { new_resource.admin_port < 1024 }
     port new_resource.admin_port
-    user node['glassfish']['user']
+    user new_resource.system_user
   end
 
   bash "create domain #{new_resource.domain_name}" do
@@ -258,8 +273,8 @@ action :create do
     command_string << replace_in_domain_file("%%%MIN_MEM_SIZE%%%", new_resource.min_memory)
     command_string << asadmin_command("verify-domain-xml #{domain_dir_arg} #{new_resource.domain_name}", false)
 
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code command_string.join("\n")
   end
 
@@ -271,8 +286,8 @@ action :create do
     source "logging.properties.erb"
     mode "0400"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     variables(:logging_properties => default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
   end
@@ -281,8 +296,8 @@ action :create do
     source "login.conf.erb"
     mode "0400"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    owner new_resource.system_user
+    group new_resource.system_group
     variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
   end
@@ -300,8 +315,8 @@ action :destroy do
     command_string << "#{asadmin_command("stop-domain #{domain_dir_arg} #{new_resource.domain_name}", false)} 2> /dev/null > /dev/null"
     command_string << asadmin_command("delete-domain #{domain_dir_arg} #{new_resource.domain_name}", false)
 
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code command_string.join("\n")
   end
   file "/etc/init/glassfish-#{new_resource.domain_name}.conf" do

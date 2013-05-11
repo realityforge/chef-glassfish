@@ -93,4 +93,15 @@ attribute :jmx_port, :kind_of => Integer, :default => nil
 #<> @attribute stomp_port The port on which the stomp service will bind. If not specified, no stomp service will execute.
 attribute :stomp_port, :kind_of => Integer, :default => nil
 
+#<> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
+attribute :system_user, :kind_of => String, :default => nil
+#<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
+attribute :system_group, :kind_of => String, :default => nil
+
 default_action :create
+
+def initialize(*args)
+  super
+  @system_user = node['glassfish']['user']
+  @system_group = node['glassfish']['group']
+end
