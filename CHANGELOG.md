@@ -17,7 +17,7 @@
             OpenMQ passwd file.
 
 ## v0.5.24:
-* Bug     : Fix the `attribute_driven_domain` to avoid undeploying OSGi deployables every secodn run.
+* Bug     : Fix the `attribute_driven_domain` to avoid undeploying OSGi deployables every second run.
 * Change  : Append versions to the name of OSGi components rather than storing the version on the
             file system in a file.
 * Enhance : Don't require the url parameter in the `glassfish_deployable` LWRP as it is only required
