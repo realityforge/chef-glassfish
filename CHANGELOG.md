@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Bug     : Rework the destroy action on the `glassfish_domain` LWRP to
+            avoid invoking the asadmin command and potentially failing
+            if the domain is in an inconsistent state.
 * Bug     : Ensure that libraries cached copy is unique per domain to avoid
             scenario where file can be owned by a different domain.
 * Enhance : Support the specification of different system users for each

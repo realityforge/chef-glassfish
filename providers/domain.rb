@@ -308,16 +308,15 @@ action :create do
 end
 
 action :destroy do
-  bash "destroy domain #{new_resource.domain_name}" do
-    only_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | grep -- '#{new_resource.domain_name} '"
-    command_string = []
+  service "glassfish-#{new_resource.domain_name}" do
+    provider Chef::Provider::Service::Upstart
+    action [:stop, :disable]
+    ignore_failure true
+  end
 
-    command_string << "#{asadmin_command("stop-domain #{domain_dir_arg} #{new_resource.domain_name}", false)} 2> /dev/null > /dev/null"
-    command_string << asadmin_command("delete-domain #{domain_dir_arg} #{new_resource.domain_name}", false)
-
-    user new_resource.system_user
-    group new_resource.system_group
-    code command_string.join("\n")
+  directory domain_dir_path do
+    recursive true
+    action :delete
   end
 
   file "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
