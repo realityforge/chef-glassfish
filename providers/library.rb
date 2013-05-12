@@ -23,7 +23,7 @@ end
 use_inline_resources
 
 action :add do
-  cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
+  cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
   check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
 
   directory ::File.dirname(cached_package_filename) do

@@ -1,4 +1,6 @@
 ## v0.5.26:
+* Bug     : Ensure that libraries cached copy is unique per domain to avoid
+            scenario where file can be owned by a different domain.
 * Enhance : Support the specification of different system users for each
             glassfish domain in all the LWRPs and the
             `attribute_driven_domain` recipe.
