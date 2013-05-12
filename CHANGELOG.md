@@ -1,4 +1,5 @@
 ## v0.5.26:
+* Bug     : Enable the Glassfish domain service aswell as starting it.
 * Enhance : Remove domains in the `attribute_driven_domain` recipe
             when there is no longer any configuration to represent
             domain.

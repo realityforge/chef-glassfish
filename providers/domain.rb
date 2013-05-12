@@ -303,7 +303,7 @@ action :create do
   end
 
   service "glassfish-#{new_resource.domain_name}" do
-    action [:start]
+    action [:enable, :start]
   end
 end
 
