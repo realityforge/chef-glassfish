@@ -64,6 +64,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   glassfish_domain domain_key do
+    min_memory definition['config']['min_memory'] if definition['config']['min_memory']
     max_memory definition['config']['max_memory'] if definition['config']['max_memory']
     max_perm_size definition['config']['max_perm_size'] if definition['config']['max_perm_size']
     max_stack_size definition['config']['max_stack_size'] if definition['config']['max_stack_size']

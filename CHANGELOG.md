@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Bug     : Ensure that the 'min_memory' config value on the glassfish
+            domain is reflected from the configuration onto the domain
+            LWRP in the `attribtue_driven_recipe`.
 * Bug     : Rework the destroy action on the `glassfish_domain` LWRP to
             avoid invoking the asadmin command and potentially failing
             if the domain is in an inconsistent state.
