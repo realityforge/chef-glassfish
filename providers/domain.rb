@@ -319,6 +319,7 @@ action :destroy do
     group new_resource.system_group
     code command_string.join("\n")
   end
+
   file "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
     action :delete
   end
