@@ -1,4 +1,6 @@
 ## v0.5.26:
+* Enhance : Add the before and after hooks for the deployable element
+            in the `attribute_driven_domain` recipe.
 * Bug     : Ensure that the 'min_memory' config value on the glassfish
             domain is reflected from the configuration onto the domain
             LWRP in the `attribtue_driven_recipe`.

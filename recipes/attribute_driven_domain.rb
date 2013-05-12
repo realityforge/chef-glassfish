@@ -134,6 +134,11 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   if definition['deployables']
     definition['deployables'].each_pair do |component_name, configuration|
       if configuration['type'] && configuration['type'].to_s == 'osgi'
+        if configuration['recipes'] && configuration['recipes']['before']
+          configuration['recipes']['before'].each do |recipe|
+            include_recipe recipe
+          end
+        end
         glassfish_deployable component_name.to_s do
           domain_name domain_key
           admin_port admin_port if admin_port
@@ -145,6 +150,11 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           version configuration['version']
           url configuration['url']
           type :osgi
+        end
+        if configuration['recipes'] && configuration['recipes']['after']
+          configuration['recipes']['after'].each do |recipe|
+            include_recipe recipe
+          end
         end
       end
     end
@@ -317,6 +327,11 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   if definition['deployables']
     definition['deployables'].each_pair do |component_name, configuration|
       if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
+        if configuration['recipes'] && configuration['recipes']['before']
+          configuration['recipes']['before'].each do |recipe|
+            include_recipe recipe
+          end
+        end
         glassfish_deployable component_name.to_s do
           domain_name domain_key
           admin_port admin_port if admin_port
@@ -358,6 +373,11 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
               value hash['value'] if hash['value']
               description hash['description'] if hash['description']
             end
+          end
+        end
+        if configuration['recipes'] && configuration['recipes']['after']
+          configuration['recipes']['after'].each do |recipe|
+            include_recipe recipe
           end
         end
       end
