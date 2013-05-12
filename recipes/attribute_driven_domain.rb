@@ -670,3 +670,17 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
     end
   end
 end
+
+domain_names = node['glassfish']['domains'].keys
+
+Dir["#{node['glassfish']['domains_dir']}/*"].
+  select { |file| File.directory?(file) }.
+  select { |file| !domain_names.include?(File.basename(file)) }.
+  each do |file|
+
+  Chef::Log.info "Removing historic Glassfish Domain #{File.basename(file)}"
+
+  glassfish_domain File.basename(file) do
+    action :destroy
+  end
+end

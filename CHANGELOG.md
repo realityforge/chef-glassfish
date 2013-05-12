@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Enhance : Remove domains in the `attribute_driven_domain` recipe
+            when there is no longer any configuration to represent
+            domain.
 * Enhance : Add the before and after hooks for the deployable element
             in the `attribute_driven_domain` recipe.
 * Bug     : Ensure that the 'min_memory' config value on the glassfish
