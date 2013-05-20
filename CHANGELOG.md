@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Enhance : Ensure that the parameters of the `glassfish_jdbc_connection_pool`
+            LWRP and the `glassfish_jdbc_resource` are updated even if the
+            resource exists.
 * Bug     : Fix configuration of `factoryclass` parameter on
             `glassfish_custom_resource` in `attribute_driven_domain` recipe.
             Submitted by Ian Caughley.
