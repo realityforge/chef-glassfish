@@ -38,8 +38,8 @@ action :create do
 
   bash "asadmin_create-javamail-resource #{new_resource.jndi_name}" do
     not_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -x -- '#{new_resource.jndi_name}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -52,8 +52,8 @@ action :delete do
 
   bash "asadmin_delete-javamail-resource #{new_resource.jndi_name}" do
     only_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -x -- '#{new_resource.jndi_name}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end

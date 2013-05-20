@@ -53,4 +53,15 @@ attribute :username, :kind_of => String, :default => 'imqadmin'
 #<> @attribute passfile The filename of a property file that contains a password for admin user set using the property "imq.imqcmd.password".
 attribute :passfile, :kind_of => String, :required => true
 
+#<> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
+attribute :system_user, :kind_of => String, :default => nil
+#<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
+attribute :system_group, :kind_of => String, :default => nil
+
 default_action :create
+
+def initialize(*args)
+  super
+  @system_user = node['glassfish']['user']
+  @system_group = node['glassfish']['group']
+end

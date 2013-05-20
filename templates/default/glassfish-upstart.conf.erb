@@ -11,8 +11,8 @@ stop on runlevel [!2345]
 # Increase default timeout before killing (on stop) to 10 seconds
 kill timeout 50
 
-setuid <%= node['glassfish']['user'] %>
-setgid <%= node['glassfish']['group'] %>
+setuid <%= @resource.system_user %>
+setgid <%= @resource.system_group %>
 respawn limit 15 5
 kill signal HUP
 umask 0077

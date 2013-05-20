@@ -33,8 +33,8 @@ action :create do
 
   bash "asadmin_create-admin-object #{new_resource.name}" do
     not_if "#{asadmin_command('list-admin-objects')} #{new_resource.target} | grep -x -- '#{new_resource.name}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -47,8 +47,8 @@ action :delete do
 
   bash "asadmin_delete-admin-object #{new_resource.name}" do
     only_if "#{asadmin_command('list-admin-objects')} #{new_resource.target} | grep -x -- '#{new_resource.name}'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end

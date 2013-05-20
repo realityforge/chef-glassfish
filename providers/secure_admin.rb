@@ -27,8 +27,8 @@ action :enable do
 
   bash "asadmin_enable-secure-admin" do
     not_if "#{asadmin_command('get secure-admin.enabled')} | grep -x -- 'secure-admin.enabled=true'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command("enable-secure-admin")
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
@@ -43,8 +43,8 @@ action :disable do
 
   bash "asadmin_disable-secure-admin" do
     only_if "#{asadmin_command('get secure-admin.enabled')} | grep -x -- 'secure-admin.enabled=true'"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command("disable-secure-admin")
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end

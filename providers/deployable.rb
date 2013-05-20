@@ -39,8 +39,8 @@ action :deploy do
     remote_file cached_package_filename do
       not_if check_command
       source new_resource.url
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
+      owner new_resource.system_user
+      group new_resource.system_group
       mode "0600"
       action :create_if_missing
     end
@@ -66,7 +66,7 @@ cd #{deployment_plan_dir}
       end
       command << <<-CMD
 jar -cf #{deployment_plan} .
-chown #{node['glassfish']['user']}:#{node['glassfish']['group']} #{deployment_plan}
+chown #{new_resource.system_user}:#{new_resource.system_group} #{deployment_plan}
 chmod 0700 #{deployment_plan}
 rm -rf #{deployment_plan_dir}
 test -f #{deployment_plan}
@@ -100,8 +100,8 @@ test -f #{deployment_plan}
     command << "--deploymentplan" << deployment_plan if deployment_plan
     command << cached_package_filename
 
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -115,8 +115,8 @@ action :undeploy do
 
   bash "asadmin_undeploy #{versioned_name}" do
     only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{versioned_name} '"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -129,8 +129,8 @@ action :disable do
 
   bash "asadmin_disable #{versioned_name}" do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{versioned_name} ' | grep enabled"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end
@@ -143,8 +143,8 @@ action :enable do
 
   bash "asadmin_enable #{versioned_name}" do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{versioned_name} | grep enabled"
-    user node['glassfish']['user']
-    group node['glassfish']['group']
+    user new_resource.system_user
+    group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
 end

@@ -45,7 +45,7 @@ attribute 'glassfish/domains_dir',
   :display_name => 'GlassFish Domain Directory',
   :description => 'The directory containing all the domain definitions',
   :type => 'string',
-  :default => '/usr/local/glassfish/glassfish/domains'
+  :default => '/srv/glassfish'
 
 attribute 'glassfish/domains',
   :display_name => 'GlassFish Domain Definitions',

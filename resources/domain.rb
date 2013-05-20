@@ -78,4 +78,15 @@ attribute :logging_properties, :kind_of => Hash, :default => {}
 #<> @attribute realm_types A map of names to realm implementation classes that is merged into the default realm types.
 attribute :realm_types, :kind_of => Hash, :default => {}
 
+#<> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
+attribute :system_user, :kind_of => String, :default => nil
+#<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
+attribute :system_group, :kind_of => String, :default => nil
+
 default_action :create
+
+def initialize(*args)
+  super
+  @system_user = node['glassfish']['user']
+  @system_group = node['glassfish']['group']
+end

@@ -24,7 +24,7 @@ application domains and OpenMQ broker instances.
 * `node['glassfish']['group']` - The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
 * `node['glassfish']['package_url']` - The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/3.1.2/release/glassfish-3.1.2.zip`.
 * `node['glassfish']['base_dir']` - The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
-* `node['glassfish']['domains_dir']` - The directory containing all the domain definitions. Defaults to `/usr/local/glassfish/glassfish/domains`.
+* `node['glassfish']['domains_dir']` - The directory containing all the domain definitions. Defaults to `/srv/glassfish`.
 * `node['glassfish']['domains']` - A map of domain definitions that drive the instantiation of a domain. Defaults to `{}`.
 * `node['openmq']['instances']` - A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `{}`.
 * `node['openmq']['extra_libraries']` - A list of URLs to jars that are added to brokers classpath. Defaults to `{}`.
@@ -98,6 +98,8 @@ The `attribute_driven_mq` recipe interprets attributes on the node and defines t
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_asadmin
 
@@ -119,6 +121,8 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ### Examples
 
@@ -149,6 +153,8 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_connector_connection_pool
 
@@ -191,6 +197,8 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_connector_resource
 
@@ -215,6 +223,8 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_custom_resource
 
@@ -240,6 +250,8 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_deployable
 
@@ -276,6 +288,8 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_domain
 
@@ -305,6 +319,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - logging_properties: A hash of properties that will be merged into logging.properties. Use this to send logs to syslog or graylog. Defaults to <code>{}</code>.
 - realm_types: A map of names to realm implementation classes that is merged into the default realm types. Defaults to <code>{}</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ### Examples
 
@@ -352,6 +368,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_jdbc_connection_pool
 
@@ -408,6 +426,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_jdbc_resource
 
@@ -431,6 +451,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_library
 
@@ -451,6 +473,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_mq
 
@@ -480,6 +504,8 @@ Creates an OpenMQ message broker instance, creates an OS-level service and start
 - jms_port: The port on which jms service will bind. Defaults to <code>7678</code>.
 - jmx_port: The port on which jmx service will bind. If not specified, no jmx service will be exported. Defaults to <code>nil</code>.
 - stomp_port: The port on which the stomp service will bind. If not specified, no stomp service will execute. Defaults to <code>nil</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ### Examples
 
@@ -524,6 +550,8 @@ Creates or deletes a queue or a topic in an OpenMQ message broker instance.
 - port: The port of the portmapper service in message broker instance.
 - username: The username used to connect to message broker. Defaults to <code>"imqadmin"</code>.
 - passfile: The filename of a property file that contains a password for admin user set using the property "imq.imqcmd.password".
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ### Examples
 
@@ -575,6 +603,8 @@ Ensures that a OpenMQ message broker instance has had a chance to finish startin
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_resource_adapter
 
@@ -596,6 +626,8 @@ Ensures that a OpenMQ message broker instance has had a chance to finish startin
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_secure_admin
 
@@ -615,6 +647,8 @@ Enable or disable secure admin flag on the GlassFish server which enables/disabl
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ### Examples
 
@@ -647,6 +681,8 @@ value must also be specified.
 - password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ### Examples
 

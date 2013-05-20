@@ -2,6 +2,24 @@
 * Enhance : Ensure that the parameters of the `glassfish_jdbc_connection_pool`
             LWRP and the `glassfish_jdbc_resource` are updated even if the
             resource exists.
+* Bug     : Enable the Glassfish domain service aswell as starting it.
+* Enhance : Remove domains in the `attribute_driven_domain` recipe
+            when there is no longer any configuration to represent
+            domain.
+* Enhance : Add the before and after hooks for the deployable element
+            in the `attribute_driven_domain` recipe.
+* Bug     : Ensure that the 'min_memory' config value on the glassfish
+            domain is reflected from the configuration onto the domain
+            LWRP in the `attribute_driven_domain` recipe.
+* Bug     : Rework the destroy action on the `glassfish_domain` LWRP to
+            avoid invoking the asadmin command and potentially failing
+            if the domain is in an inconsistent state.
+* Bug     : Ensure that libraries cached copy is unique per domain to avoid
+            scenario where file can be owned by a different domain.
+* Enhance : Support the specification of different system users for each
+            glassfish domain in all the LWRPs and the
+            `attribute_driven_domain` recipe.
+* Change  : Default the 'glassfish/domains_dir' attribute to /srv/glassfish.
 * Bug     : Fix configuration of `factoryclass` parameter on
             `glassfish_custom_resource` in `attribute_driven_domain` recipe.
             Submitted by Ian Caughley.
@@ -16,7 +34,7 @@
             OpenMQ passwd file.
 
 ## v0.5.24:
-* Bug     : Fix the `attribute_driven_domain` to avoid undeploying OSGi deployables every secodn run.
+* Bug     : Fix the `attribute_driven_domain` to avoid undeploying OSGi deployables every second run.
 * Change  : Append versions to the name of OSGi components rather than storing the version on the
             file system in a file.
 * Enhance : Don't require the url parameter in the `glassfish_deployable` LWRP as it is only required
