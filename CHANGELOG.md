@@ -1,4 +1,7 @@
 ## v0.5.26:
+* Enhance : Sort elements within the `attribute_driven_recipe` in each
+            section by a priority field if present. The default priority
+            is 100 if unspecified.
 * Change  : Convert hooks for including recipes in the
             `attribute_driven_recipe` from being an array of recipes
             to a hash where the key is the recipe name. Improves the
