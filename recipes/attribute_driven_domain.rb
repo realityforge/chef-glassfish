@@ -39,15 +39,19 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   end
 end
 
-node['glassfish']['domains'].each_pair do |domain_key, definition|
+def gf_sort(hash)
+  Hash[hash.sort_by { |key, value| "#{value['priority']|| 100}#{key}" }]
+end
+
+gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   if definition['recipes'] && definition['recipes']['before']
-    definition['recipes']['before'].each do |recipe|
+    gf_sort(definition['recipes']['before']).each_pair do |recipe, config|
       include_recipe recipe
     end
   end
 end
 
-node['glassfish']['domains'].each_pair do |domain_key, definition|
+gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
@@ -83,7 +87,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['extra_libraries']
-    definition['extra_libraries'].values.each do |config|
+    gf_sort(definition['extra_libraries']).values.each do |config|
       config = config.is_a?(Hash) ? config : {'url' => config}
       url = config['url']
       library_type = config['type'] || 'ext'
@@ -112,7 +116,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['properties']
-    definition['properties'].each_pair do |key, value|
+    gf_sort(definition['properties']).each_pair do |key, value|
       glassfish_property "#{key}=#{value}" do
         domain_name domain_key
         admin_port admin_port if admin_port
@@ -132,10 +136,10 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   ## that are provided by OSGi
   ##
   if definition['deployables']
-    definition['deployables'].each_pair do |component_name, configuration|
+    gf_sort(definition['deployables']).each_pair do |component_name, configuration|
       if configuration['type'] && configuration['type'].to_s == 'osgi'
         if configuration['recipes'] && configuration['recipes']['before']
-          configuration['recipes']['before'].each do |recipe|
+          gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
             include_recipe recipe
           end
         end
@@ -152,7 +156,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           type :osgi
         end
         if configuration['recipes'] && configuration['recipes']['after']
-          configuration['recipes']['after'].each do |recipe|
+          gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
             include_recipe recipe
           end
         end
@@ -161,7 +165,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['realms']
-    definition['realms'].each_pair do |key, configuration|
+    gf_sort(definition['realms']).each_pair do |key, configuration|
       glassfish_auth_realm key.to_s do
         domain_name domain_key
         admin_port admin_port if admin_port
@@ -180,7 +184,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['jdbc_connection_pools']
-    definition['jdbc_connection_pools'].each_pair do |key, configuration|
+    gf_sort(definition['jdbc_connection_pools']).each_pair do |key, configuration|
       key = key.to_s
       glassfish_jdbc_connection_pool key do
         domain_name domain_key
@@ -195,7 +199,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         end if configuration['config']
       end
       if configuration['resources']
-        configuration['resources'].each_pair do |resource_name, resource_configuration|
+        gf_sort(configuration['resources']).each_pair do |resource_name, resource_configuration|
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
             admin_port admin_port if admin_port
@@ -206,7 +210,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             system_group system_group if system_group
             connectionpoolid key
             resource_configuration.each_pair do |config_key, value|
-              self.send(config_key, value)
+              self.send(config_key, value) unless config_key == 'priority'
             end
           end
         end
@@ -215,7 +219,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['resource_adapters']
-    definition['resource_adapters'].each_pair do |resource_adapter_key, resource_configuration|
+    gf_sort(definition['resource_adapters']).each_pair do |resource_adapter_key, resource_configuration|
       resource_adapter_key = resource_adapter_key.to_s
       glassfish_resource_adapter resource_adapter_key do
         domain_name domain_key
@@ -230,7 +234,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         end if resource_configuration['config']
       end
       if resource_configuration['connection_pools']
-        resource_configuration['connection_pools'].each_pair do |pool_key, pool_configuration|
+        gf_sort(resource_configuration['connection_pools']).each_pair do |pool_key, pool_configuration|
           pool_key = pool_key.to_s
           glassfish_connector_connection_pool pool_key do
             domain_name domain_key
@@ -246,7 +250,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             end if pool_configuration['config']
           end
           if pool_configuration['resources']
-            pool_configuration['resources'].each_pair do |resource_name, resource_configuration|
+            gf_sort(pool_configuration['resources']).each_pair do |resource_name, resource_configuration|
               glassfish_connector_resource resource_name.to_s do
                 domain_name domain_key
                 admin_port admin_port if admin_port
@@ -257,7 +261,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
                 system_group system_group if system_group
                 poolname pool_key.to_s
                 resource_configuration.each_pair do |config_key, value|
-                  self.send(config_key, value)
+                  self.send(config_key, value) unless config_key == 'priority'
                 end
               end
             end
@@ -265,7 +269,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         end
       end
       if resource_configuration['admin_objects']
-        resource_configuration['admin_objects'].each_pair do |admin_object_key, admin_object_configuration|
+        gf_sort(resource_configuration['admin_objects']).each_pair do |admin_object_key, admin_object_configuration|
           admin_object_key = admin_object_key.to_s
           glassfish_admin_object admin_object_key do
             domain_name domain_key
@@ -277,7 +281,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
             system_group system_group if system_group
             raname resource_adapter_key
             admin_object_configuration.each_pair do |config_key, value|
-              self.send(config_key, value)
+              self.send(config_key, value) unless config_key == 'priority'
             end
           end
         end
@@ -286,7 +290,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['custom_resources']
-    definition['custom_resources'].each_pair do |key, value|
+    gf_sort(definition['custom_resources']).each_pair do |key, value|
       hash = value.is_a?(Hash) ? value : {'value' => value}
       glassfish_custom_resource key.to_s do
         domain_name domain_key
@@ -308,7 +312,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['javamail_resources']
-    definition['javamail_resources'].each_pair do |key, javamail_configuration|
+    gf_sort(definition['javamail_resources']).each_pair do |key, javamail_configuration|
       glassfish_javamail_resource key.to_s do
         domain_name domain_key
         admin_port admin_port if admin_port
@@ -318,17 +322,17 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
         system_user system_username if system_username
         system_group system_group if system_group
         javamail_configuration.each_pair do |config_key, value|
-          self.send(config_key, value)
+          self.send(config_key, value) unless config_key == 'priority'
         end
       end
     end
   end
 
   if definition['deployables']
-    definition['deployables'].each_pair do |component_name, configuration|
+    gf_sort(definition['deployables']).each_pair do |component_name, configuration|
       if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
         if configuration['recipes'] && configuration['recipes']['before']
-          configuration['recipes']['before'].each do |recipe|
+          gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
             include_recipe recipe
           end
         end
@@ -357,7 +361,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
         end
         if configuration['web_env_entries']
-          configuration['web_env_entries'].each_pair do |key, value|
+          gf_sort(configuration['web_env_entries']).each_pair do |key, value|
             hash = value.is_a?(Hash) ? value : {'value' => value}
             glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
               domain_name domain_key
@@ -376,7 +380,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
           end
         end
         if configuration['recipes'] && configuration['recipes']['after']
-          configuration['recipes']['after'].each do |recipe|
+          gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
             include_recipe recipe
           end
         end
@@ -437,7 +441,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 
   if definition['deployables']
-    definition['deployables'].each_pair do |component_name, configuration|
+    gf_sort(definition['deployables']).each_pair do |component_name, configuration|
       next if configuration['type'] && configuration['type'].to_s == 'osgi'
       gf_scan_existing_resources(admin_port,
                                  username,
@@ -488,7 +492,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
                              'list-connector-connection-pools') do |existing|
     found = false
     if definition['resource_adapters']
-      definition['resource_adapters'].each_pair do |key, configuration|
+      gf_sort(definition['resource_adapters']).each_pair do |key, configuration|
         if configuration['connection_pools'] && configuration['connection_pools'][existing]
           found = true
         end
@@ -511,9 +515,9 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-resources') do |existing|
     found = false
     if definition['resource_adapters']
-      definition['resource_adapters'].each_pair do |key, configuration|
+      gf_sort(definition['resource_adapters']).each_pair do |key, configuration|
         if configuration['connection_pools']
-          configuration['connection_pools'].each_pair do |pool_name, pool_configuration|
+          gf_sort(configuration['connection_pools']).each_pair do |pool_name, pool_configuration|
             if pool_configuration['resources'] && pool_configuration['resources'][existing]
               found = true
             end
@@ -538,7 +542,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-admin-objects') do |existing|
     found = false
     if definition['resource_adapters']
-      definition['resource_adapters'].each_pair do |key, configuration|
+      gf_sort(definition['resource_adapters']).each_pair do |key, configuration|
         if configuration['admin_objects'] && configuration['admin_objects'][existing]
           found = true
         end
@@ -580,7 +584,7 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-resources') do |existing|
     found = false
     if definition['jdbc_connection_pools']
-      definition['jdbc_connection_pools'].each_pair do |key, configuration|
+      gf_sort(definition['jdbc_connection_pools']).each_pair do |key, configuration|
         if configuration['resources'] && configuration['resources'][existing]
           found = true
         end
@@ -663,9 +667,9 @@ node['glassfish']['domains'].each_pair do |domain_key, definition|
   end
 end
 
-node['glassfish']['domains'].each_pair do |domain_key, definition|
+gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   if definition['recipes'] && definition['recipes']['after']
-    definition['recipes']['after'].each do |recipe|
+    gf_sort(definition['recipes']['after']).each_pair do |recipe, config|
       include_recipe recipe
     end
   end

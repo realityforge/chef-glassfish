@@ -1,4 +1,8 @@
 ## v0.5.26:
+* Change  : Convert hooks for including recipes in the
+            `attribute_driven_recipe` from being an array of recipes
+            to a hash where the key is the recipe name. Improves the
+            interoperability with deep merges.
 * Enhance : Ensure that the parameters of the `glassfish_jdbc_connection_pool`
             LWRP and the `glassfish_jdbc_resource` are updated even if the
             resource exists.
