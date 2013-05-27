@@ -40,7 +40,7 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
 end
 
 def gf_sort(hash)
-  Hash[hash.sort_by { |key, value| "#{value['priority']|| 100}#{key}" }]
+  Hash[hash.sort_by {|key, value| "#{value.is_a?(Hash) && value['priority'] ? value['priority'] : 100}#{key}"}]
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
@@ -126,7 +126,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_user system_username if system_username
         system_group system_group if system_group
         key key
-        value value
+        value value.to_s
       end
     end
   end
@@ -306,7 +306,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         properties hash['properties'] if hash['properties']
         restype hash['restype'] if hash['restype']
         factoryclass hash['factoryclass'] if hash['factoryclass']
-        value hash['value'] if hash['value']
+        value hash['value'].to_s if hash['value']
       end
     end
   end
@@ -374,7 +374,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
               webapp component_name
               name key
               type hash['type'] if hash['type']
-              value hash['value'] if hash['value']
+              value hash['value'].to_s if hash['value']
               description hash['description'] if hash['description']
             end
           end
