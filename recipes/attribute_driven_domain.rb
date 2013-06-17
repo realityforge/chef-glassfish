@@ -50,6 +50,7 @@ end
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   if definition['recipes'] && definition['recipes']['before']
     gf_sort(definition['recipes']['before']).each_pair do |recipe, config|
+      Chef::Log.info "Including domain 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
       include_recipe recipe
     end
   end
@@ -144,6 +145,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       if configuration['type'] && configuration['type'].to_s == 'osgi'
         if configuration['recipes'] && configuration['recipes']['before']
           gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+            Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
             include_recipe recipe
           end
         end
@@ -161,6 +163,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         end
         if configuration['recipes'] && configuration['recipes']['after']
           gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+            Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
             include_recipe recipe
           end
         end
@@ -674,6 +677,7 @@ end
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   if definition['recipes'] && definition['recipes']['after']
     gf_sort(definition['recipes']['after']).each_pair do |recipe, config|
+      Chef::Log.info "Including domain 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
       include_recipe recipe
     end
   end
