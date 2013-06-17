@@ -15,7 +15,7 @@ supports 'ubuntu'
 
 depends 'java'
 depends 'authbind'
-depends 'cutlery', '~> 0.1'
+depends 'cutlery'
 
 attribute 'glassfish/user',
   :display_name => 'GlassFish User',

@@ -1,4 +1,6 @@
 ## v0.5.26:
+* Change  : Remove version specifier in cutlery dependency constraint as it
+            can trigger a bug in Chef 11's dependency resolver.
 * Bug     : Support non-string "value" parameters in `attribute_driven_domain`
             for `custom_resource` elements and `web_env_entries` elements.
 * Enhance : Sort elements within the `attribute_driven_domain` recipe in each
