@@ -39,8 +39,12 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   end
 end
 
+def gf_priority(value)
+  value.is_a?(Hash) && value['priority'] ? value['priority'] : 100
+end
+
 def gf_sort(hash)
-  Hash[hash.sort_by {|key, value| "#{value.is_a?(Hash) && value['priority'] ? value['priority'] : 100}#{key}"}]
+  Hash[hash.sort_by {|key, value| "#{"%04d" % gf_priority(value)}#{key}"}]
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
