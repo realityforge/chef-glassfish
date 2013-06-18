@@ -16,7 +16,7 @@ application domains and OpenMQ broker instances.
 
 * java
 * authbind
-* cutlery (~> 0.1)
+* cutlery
 
 # Attributes
 
