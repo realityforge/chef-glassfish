@@ -41,7 +41,7 @@ action :deploy do
       source new_resource.url
       owner new_resource.system_user
       group new_resource.system_group
-      mode "0600"
+      mode "0640"
       action :create_if_missing
     end
   end
