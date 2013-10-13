@@ -14,6 +14,12 @@
 # limitations under the License.
 #
 
+=begin
+#<
+Configures 0 or more GlassFish domains using search to generate the configuration.
+#>
+=end
+
 node['glassfish']['domains'].each_pair do |domain_key, definition|
   if definition['discover']
     domain_key = domain_key.to_s

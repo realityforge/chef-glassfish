@@ -16,6 +16,8 @@
 
 =begin
 #<
+Configures 0 or more GlassFish domains using the glassfish/domains attribute.
+
 The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
 #>
 =end

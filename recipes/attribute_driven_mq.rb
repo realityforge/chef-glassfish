@@ -16,6 +16,8 @@
 
 =begin
 #<
+Configures 0 or more GlassFish OpenMQ brokers using the openmq/instances attribute.
+
 The `attribute_driven_mq` recipe interprets attributes on the node and defines the resources described in the attributes.
 #>
 =end
