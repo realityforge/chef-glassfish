@@ -24,7 +24,6 @@ or <code>glassfish::attribute_driven_mq</code>.
 #>
 =end
 
-
 include_recipe 'java'
 
 group node['glassfish']['group'] do
