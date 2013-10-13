@@ -20,21 +20,34 @@ application domains and OpenMQ broker instances.
 
 # Attributes
 
-* `node['glassfish']['user']` - The user that GlassFish executes as. Defaults to `glassfish`.
-* `node['glassfish']['group']` - The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
-* `node['glassfish']['package_url']` - The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/3.1.2/release/glassfish-3.1.2.zip`.
-* `node['glassfish']['base_dir']` - The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
-* `node['glassfish']['domains_dir']` - The directory containing all the domain definitions. Defaults to `/srv/glassfish`.
-* `node['glassfish']['domains']` - A map of domain definitions that drive the instantiation of a domain. Defaults to `{}`.
-* `node['openmq']['instances']` - A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `{}`.
-* `node['openmq']['extra_libraries']` - A list of URLs to jars that are added to brokers classpath. Defaults to `{}`.
+* `node['glassfish']['user']` - GlassFish User: The user that GlassFish executes as. Defaults to `glassfish`.
+* `node['glassfish']['group']` - GlassFish Admin Group: The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
+* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{version}/release/glassfish-#{version}.zip`.
+* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
+* `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
+* `node['glassfish']['domains']` - GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain. Defaults to `Mash.new`.
+* `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `Mash.new`.
+* `node['openmq']['instances']` - GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `Mash.new`.
+* `node['openmq']['var_home']` - GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration. Defaults to `/var/omq`.
 
 # Recipes
 
-* [glassfish::default](#glassfishdefault) - Installs the GlassFish binaries.
 * [glassfish::attribute_driven_domain](#glassfishattribute_driven_domain) - Configures 0 or more GlassFish domains using the glassfish/domains attribute.
-* glassfish::search_driven_domain - Configures 0 or more GlassFish domains using search to generate the configuration.
 * [glassfish::attribute_driven_mq](#glassfishattribute_driven_mq) - Configures 0 or more GlassFish OpenMQ brokers using the openmq/instances attribute.
+* [glassfish::default](#glassfishdefault) - Downloads, and extracts the glassfish binaries, creates the glassfish user and group.
+* [glassfish::search_driven_domain](#glassfishsearch_driven_domain) - Configures 0 or more GlassFish domains using search to generate the configuration.
+
+## glassfish::attribute_driven_domain
+
+Configures 0 or more GlassFish domains using the glassfish/domains attribute.
+
+The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
+
+## glassfish::attribute_driven_mq
+
+Configures 0 or more GlassFish OpenMQ brokers using the openmq/instances attribute.
+
+The `attribute_driven_mq` recipe interprets attributes on the node and defines the resources described in the attributes.
 
 ## glassfish::default
 
@@ -44,13 +57,9 @@ Does not create any Application Server or Message Broker instances. This recipe 
 typically included directly but is included transitively through either <code>glassfish::attribute_driven_domain</code>
 or <code>glassfish::attribute_driven_mq</code>.
 
-## glassfish::attribute_driven_domain
+## glassfish::search_driven_domain
 
-The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
-
-## glassfish::attribute_driven_mq
-
-The `attribute_driven_mq` recipe interprets attributes on the node and defines the resources described in the attributes.
+Configures 0 or more GlassFish domains using search to generate the configuration.
 
 # Resources
 
