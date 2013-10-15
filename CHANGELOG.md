@@ -1,4 +1,4 @@
-## v0.5.26:
+## v0.5.28:
 * Change  : Remove version specifier in cutlery dependency constraint as it
             can trigger a bug in Chef 11's dependency resolver.
 * Bug     : Relax some permissions on directories and files downloaded
