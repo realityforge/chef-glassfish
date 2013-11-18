@@ -4,6 +4,8 @@
 * Change  : Set the default stack size to 250 in mq broker LWRP so that
             the LWRP works without specifying a value under Java 7 x64
             systems.
+* Enhance : Support init_style on glassfish_mq LWRP. Add initial support
+            for runit.
 
 ## v0.5.28:
 * Change  : Remove version specifier in cutlery dependency constraint as it

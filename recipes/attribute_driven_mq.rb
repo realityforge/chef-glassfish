@@ -52,6 +52,10 @@ node['openmq']['instances'].each_pair do |instance, definition|
     include_recipe 'authbind'
   end
 
+  if 'runit' == definition['init_style']
+    include_recipe 'runit::default'
+  end
+
   glassfish_mq instance do
     max_memory definition['max_memory'] if definition['max_memory']
     max_stack_size definition['max_stack_size'] if definition['max_stack_size']
@@ -64,6 +68,7 @@ node['openmq']['instances'].each_pair do |instance, definition|
     stomp_port definition['stomp_port'] if definition['stomp_port']
     admin_user definition['admin_user'] if definition['admin_user']
     config definition['config'] if definition['config']
+    init_style definition['init_style'] if definition['init_style']
     logging_properties definition['logging_properties'] if definition['logging_properties']
     users node['openmq']['users'].to_hash
     access_control_rules node['openmq']['access_control_rules'].to_hash

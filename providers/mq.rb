@@ -88,12 +88,21 @@ end
 use_inline_resources
 
 action :create do
+  service_name = "omq-#{new_resource.instance}"
+  service_resource_name = new_resource.init_style == 'upstart' ? "service[#{service_name}]" : "runit_service[#{service_name}]"
+
   requires_authbind = false
   requires_authbind ||= new_resource.port < 1024
   requires_authbind ||= new_resource.admin_port < 1024
   requires_authbind ||= new_resource.jms_port < 1024
   requires_authbind ||= new_resource.jmx_port < 1024
   requires_authbind ||= new_resource.stomp_port < 1024
+
+  listen_ports = [new_resource.port]
+  listen_ports << new_resource.jmx_port if new_resource.jmx_port
+  listen_ports << new_resource.admin_port if new_resource.admin_port
+  listen_ports << new_resource.jms_port if new_resource.jms_port
+  listen_ports << new_resource.stomp_port if new_resource.stomp_port
 
   instance_dir = "#{node['openmq']['var_home']}/instances/#{new_resource.instance}"
 
@@ -153,16 +162,6 @@ action :create do
     vm_args << "-Dcom.sun.management.jmxremote.ssl=false"
   end
 
-  template "/etc/init/omq-#{new_resource.instance}.conf" do
-    source "omq-upstart.conf.erb"
-    mode "0644"
-    cookbook 'glassfish'
-
-    variables(:resource => new_resource,
-              :authbind => requires_authbind,
-              :vmargs => vm_args.join(" "))
-  end
-
   if new_resource.port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Port #{new_resource.port}" do
       port new_resource.port
@@ -198,10 +197,40 @@ action :create do
     end
   end
 
-  service "omq-#{new_resource.instance}" do
-    provider Chef::Provider::Service::Upstart
-    supports :start => true, :restart => true, :stop => true, :status => true
-    action [:enable]
+  if new_resource.init_style == 'upstart'
+    template "/etc/init/#{service_name}.conf" do
+      source "omq-upstart.conf.erb"
+      mode "0644"
+      cookbook 'glassfish'
+
+      variables(:resource => new_resource,
+                :authbind => requires_authbind,
+                :vmargs => vm_args.join(" "))
+    end
+
+    service service_name do
+      provider Chef::Provider::Service::Upstart
+      supports :start => true, :restart => true, :stop => true, :status => true
+      action [:enable]
+    end
+  elsif new_resource.init_style == 'runit'
+    runit_service service_name do
+      default_logger true
+      check true
+      cookbook 'glassfish'
+      run_template_name 'omq'
+      check_script_template_name 'omq'
+      options(:instance_dir => instance_dir,
+              :listen_ports => listen_ports,
+              :instance_name => new_resource.instance,
+              :authbind => requires_authbind,
+              :vmargs => vm_args.join(" "),
+              :listen_ports => listen_ports)
+      sv_timeout 100
+      action [:enable]
+    end
+  else
+    raise "Unknown init style #{new_resource.init_style}"
   end
 
   if new_resource.jmx_port
@@ -211,7 +240,7 @@ action :create do
       mode "0400"
       action :create
       content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
-      notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
+      notifies :restart, service_resource_name, :delayed
     end
 
     file "#{instance_dir}/etc/jmxremote.password" do
@@ -220,7 +249,7 @@ action :create do
       mode "0400"
       action :create
       content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
-      notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
+      notifies :restart, service_resource_name, :delayed
     end
   end
 
@@ -246,7 +275,7 @@ action :create do
     owner new_resource.system_user
     group new_resource.system_group
     variables(:configs => mq_config_settings(new_resource))
-    notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
+    notifies :restart, service_resource_name, :delayed
   end
 
   template "#{instance_dir}/etc/logging.properties" do
@@ -256,7 +285,7 @@ action :create do
     owner new_resource.system_user
     group new_resource.system_group
     variables(:logging_properties => new_resource.logging_properties)
-    notifies :restart, "service[omq-#{new_resource.instance}]", :delayed
+    notifies :restart, service_resource_name, :delayed
   end
 
   template "#{instance_dir}/etc/passwd" do
@@ -277,23 +306,19 @@ action :create do
     variables(:rules => new_resource.access_control_rules)
   end
 
-  service "omq-#{new_resource.instance}" do
-    provider Chef::Provider::Service::Upstart
-    action [:start]
+  ruby_block service_resource_name do
+    block do
+      s = run_context.resource_collection.lookup(service_resource_name)
+      s.run_action(:start)
+    end
   end
 
   destinations = {}
   destinations.merge!(new_resource.queues)
   destinations.merge!(new_resource.topics)
 
-  listen_ports = [new_resource.port]
-  listen_ports << new_resource.jmx_port if new_resource.jmx_port
-  listen_ports << new_resource.admin_port if new_resource.admin_port
-  listen_ports << new_resource.jms_port if new_resource.jms_port
-  listen_ports << new_resource.stomp_port if new_resource.stomp_port
-
   listen_ports.each do |listen_port|
-    glassfish_mq_ensure_running "omq-#{new_resource.instance} - #{node['fqdn']}:#{listen_port} - wait for initialization" do
+    glassfish_mq_ensure_running "#{service_resource_name} - #{node['fqdn']}:#{listen_port} - wait for initialization" do
       host node['fqdn']
       port listen_port
     end
@@ -312,13 +337,23 @@ action :create do
 end
 
 action :destroy do
-  service "omq-#{new_resource.instance}" do
-    provider Chef::Provider::Service::Upstart
-    supports :start => true, :restart => true, :stop => true, :status => true
-    action [:stop]
-  end
+  service_name = "omq-#{new_resource.instance}"
 
-  file "/etc/init/omq-#{new_resource.instance}.conf" do
-    action :delete
+  if new_resource.init_style == 'upstart'
+    service service_name do
+      provider Chef::Provider::Service::Upstart
+      supports :start => true, :restart => true, :stop => true, :status => true
+      action [:stop, :disable]
+    end
+
+    file "/etc/init/omq-#{new_resource.instance}.conf" do
+      action :delete
+    end
+  elsif new_resource.init_style == 'runit'
+    runit_service service_name do
+      action [:stop, :disable]
+    end
+  else
+    raise "Unknown init style #{new_resource.init_style}"
   end
 end
