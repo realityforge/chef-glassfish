@@ -1,6 +1,9 @@
 ## v0.5.30:
 * Bug     : Fix permission on glassfish home directory so that the
             .asadmintruststore file can be created.
+* Change  : Set the default stack size to 250 in mq broker LWRP so that
+            the LWRP works without specifying a value under Java 7 x64
+            systems.
 
 ## v0.5.28:
 * Change  : Remove version specifier in cutlery dependency constraint as it

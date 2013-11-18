@@ -53,7 +53,7 @@ actions :create, :destroy
 #<> @attribute max_memory The amount of heap memory to allocate to the domain in MiB.
 attribute :max_memory, :kind_of => Integer, :default => 512
 #<> @attribute max_stack_size The amount of stack memory to allocate to the domain in KiB.
-attribute :max_stack_size, :kind_of => Integer, :default => 128
+attribute :max_stack_size, :kind_of => Integer, :default => 250
 #<> @attribute instance The name of the broker instance.
 attribute :instance, :kind_of => String, :name_attribute => true
 #<> @attribute users A map of users to passwords for interacting with the service.
