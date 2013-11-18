@@ -1,3 +1,7 @@
+## v0.5.30:
+* Bug     : Fix permission on glassfish home directory so that the
+            .asadmintruststore file can be created.
+
 ## v0.5.28:
 * Change  : Remove version specifier in cutlery dependency constraint as it
             can trigger a bug in Chef 11's dependency resolver.

@@ -63,6 +63,8 @@ mv glassfish3 #{node['glassfish']['base_dir']}
 chown -R #{node['glassfish']['user']} #{node['glassfish']['base_dir']}
 chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
 chmod -R ugo-w #{node['glassfish']['base_dir']}
+# Next line required to enable creation of .asadmintruststore
+chmod u+w #{node['glassfish']['base_dir']}
 rm -rf #{node['glassfish']['base_dir']}/glassfish/domains/domain1
 test -d #{node['glassfish']['base_dir']}
 EOF
