@@ -96,7 +96,7 @@ action :create do
   requires_authbind ||= new_resource.admin_port < 1024
   requires_authbind ||= new_resource.jms_port < 1024
   requires_authbind ||= new_resource.jmx_port < 1024
-  requires_authbind ||= new_resource.stomp_port < 1024
+  requires_authbind ||= (new_resource.stomp_port && new_resource.stomp_port < 1024)
 
   listen_ports = [new_resource.port]
   listen_ports << new_resource.jmx_port if new_resource.jmx_port
