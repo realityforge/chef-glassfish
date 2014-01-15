@@ -19,9 +19,10 @@ default['glassfish']['user'] = 'glassfish'
 #<> GlassFish Admin Group: The group allowed to manage GlassFish domains.
 default['glassfish']['group'] = 'glassfish-admin'
 
-version = "3.1.2.2"
+#<> Version: The version of the GlassFish install package.
+default['glassfish']['version'] = "3.1.2.2"
 #<> Package URL: The url to the GlassFish install package.
-default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{version}/release/glassfish-#{version}.zip"
+default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 #<> GlassFish Base Directory: The base directory of the GlassFish install.
 default['glassfish']['base_dir'] = '/usr/local/glassfish'
 #<> GlassFish Domain Directory: The directory containing all the domain instance data and configuration.
