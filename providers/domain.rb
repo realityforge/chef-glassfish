@@ -260,6 +260,7 @@ action :create do
 
     args = []
     args << "--checkports=false"
+    args << "--savemasterpassword=true" if node['glassfish']['version'][0] == '4'
     args << "--instanceport #{new_resource.port}"
     args << "--adminport #{new_resource.admin_port}"
     args << "--nopassword=false" if new_resource.username
@@ -280,6 +281,22 @@ action :create do
 
   file "#{domain_dir_path}/docroot/index.html" do
     action :delete
+  end
+
+  # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
+  #file "#{domain_dir_path}/master-password" do
+  ruby_block "copy master-password" do
+    source_file = "#{domain_dir_path}/config/master-password"
+    dest_file = "#{domain_dir_path}/master-password"
+
+    only_if { node['glassfish']['version'][0] == '4' }
+    only_if { ::File.exists?(source_file) }
+    not_if { ::File.exists?(dest_file) }
+
+    block do
+      FileUtils.cp(source_file, dest_file)
+      FileUtils.chown( new_resource.system_user, new_resource.system_group, dest_file)
+    end
   end
 
   template "#{domain_dir_path}/config/logging.properties" do

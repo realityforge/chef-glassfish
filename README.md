@@ -22,6 +22,7 @@ application domains and OpenMQ broker instances.
 
 * `node['glassfish']['user']` - GlassFish User: The user that GlassFish executes as. Defaults to `glassfish`.
 * `node['glassfish']['group']` - GlassFish Admin Group: The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
+* `node['glassfish']['version']` - GlassFish Version: The version of GlassFish to install. Defaults to `3.1.2.2`.
 * `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{version}/release/glassfish-#{version}.zip`.
 * `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
 * `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
@@ -29,6 +30,13 @@ application domains and OpenMQ broker instances.
 * `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `Mash.new`.
 * `node['openmq']['instances']` - GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `Mash.new`.
 * `node['openmq']['var_home']` - GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration. Defaults to `/var/omq`.
+
+## GlassFish 4
+
+To install GlassFish 4, both the version and package_url need to be overriden (even though the package_url is an exact copy of the default):
+
+    node.override['glassfish']['version'] = "4.0"
+    node.override['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 
 # Recipes
 
