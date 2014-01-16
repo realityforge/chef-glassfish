@@ -293,8 +293,10 @@ action :create do
     only_if { ::File.exists?(source_file) }
     not_if { ::File.exists?(dest_file) }
 
-    FileUtils.cp(source_file, dest_file)
-    FileUtils.chown( new_resource.system_user, new_resource.system_group, dest_file)
+    block do
+      FileUtils.cp(source_file, dest_file)
+      FileUtils.chown( new_resource.system_user, new_resource.system_group, dest_file)
+    end
   end
 
   template "#{domain_dir_path}/config/logging.properties" do
