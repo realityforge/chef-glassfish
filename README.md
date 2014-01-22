@@ -96,13 +96,13 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- jndi_name: 
-- raname: 
-- restype: 
+- jndi_name:
+- raname:
+- restype:
 - enabled:  Defaults to <code>true</code>.
 - target:  Defaults to <code>"server"</code>.
 - classname:  Defaults to <code>nil</code>.
@@ -153,13 +153,13 @@ used when there is not yet a resource defined in this cookbook for executing an 
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- realm_name: 
+- realm_name:
 - target:  Defaults to <code>"server"</code>.
-- classname: 
+- classname:
 - jaas_context:  Defaults to <code>nil</code>.
 - assign_groups:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
@@ -178,14 +178,14 @@ used when there is not yet a resource defined in this cookbook for executing an 
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- pool_name: 
+- pool_name:
 - description:  Defaults to <code>nil</code>.
-- raname: 
-- connectiondefinition: 
+- raname:
+- connectiondefinition:
 - steadypoolsize:  Defaults to <code>nil</code>.
 - maxpoolsize:  Defaults to <code>nil</code>.
 - maxwait:  Defaults to <code>nil</code>.
@@ -206,7 +206,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - ping:  Defaults to <code>nil</code>.
 - pooling:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
-- transactionsupport: 
+- transactionsupport:
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -222,12 +222,12 @@ used when there is not yet a resource defined in this cookbook for executing an 
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- resource_name: 
-- poolname: 
+- resource_name:
+- poolname:
 - enabled:  Defaults to <code>true</code>.
 - target:  Defaults to <code>"server"</code>.
 - objecttype:  Defaults to <code>nil</code>.
@@ -248,11 +248,11 @@ used when there is not yet a resource defined in this cookbook for executing an 
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- jndi_name: 
+- jndi_name:
 - target:  Defaults to <code>"server"</code>.
 - restype:  Defaults to <code>"java.lang.String"</code>.
 - factoryclass:  Defaults to <code>"org.glassfish.resources.custom.factory.PrimitivesAndStringFactory"</code>.
@@ -275,13 +275,13 @@ used when there is not yet a resource defined in this cookbook for executing an 
 ### Actions
 
 - deploy:  Default action.
-- disable: 
-- enable: 
-- undeploy: 
+- disable:
+- enable:
+- undeploy:
 
 ### Attribute Parameters
 
-- component_name: 
+- component_name:
 - version:  Defaults to <code>nil</code>.
 - target:  Defaults to <code>"server"</code>.
 - url:  Defaults to <code>nil</code>.
@@ -361,19 +361,19 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- jndi_name: 
+- jndi_name:
 - target:  Defaults to <code>"server"</code>.
-- mailhost: 
-- mailuser: 
-- fromaddress: 
-- storeprotocol: 
-- storeprotocolclass: 
-- transprotocol: 
-- transprotocolclass: 
+- mailhost:
+- mailuser:
+- fromaddress:
+- storeprotocol:
+- storeprotocolclass:
+- transprotocol:
+- transprotocolclass:
 - debug:  Defaults to <code>nil</code>.
 - enabled:  Defaults to <code>true</code>.
 - description:  Defaults to <code>nil</code>.
@@ -393,11 +393,11 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- pool_name: 
+- pool_name:
 - datasourceclassname:  Defaults to <code>nil</code>.
 - initsql:  Defaults to <code>nil</code>.
 - sqltracelisteners:  Defaults to <code>nil</code>.
@@ -434,8 +434,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - description:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
 - restype:  Defaults to <code>nil</code>.
-- isolationlevel: 
-- validationmethod: 
+- isolationlevel:
+- validationmethod:
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -451,12 +451,12 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- resource_name: 
-- connectionpoolid: 
+- resource_name:
+- connectionpoolid:
 - enabled:  Defaults to <code>true</code>.
 - target:  Defaults to <code>"server"</code>.
 - description:  Defaults to <code>nil</code>.
@@ -476,11 +476,11 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 ### Actions
 
 - add:  Default action.
-- remove: 
+- remove:
 
 ### Attribute Parameters
 
-- url: 
+- url:
 - library_type:  Defaults to <code>"common"</code>.
 - upload:  Defaults to <code>true</code>.
 - domain_name: The name of the domain.
@@ -611,8 +611,8 @@ Ensures that a OpenMQ message broker instance has had a chance to finish startin
 
 ### Attribute Parameters
 
-- key: 
-- value: 
+- key:
+- value:
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -628,11 +628,11 @@ Ensures that a OpenMQ message broker instance has had a chance to finish startin
 ### Actions
 
 - create:  Default action.
-- delete: 
+- delete:
 
 ### Attribute Parameters
 
-- resource_adapter_name: 
+- resource_adapter_name:
 - threadpoolid:  Defaults to <code>nil</code>.
 - objecttype:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
@@ -715,3 +715,4 @@ value must also be specified.
 Maintainer:: Peter Donald
 
 License:: Apache 2.0
+
