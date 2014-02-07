@@ -1,4 +1,6 @@
 ## v0.5.30:
+* Change  : Set the unask to 0022 to allow logstash and other applications
+            access to the generated logs. Submitted by Gert Leenders.
 * Enhance : Rework the glassfish_secure_admin functionality to be more
             resilient regardless of the init_style and version of
             glassfish in use.
