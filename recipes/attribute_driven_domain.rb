@@ -105,6 +105,59 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     system_group system_group if system_group
   end
 
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - secure_admin"
+
+  # TODO: Merge glassfish_secure_admin into glassfish_domain?
+  glassfish_secure_admin "#{domain_key}: secure_admin" do
+    domain_name domain_key
+    admin_port admin_port if admin_port
+    username username if username
+    password_file password_file if password_file
+    secure secure if secure
+    system_user system_username if system_username
+    system_group system_group if system_group
+    init_style definition['config']['init_style'] if definition['config']['init_style']
+    action ('true' == definition['config']['remote_access'].to_s) ? :enable : :disable
+  end
+
+  if admin_port
+    require 'net/https'
+
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - wait till up"
+
+    ruby_block "block_until_glassfish_#{domain_key}_up" do
+      block do
+        count = 0
+        loop do
+          raise "GlassFish failed to become operational" if count > 50
+          count = count + 1
+          admin_url = "https://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
+          begin
+            uri = URI(admin_url)
+            res = nil
+            http = Net::HTTP.new(uri.hostname, uri.port)
+            http.use_ssl = true
+            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            http.start do |http|
+              request = Net::HTTP::Get.new(uri.request_uri)
+              request.basic_auth username, definition['config']['password']
+              request['Accept'] = "application/json"
+              res = http.request(request)
+            end
+            break if res.kind_of?(Net::HTTPOK)
+            puts "GlassFish not responding OK - #{res}"
+          rescue Exception => e
+            puts "GlassFish error while accessing web interface at #{admin_url}"
+            puts e.message
+            puts e.backtrace.join("\n")
+          end
+          sleep 1
+        end
+      end
+      action :create
+    end
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
 
   if definition['extra_libraries']
@@ -126,16 +179,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - properties"
-  glassfish_secure_admin "#{domain_key}: secure_admin" do
-    domain_name domain_key
-    admin_port admin_port if admin_port
-    username username if username
-    password_file password_file if password_file
-    secure secure if secure
-    system_user system_username if system_username
-    system_group system_group if system_group
-    action ('true' == definition['config']['remote_access'].to_s) ? :enable : :disable
-  end
 
   if definition['properties']
     gf_sort(definition['properties']).each_pair do |key, value|

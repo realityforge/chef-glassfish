@@ -1,4 +1,7 @@
 ## v0.5.30:
+* Enhance : Rework the glassfish_secure_admin functionality to be more
+            resilient regardless of the init_style and version of
+            glassfish in use.
 * Enhance : Support runit as an init style.
 * Enhance : Work around some warnings issued by GlassFish 4 install.
 * Enhance : Add significantly more logging to help debugging issues.
