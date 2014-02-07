@@ -37,8 +37,12 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   lines = output.split("\n")
 
   lines.each do |line|
-    existing = line.scan(/^(\S+)/).flatten[0]
-    yield existing
+    if line =~ /CLI[0-9]+: Warning.*/
+      Chef::Log.warn "Ignoring asadmin output: #{line}"
+    else
+      existing = line.scan(/^(\S+)/).flatten[0]
+      yield existing
+    end
   end
 end
 
