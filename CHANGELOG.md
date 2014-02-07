@@ -4,6 +4,7 @@
             glassfish in use.
 * Enhance : Support runit as an init style.
 * Enhance : Work around some warnings issued by GlassFish 4 install.
+* Enhance : Initial support for GlassFish 4.
 * Enhance : Add significantly more logging to help debugging issues.
 * Bug     : Fix permission on glassfish home directory so that the
             .asadmintruststore file can be created.
