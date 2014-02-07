@@ -1,4 +1,5 @@
 ## v0.5.30:
+* Enhance : Add significantly more logging to help debugging issues.
 * Bug     : Fix permission on glassfish home directory so that the
             .asadmintruststore file can be created.
 * Change  : Set the default stack size to 250 in mq broker LWRP so that
