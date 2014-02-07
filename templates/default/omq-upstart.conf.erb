@@ -10,7 +10,7 @@ stop on runlevel [!2345]
 
 # Increase default timeout before killing (on stop) to 10 seconds
 kill timeout 10
-umask 0077
+umask 0022
 
 <% omq_home = "#{node['glassfish']['base_dir']}/mq" %>
 <% authbind_prefix = @authbind ? "/usr/bin/authbind --deep " : "" %>
