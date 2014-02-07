@@ -51,6 +51,9 @@ attribute :system_user, :kind_of => String, :default => nil
 #<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
 attribute :system_group, :kind_of => String, :default => nil
 
+#<> @attribute init_style The init system used to run the service.
+attribute :init_style, :equal_to => ['upstart', 'runit'], :default => 'upstart'
+
 default_action :enable
 
 def initialize(*args)

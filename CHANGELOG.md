@@ -1,4 +1,5 @@
 ## v0.5.30:
+* Enhance : Support runit as an init style.
 * Enhance : Work around some warnings issued by GlassFish 4 install.
 * Enhance : Add significantly more logging to help debugging issues.
 * Bug     : Fix permission on glassfish home directory so that the
