@@ -131,12 +131,12 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         loop do
           raise "GlassFish failed to become operational" if count > 50
           count = count + 1
-          admin_url = "https://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
+          admin_url = "http://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
           begin
             uri = URI(admin_url)
             res = nil
             http = Net::HTTP.new(uri.hostname, uri.port)
-            http.use_ssl = true
+            http.use_ssl = false
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             http.start do |http|
               request = Net::HTTP::Get.new(uri.request_uri)
@@ -256,8 +256,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   if definition['jdbc_connection_pools']
     gf_sort(definition['jdbc_connection_pools']).each_pair do |key, configuration|
-      key = key.to_s
-      glassfish_jdbc_connection_pool key do
+      pool_name = key.to_s
+      glassfish_jdbc_connection_pool pool_name do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
@@ -265,12 +265,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         secure secure if secure
         system_user system_username if system_username
         system_group system_group if system_group
-        configuration['config'].each_pair do |config_key, value|
-          self.send(config_key, value)
-        end if configuration['config']
+        configuration.each_pair do |config_key, value|
+          self.send(config_key, value) unless config_key == 'resources'
+        end if configuration
       end
       if configuration['resources']
         gf_sort(configuration['resources']).each_pair do |resource_name, resource_configuration|
+        Chef::Log.info "Defining GlassFish Resource #{resource_name}, config: #{resource_configuration}"
+
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
             admin_port admin_port if admin_port
@@ -279,7 +281,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
             secure secure if secure
             system_user system_username if system_username
             system_group system_group if system_group
-            connectionpoolid key
+            connectionpoolid pool_name
             resource_configuration.each_pair do |config_key, value|
               self.send(config_key, value) unless config_key == 'priority'
             end
