@@ -19,6 +19,7 @@ actions :add, :remove
 attribute :url, :kind_of => String, :name_attribute => true
 attribute :library_type, :equal_to => ['common', 'ext', 'app'], :default => 'common'
 attribute :upload, :equal_to => [true, false, 'true', 'false'], :default => true
+attribute :requires_restart, :equal_to => [true, false, 'true', 'false'], :default => false
 
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :required => true
@@ -39,6 +40,9 @@ attribute :admin_port, :kind_of => Integer, :default => 4848
 attribute :system_user, :kind_of => String, :default => nil
 #<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
 attribute :system_group, :kind_of => String, :default => nil
+
+#<> @attribute init_style The init system used to run the service.
+attribute :init_style, :equal_to => ['upstart', 'runit'], :default => 'upstart'
 
 default_action :add
 
