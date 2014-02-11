@@ -165,6 +165,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       config = config.is_a?(Hash) ? config : {'url' => config}
       url = config['url']
       library_type = config['type'] || 'ext'
+      requires_restart = config['requires_restart'] || false
       glassfish_library url do
         domain_name domain_key
         admin_port admin_port if admin_port
@@ -174,6 +175,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_user system_username if system_username
         system_group system_group if system_group
         library_type library_type
+        requires_restart requires_restart
+        init_style definition['config']['init_style'] if definition['config']['init_style']
       end
     end
   end
@@ -271,8 +274,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       end
       if configuration['resources']
         gf_sort(configuration['resources']).each_pair do |resource_name, resource_configuration|
-        Chef::Log.info "Defining GlassFish Resource #{resource_name}, config: #{resource_configuration}"
-
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
             admin_port admin_port if admin_port

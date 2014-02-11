@@ -23,6 +23,23 @@ end
 use_inline_resources
 
 action :add do
+  if new_resource.init_style == 'upstart'
+    service "glassfish-#{new_resource.domain_name}" do
+      provider Chef::Provider::Service::Upstart
+      supports :restart => true, :status => true
+      action :nothing
+    end
+  elsif new_resource.init_style == 'runit'
+    runit_service "glassfish-#{new_resource.domain_name}" do
+      sv_timeout 100
+      supports :restart => true, :status => true
+      action :nothing
+    end
+  else
+    raise "Unknown init style #{new_resource.init_style}"
+  end
+
+  
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
   check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
 
@@ -54,6 +71,10 @@ action :add do
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
+    if new_resource.requires_restart
+      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'upstart'
+      notifies :restart, "runit_service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'runit'
+    end
   end
 end
 
