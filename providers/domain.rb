@@ -279,19 +279,19 @@ action :create do
 
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
   #file "#{domain_dir_path}/master-password" do
-  ruby_block "copy master-password" do
-    source_file = "#{domain_dir_path}/config/master-password"
-    dest_file = "#{domain_dir_path}/master-password"
+  # ruby_block "copy master-password" do
+  #   source_file = "#{domain_dir_path}/config/master-password"
+  #   dest_file = "#{domain_dir_path}/master-password"
 
-    only_if { node['glassfish']['version'][0] == '4' }
-    only_if { ::File.exists?(source_file) }
-    not_if { ::File.exists?(dest_file) }
+  #   only_if { node['glassfish']['version'][0] == '4' }
+  #   only_if { ::File.exists?(source_file) }
+  #   not_if { ::File.exists?(dest_file) }
 
-    block do
-      FileUtils.cp(source_file, dest_file)
-      FileUtils.chown( new_resource.system_user, new_resource.system_group, dest_file)
-    end
-  end
+  #   block do
+  #     FileUtils.cp(source_file, dest_file)
+  #     FileUtils.chown( new_resource.system_user, new_resource.system_group, dest_file)
+  #   end
+  # end
 
   template "#{domain_dir_path}/config/logging.properties" do
     source "logging.properties.erb"
