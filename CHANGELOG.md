@@ -1,4 +1,6 @@
 ## v0.5.30:
+* Enhance : Support `requires_restart` parameter on the glassfish_library
+            LWRP. Submitted by Mike Thomas.
 * Change  : Set the unask to 0022 to allow logstash and other applications
             access to the generated logs. Submitted by Gert Leenders.
 * Enhance : Rework the glassfish_secure_admin functionality to be more
