@@ -274,6 +274,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       end
       if configuration['resources']
         gf_sort(configuration['resources']).each_pair do |resource_name, resource_configuration|
+          Chef::Log.info "Defining GlassFish JDBC Resource #{resource_name}, config: #{resource_configuration}"
+
           glassfish_jdbc_resource resource_name.to_s do
             domain_name domain_key
             admin_port admin_port if admin_port
