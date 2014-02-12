@@ -39,7 +39,7 @@ action :add do
     raise "Unknown init style #{new_resource.init_style}"
   end
 
-  
+
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
   check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
 
@@ -91,3 +91,4 @@ action :remove do
     code asadmin_command(command.join(' '))
   end
 end
+
