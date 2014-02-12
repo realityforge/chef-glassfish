@@ -17,26 +17,20 @@ application domains and OpenMQ broker instances.
 * java
 * authbind
 * cutlery
+* runit (Recommended but not required)
 
 # Attributes
 
 * `node['glassfish']['user']` - GlassFish User: The user that GlassFish executes as. Defaults to `glassfish`.
 * `node['glassfish']['group']` - GlassFish Admin Group: The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
-* `node['glassfish']['version']` - GlassFish Version: The version of GlassFish to install. Defaults to `3.1.2.2`.
-* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{version}/release/glassfish-#{version}.zip`.
+* `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `3.1.2.2`.
+* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip`.
 * `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
 * `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
 * `node['glassfish']['domains']` - GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain. Defaults to `Mash.new`.
 * `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `Mash.new`.
 * `node['openmq']['instances']` - GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `Mash.new`.
 * `node['openmq']['var_home']` - GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration. Defaults to `/var/omq`.
-
-## GlassFish 4
-
-To install GlassFish 4, both the version and package_url need to be overriden (even though the package_url is an exact copy of the default):
-
-    node.override['glassfish']['version'] = "4.0"
-    node.override['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 
 # Recipes
 
@@ -338,6 +332,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - realm_types: A map of names to realm implementation classes that is merged into the default realm types. Defaults to <code>{}</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ### Examples
 
@@ -483,6 +478,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - url:
 - library_type:  Defaults to <code>"common"</code>.
 - upload:  Defaults to <code>true</code>.
+- requires_restart:  Defaults to <code>false</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -492,6 +488,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ## glassfish_mq
 
@@ -505,7 +502,7 @@ Creates an OpenMQ message broker instance, creates an OS-level service and start
 ### Attribute Parameters
 
 - max_memory: The amount of heap memory to allocate to the domain in MiB. Defaults to <code>512</code>.
-- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>128</code>.
+- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>250</code>.
 - instance: The name of the broker instance.
 - users: A map of users to passwords for interacting with the service. Defaults to <code>{}</code>.
 - access_control_rules: An access control list of patterns to users. Defaults to <code>{}</code>.
@@ -523,6 +520,7 @@ Creates an OpenMQ message broker instance, creates an OS-level service and start
 - stomp_port: The port on which the stomp service will bind. If not specified, no stomp service will execute. Defaults to <code>nil</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ### Examples
 
@@ -666,6 +664,7 @@ Enable or disable secure admin flag on the GlassFish server which enables/disabl
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ### Examples
 
