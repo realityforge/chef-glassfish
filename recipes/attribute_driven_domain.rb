@@ -19,6 +19,125 @@
 Configures 0 or more GlassFish domains using the glassfish/domains attribute.
 
 The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
+
+A typical approach is to define the configuration for the entire application on the node and include the recipe.
+Another approach using a vagrant file is to set the json attribute such as;
+
+```ruby
+  chef.json = {
+        "java" => {
+            "install_flavor" => "oracle",
+            "jdk_version" => 7,
+            "oracle" => {
+                "accept_oracle_download_terms" => true
+            }
+        },
+        "glassfish" => {
+            "version" => "4.0.1",
+            "package_url" => "http://dlc.sun.com.edgesuite.net/glassfish/4.0.1/promoted/glassfish-4.0.1-b01.zip",
+            "base_dir" => "/usr/local/glassfish",
+            "domains_dir" => "/usr/local/glassfish/glassfish/domains",
+            "domains" => {
+                "myapp" => {
+                    "config" => {
+                        "min_memory" => 1024,
+                        "max_memory" => 1024,
+                        "max_perm_size" => 256,
+                        "port" => 7070,
+                        "admin_port" => 4848,
+                        "username" => "adminuser",
+                        "password" => "adminpw",
+                        "remote_access" => false,
+                        "secure" => false
+                    },
+                    'extra_libraries' => {
+                        'realm' => {
+                          'type' => 'common',
+                          'url' => 'https://s3.amazonaws.com/somebucket/lib/realm.jar',
+                          'requires_restart' => true
+                        },
+                        'jdbcdriver' => {
+                          'type' => 'common',
+                          'url' => 'https://s3.amazonaws.com/somebucket/lib/mysql-connector-java-5.1.25-bin.jar'
+                        },
+                        'encryption' => {
+                          'type' => 'common',
+                          'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
+                        }
+                    },
+                    'jdbc_connection_pools' => {
+                        'RealmPool' => {
+                            'config' => {
+                                'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+                                'restype' => 'javax.sql.DataSource',
+                                'isconnectvalidatereq' => 'true',
+                                'validationmethod' => 'auto-commit',
+                                'ping' => 'true',
+                                'description' => 'Realm Pool',
+                                'properties' => {
+                                   'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/realmdb",
+                                   'ServerName' => "devdb.somecompany.com",
+                                   'User' => 'realmuser',
+                                   'Password' => 'realmpw',
+                                   'PortNumber' => '3306',
+                                   'DatabaseName' => 'realmdb'
+                                }
+                            },
+                            'resources' => {
+                                'jdbc/Realm' => {
+                                    'description' => 'Resource for Realm Pool',
+                                }
+                            }
+                        },
+                        'AppPool' => {
+                            'config' => {
+                                'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+                                'restype' => 'javax.sql.DataSource',
+                                'isconnectvalidatereq' => 'true',
+                                'validationmethod' => 'auto-commit',
+                                'ping' => 'true',
+                                'description' => 'App Pool',
+                                'properties' => {
+                                  'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/appdb",
+                                  'ServerName' => "devdb.somecompany.com",
+                                  'User' => 'appuser',
+                                  'Password' => 'apppw',
+                                  'PortNumber' => '3306',
+                                  'DatabaseName' => 'appdb'
+                                }
+                            },
+                            'resources' => {
+                                'jdbc/App' => {
+                                    'description' => 'Resource for App Pool',
+                                }
+                            }
+                        }
+                    },
+                    'realms' => {
+                        'custom-realm' => {
+                            'classname' => 'com.somecompany.realm.CustomRealm',
+                            'jaas-context' => 'customRealm',
+                            'properties' => {
+                                'jaas-context' => 'customRealm',
+                                'datasource' => 'jdbc/Realm',
+                                'groupQuery' => 'SELECT ...',
+                                'passwordQuery' => 'SELECT ...'
+                            }
+                         }
+                    },
+                    'realm_types' => {
+                        'customRealm' => 'com.somecompany.realm.CustomLoginModule'
+                    },
+                    'deployables' => {
+                        'myapp' => {
+                            'url' => 'https://s3.amazonaws.com/somebucket/apps/app.war',
+                            'context_root' => '/'
+                         }
+                    }
+                }
+            }
+        }
+```
 #>
 =end
 

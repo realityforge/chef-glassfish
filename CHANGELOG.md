@@ -1,4 +1,6 @@
 ## v0.5.30:
+* Enhance : Improve documentation for the attribtue driven recipe. Submitted
+            by Mike Thomas.
 * Enhance : Support `requires_restart` parameter on the glassfish_library
             LWRP. Submitted by Mike Thomas.
 * Change  : Set the unask to 0022 to allow logstash and other applications
