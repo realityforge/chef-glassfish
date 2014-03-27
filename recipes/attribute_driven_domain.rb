@@ -136,7 +136,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
             uri = URI(admin_url)
             res = nil
             http = Net::HTTP.new(uri.hostname, uri.port)
-            http.use_ssl = true
+            http.use_ssl = false
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             http.start do |http|
               request = Net::HTTP::Get.new(uri.request_uri)
