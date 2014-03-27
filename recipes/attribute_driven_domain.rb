@@ -131,7 +131,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         loop do
           raise "GlassFish failed to become operational" if count > 50
           count = count + 1
-          admin_url = "https://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
+          admin_url = "http://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
           begin
             uri = URI(admin_url)
             res = nil
