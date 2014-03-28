@@ -254,7 +254,7 @@ action :create do
 
     create_args = []
     create_args << "--checkports=false"
-    create_args << "--savemasterpassword=true" if node['glassfish']['version'][0] == '4'
+    create_args << "--savemasterpassword=true" if node['glassfish']['version'][0..0] == '4'
     create_args << "--instanceport #{new_resource.port}"
     create_args << "--adminport #{new_resource.admin_port}"
     create_args << "--nopassword=false" if new_resource.username
