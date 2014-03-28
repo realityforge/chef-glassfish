@@ -59,7 +59,7 @@ mkdir /tmp/glassfish
 cd /tmp/glassfish
 unzip -qq #{cached_package_filename}
 mkdir -p #{File.dirname(node['glassfish']['base_dir'])}
-mv glassfish#{node['glassfish']['version'][0]} #{node['glassfish']['base_dir']}
+mv glassfish#{node['glassfish']['version'][0..0]} #{node['glassfish']['base_dir']}
 mkdir -p #{node['glassfish']['base_dir']}/glassfish/lib/templates
 chown -R #{node['glassfish']['user']} #{node['glassfish']['base_dir']}
 chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
