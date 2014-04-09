@@ -180,7 +180,7 @@ action :create do
     end
   end
 
-  if new_resource.system_user != node['glassfish']['user']
+  if new_resource.system_user != node['glassfish']['user'] and new_resource.system_user != "root"
     user new_resource.system_user do
       comment "GlassFish #{new_resource.domain_name} Domain"
       gid new_resource.system_group
