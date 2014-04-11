@@ -1,4 +1,5 @@
 ## v0.5.30:
+* Enhance : Support using 'root' as the system user. Submitted By Mike Thomas.
 * Enhance : Improve mechanism for accessing version to be portable to older
             versions of ruby. Submitted By Mike Thomas.
 * Enhance : Improve documentation for the attribtue driven recipe. Submitted
