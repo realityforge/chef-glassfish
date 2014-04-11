@@ -489,6 +489,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   if definition['custom_resources']
     gf_sort(definition['custom_resources']).each_pair do |key, value|
       hash = value.is_a?(Hash) ? value : {'value' => value}
+      hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
       glassfish_custom_resource key.to_s do
         domain_name domain_key
         admin_port admin_port if admin_port
