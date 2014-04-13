@@ -18,7 +18,7 @@ actions :create, :delete
 
 attribute :name, :kind_of => String, :name_attribute => true
 attribute :target, :kind_of => String, :default => 'server'
-attribute :restype, :kind_of => String, :default => "java.lang.String"
+attribute :restype, :kind_of => String, :default => 'javax.jms.Queue'
 attribute :enabled, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :description, :kind_of => String, :default => nil
 attribute :properties, :kind_of => Hash, :default => {}

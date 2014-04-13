@@ -485,6 +485,28 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - jms_resources"
+  if definition['jms_resources']
+    gf_sort(definition['jms_resources']).each_pair do |key, value|
+      hash = value.is_a?(Hash) ? value : {'value' => value}
+      hash['restype'] = 'javax.jms.Queue' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
+      glassfish_jms_resource key.to_s do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        target hash['target'] if hash['target']
+        enabled hash['enabled'] if hash['enabled']
+        description hash['description'] if hash['description']
+        properties hash['properties'] if hash['properties']
+        restype hash['restype'] if hash['restype']
+      end
+    end
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - custom_resources"
   if definition['custom_resources']
     gf_sort(definition['custom_resources']).each_pair do |key, value|
@@ -837,6 +859,24 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     unless definition['javamail_resources'] && definition['javamail_resources'][existing]
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing mail resource #{existing}"
       glassfish_javamail_resource existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        action :delete
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing jms resources"
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jms-resources') do |existing|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing jms resource #{existing}"
+    unless definition['jms_resources'] && definition['jms_resources'][existing]
+      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing jms resource #{existing}"
+      glassfish_jms_resource existing do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
