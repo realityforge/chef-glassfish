@@ -8,3 +8,23 @@
 
 # Ignore the patch file generated when integrating changes
 /patch.*
+.kitchen/
+.kitchen.local.yml
+
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+pkg/
+  
+# Berkshelf
+.vagrant
+/cookbooks
+Berksfile.lock
+  
+# Bundler
+Gemfile.lock
+bin/*
+.bundle/*
