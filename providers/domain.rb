@@ -315,7 +315,12 @@ action :create do
 
   if new_resource.init_style == 'upstart'
     template "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
-      source "glassfish-upstart.conf.erb"
+      case node[:platform_family]
+      when "debian"
+        source "glassfish-upstart.conf.erb"
+      when "rhel"
+        source "glassfish-upstart-rhel.conf.erb"
+      end
       mode "0644"
       cookbook 'glassfish'
 
