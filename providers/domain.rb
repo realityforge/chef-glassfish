@@ -315,7 +315,7 @@ action :create do
 
   if new_resource.init_style == 'upstart'
     template "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
-      case node[:platform_family]
+      case node['platform_family']
       when "debian"
         source "glassfish-upstart.conf.erb"
       when "rhel"
