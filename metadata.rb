@@ -10,5 +10,4 @@ supports 'ubuntu'
 
 depends 'java'
 depends 'authbind'
-depends 'cutlery'
 recommends 'runit'
