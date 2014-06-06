@@ -199,6 +199,7 @@ action :create do
   end
 
   args = default_jvm_options.dup
+  args += new_resource.java_agents.map{ |agent| "-javaagent:#{agent}"}
   args += new_resource.extra_jvm_options
   args << "-cp"
   args << "#{node['glassfish']['base_dir']}/glassfish/modules/glassfish.jar"

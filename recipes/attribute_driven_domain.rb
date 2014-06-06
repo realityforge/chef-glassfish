@@ -219,6 +219,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     realm_types definition['realm_types'] if definition['realm_types']
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
+    java_agents definition['config']['java_agents'] if definition['config']['java_agents']
     init_style definition['config']['init_style'] if definition['config']['init_style']
     system_user system_username if system_username
     system_group system_group if system_group

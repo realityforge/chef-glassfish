@@ -439,6 +439,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - port: The port on which the HTTP service will bind. Defaults to <code>8080</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - extra_jvm_options: An array of extra arguments to pass the JVM. Defaults to <code>[]</code>.
+- java_agents: An array of javaagent arguments to pass the JVM. Defaults to <code>[]</code>.
 - env_variables: A hash of environment variables set when running the domain. Defaults to <code>{}</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.

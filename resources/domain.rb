@@ -56,6 +56,8 @@ attribute :port, :kind_of => Integer, :default => 8080
 attribute :admin_port, :kind_of => Integer, :default => 4848
 #<> @attribute extra_jvm_options An array of extra arguments to pass the JVM.
 attribute :extra_jvm_options, :kind_of => Array, :default => []
+#<> @attribute java_agents An array of javaagent arguments to pass the JVM.
+attribute :java_agents, :kind_of => Array, :default => []
 #<> @attribute env_variables A hash of environment variables set when running the domain.
 attribute :env_variables, :kind_of => Hash, :default => {}
 
