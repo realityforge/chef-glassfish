@@ -21,16 +21,16 @@ application domains and OpenMQ broker instances.
 
 # Attributes
 
-* `node['glassfish']['user']` - GlassFish User: The user that GlassFish executes as. Defaults to `glassfish`.
-* `node['glassfish']['group']` - GlassFish Admin Group: The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
-* `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `3.1.2.2`.
-* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip`.
-* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
-* `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
-* `node['glassfish']['domains']` - GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain. Defaults to `Mash.new`.
-* `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `Mash.new`.
-* `node['openmq']['instances']` - GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `Mash.new`.
-* `node['openmq']['var_home']` - GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration. Defaults to `/var/omq`.
+* `node['glassfish']['user']` - GlassFish User: The user that GlassFish executes as. Defaults to `"glassfish"`.
+* `node['glassfish']['group']` - GlassFish Admin Group: The group allowed to manage GlassFish domains. Defaults to `"glassfish-admin"`.
+* `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `"3.1.2.2"`.
+* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `"http://dlc.sun.com.edgesuite.net/glassfish/\#{node['glassfish']['version']}/release/glassfish-\#{node['glassfish']['version']}.zip"`.
+* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `"/usr/local/glassfish"`.
+* `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `"/srv/glassfish"`.
+* `node['glassfish']['domains']` - GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain. Defaults to `"Mash.new"`.
+* `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `"Mash.new"`.
+* `node['openmq']['instances']` - GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `"Mash.new"`.
+* `node['openmq']['var_home']` - GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration. Defaults to `"/var/omq"`.
 
 # Recipes
 
@@ -195,6 +195,7 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_javamail_resource](#glassfish_javamail_resource)
 * [glassfish_jdbc_connection_pool](#glassfish_jdbc_connection_pool)
 * [glassfish_jdbc_resource](#glassfish_jdbc_resource)
+* [glassfish_jms_resource](#glassfish_jms_resource)
 * [glassfish_library](#glassfish_library)
 * [glassfish_mq](#glassfish_mq) - Creates an OpenMQ message broker instance, creates an OS-level service and starts the service.
 * [glassfish_mq_destination](#glassfish_mq_destination) - Creates or deletes a queue or a topic in an OpenMQ message broker instance.
@@ -574,6 +575,31 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - connectionpoolid:
 - enabled:  Defaults to <code>true</code>.
 - target:  Defaults to <code>"server"</code>.
+- description:  Defaults to <code>nil</code>.
+- properties:  Defaults to <code>{}</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+## glassfish_jms_resource
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- name:
+- target:  Defaults to <code>"server"</code>.
+- restype:  Defaults to <code>"javax.jms.Queue"</code>.
+- enabled:  Defaults to <code>true</code>.
 - description:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
 - domain_name: The name of the domain.
