@@ -27,7 +27,7 @@ action :create do
   command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << "--description" << "'#{new_resource.description}'" if new_resource.description
   properties = new_resource.properties.dup
-  properties['value'] = new_resource.value if new_resource.value
+  properties['value'] = new_resource.value unless new_resource.value.nil?
   command << "--property" << encode_parameters(properties) unless properties.empty?
   command << asadmin_target_flag
   command << new_resource.jndi_name

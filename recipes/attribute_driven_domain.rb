@@ -527,7 +527,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         properties hash['properties'] if hash['properties']
         restype hash['restype'] if hash['restype']
         factoryclass hash['factoryclass'] if hash['factoryclass']
-        value hash['value'].to_s if hash['value']
+        value hash['value'].to_s unless hash['value'].nil?
       end
     end
   end
@@ -597,7 +597,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
               webapp component_name
               name key
               type hash['type'] if hash['type']
-              value hash['value'].to_s if hash['value']
+              value hash['value'].to_s unless hash['value'].nil?
               description hash['description'] if hash['description']
             end
           end
