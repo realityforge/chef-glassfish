@@ -11,11 +11,6 @@ This file documents basic tasks that still need completion.
   - jdbc_connection_pool
   - connector_resource
   - javamail_resource
-* Add LWRPs for the EE7 concurrency resources. These possibly include;
-  - Context Services
-  - Managed Thread Factories
-  - Managed Executor Services
-  - Managed Scheduled Executor Services
 * Add LWRPs to manage the http-listener and protocol settings.
 * Add LWRPs to manage the JMS server configuration.
 * In GlassFish 4 supply deployment order for all deployables - derive it from existing priority. Make sure it is updated at runtime via deployment-order.
