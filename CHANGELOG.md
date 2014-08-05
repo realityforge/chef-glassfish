@@ -1,4 +1,5 @@
 ## v0.5.30:
+* Enhance : Recursively create omq runtime directory.
 * Enhance : Ensure auth_realm properties are updated if changed after initial
             creation.
 * Enhance : Initial support for RHEL by using a custom upstart script.

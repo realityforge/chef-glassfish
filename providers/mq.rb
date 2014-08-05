@@ -107,6 +107,7 @@ action :create do
   instance_dir = "#{node['openmq']['var_home']}/instances/#{new_resource.instance}"
 
   directory node['openmq']['var_home'] do
+    recursive true
     owner new_resource.system_user
     group new_resource.system_group
     mode "0700"
