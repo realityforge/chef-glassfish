@@ -1,5 +1,7 @@
 ## v0.6.0:
 * Enhance : Add iiop_listener LWRP to manage the iiop-listeners within GlassFish.
+* Bug     : Ensure thread-pools that are not part of the configuration are
+            deleted.
 * Change  : Default to installing GlassFish 4.0.
 
 ## v0.5.30:
