@@ -90,6 +90,25 @@ Another approach using a vagrant file is to set the json attribute such as;
                           'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
                         }
                     },
+                    'threadpools' => {
+                      'thread-pool-1' => {
+                        'maxthreadpoolsize' => 200,
+                        'minthreadpoolsize' => 5,
+                        'idletimeout' => 900,
+                        'maxqueuesize' => 4096
+                      },
+                      'http-thread-pool' => {
+                        'maxthreadpoolsize' => 200,
+                        'minthreadpoolsize' => 5,
+                        'idletimeout' => 900,
+                        'maxqueuesize' => 4096
+                      },
+                      'admin-pool' => {
+                        'maxthreadpoolsize' => 50,
+                        'minthreadpoolsize' => 5,
+                        'maxqueuesize' => 256
+                      }
+                    },
                     'jdbc_connection_pools' => {
                         'RealmPool' => {
                             'config' => {
@@ -203,6 +222,7 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_property](#glassfish_property)
 * [glassfish_resource_adapter](#glassfish_resource_adapter)
 * [glassfish_secure_admin](#glassfish_secure_admin) - Enable or disable secure admin flag on the GlassFish server which enables/disables remote administration.
+* [glassfish_thread_pool](#glassfish_thread_pool)
 * [glassfish_web_env_entry](#glassfish_web_env_entry) - Set a value that can be retrieved as a `web env entry` in a particular web application.
 
 ## glassfish_admin_object
@@ -817,6 +837,32 @@ Enable or disable secure admin flag on the GlassFish server which enables/disabl
     glassfish_secure_admin "My Domain Remote Access" do
        action :enable
     end
+
+## glassfish_thread_pool
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- threadpool_id:
+- target:  Defaults to <code>"server"</code>.
+- maxthreadpoolsize: Specifies the maximum number of threads the pool can contain. Defaults to <code>5</code>.
+- minthreadpoolsize: Specifies the minimum number of threads in the pool. These are created when the thread pool is instantiated. Defaults to <code>2</code>.
+- idletimeout: Specifies the amount of time in seconds after which idle threads are removed from the pool. Defaults to <code>900</code>.
+- maxqueuesize: Specifies the maximum number of messages that can be queued until threads are available to process them for a network listener or IIOP listener. A value of -1 specifies no limit. Defaults to <code>4096</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ## glassfish_web_env_entry
 

@@ -65,6 +65,25 @@ Another approach using a vagrant file is to set the json attribute such as;
                           'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
                         }
                     },
+                    'threadpools' => {
+                      'thread-pool-1' => {
+                        'maxthreadpoolsize' => 200,
+                        'minthreadpoolsize' => 5,
+                        'idletimeout' => 900,
+                        'maxqueuesize' => 4096
+                      },
+                      'http-thread-pool' => {
+                        'maxthreadpoolsize' => 200,
+                        'minthreadpoolsize' => 5,
+                        'idletimeout' => 900,
+                        'maxqueuesize' => 4096
+                      },
+                      'admin-pool' => {
+                        'maxthreadpoolsize' => 50,
+                        'minthreadpoolsize' => 5,
+                        'maxqueuesize' => 256
+                      }
+                    },
                     'jdbc_connection_pools' => {
                         'RealmPool' => {
                             'config' => {
@@ -296,6 +315,26 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         library_type library_type
         requires_restart requires_restart
+        init_style definition['config']['init_style'] if definition['config']['init_style']
+      end
+    end
+  end
+
+  if definition['threadpools']
+    gf_sort(definition['threadpools']).each_pair do |key, config|
+      glassfish_thread_pool key do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+
+        maxthreadpoolsize config['maxthreadpoolsize'] if config['maxthreadpoolsize']
+        minthreadpoolsize config['minthreadpoolsize'] if config['minthreadpoolsize']
+        idletimeout config['idletimeout'] if config['idletimeout']
+        maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
         init_style definition['config']['init_style'] if definition['config']['init_style']
       end
     end

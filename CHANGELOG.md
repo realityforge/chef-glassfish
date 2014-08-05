@@ -1,4 +1,6 @@
 ## v0.5.30:
+* Enhance : Add thread_pool LWRP to manage the thread-pools within GlassFish.
+            Ensure it is correctly called attribute_driven_domain recipe.
 * Bug     : Only delete the index.html in docroot during install, not
             every converge.
 * Enhance : Recursively create omq runtime directory.
