@@ -1,4 +1,5 @@
 ## v0.6.0:
+* Enhance : Add iiop_listener LWRP to manage the iiop-listeners within GlassFish.
 * Change  : Default to installing GlassFish 4.0.
 
 ## v0.5.30:

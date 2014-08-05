@@ -84,6 +84,13 @@ Another approach using a vagrant file is to set the json attribute such as;
                         'maxqueuesize' => 256
                       }
                     },
+                    'iiop-listeners' => {
+                      'orb-listener-1' => {
+                        'enabled' => true,
+                        'iiopport' => 1072,
+                        'securityenabled' => false
+                      }
+                    },
                     'jdbc_connection_pools' => {
                         'RealmPool' => {
                             'config' => {
@@ -338,6 +345,29 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         idletimeout config['idletimeout'] if config['idletimeout']
         maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
         init_style definition['config']['init_style'] if definition['config']['init_style']
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - iiop listeners"
+
+  if definition['iiop-listeners']
+    gf_sort(definition['iiop-listeners']).each_pair do |key, config|
+      glassfish_iiop_listener key do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+
+        listeneraddress config['listeneraddress'] if config['listeneraddress']
+        iiopport config['iiopport'] if config['iiopport']
+        enabled config['enabled'] unless config['enabled'].nil?
+        securityenabled config['securityenabled'] unless config['securityenabled'].nil?
+        maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
+        properties config['properties'] if config['properties']
       end
     end
   end
@@ -974,6 +1004,24 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     unless definition['realms'] && definition['realms'][existing] || standard_realms.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing auth realms #{existing}"
       glassfish_auth_realm existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        action :delete
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing iiop-listeners"
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-iiop-listeners') do |existing|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing iiop-listeners #{existing}"
+    unless definition['iiop-listeners'] && definition['iiop-listeners'][existing]
+      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing iiop-listener #{existing}"
+      glassfish_iiop_listener existing do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
