@@ -312,6 +312,17 @@ action :create do
     notifies :restart, service_resource_name, :delayed
   end
 
+  file "#{domain_dir_path}/bin/#{new_resource.domain_name}_asadmin" do
+    mode "0700"
+    owner new_resource.system_user
+    group new_resource.system_group
+    content <<-SH
+#!/bin/sh
+
+#{Asadmin.asadmin_command(node, '$*', :remote_command => true, :terse => false, :echo => true, :username => new_resource.username, :password_file => new_resource.password_file, :secure => new_resource.secure, :admin_port => new_resource.admin_port)}
+    SH
+  end
+
   if new_resource.init_style == 'upstart'
     template "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
       case node['platform_family']
