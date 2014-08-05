@@ -1,4 +1,6 @@
 ## v0.6.0:
+* Enhance : Avoid some warnings from asadmin that are internal glassfish4 issues.
+* Enhance : Add LWRPs to manage concurrency resources within GlassFish 4.
 * Enhance : Add iiop_listener LWRP to manage the iiop-listeners within GlassFish.
 * Bug     : Ensure thread-pools that are not part of the configuration are
             deleted.
