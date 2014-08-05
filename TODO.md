@@ -2,7 +2,15 @@
 
 This file documents basic tasks that still need completion.
 
-* Update jms_resource so that it will set properties when the jms property has changed.
+* Update LWRPs so that they will update resource configuration when input config changes.
+  - connector-connection-pool
+  - admin_object
+  - resource-adapter
+  - web-env-entry
+  - jms_resource
+  - jdbc_connection_pool
+  - connector_resource
+  - javamail_resource
 * Add LWRPs for the EE7 concurrency resources. These possibly include;
   - Context Services
   - Managed Thread Factories
