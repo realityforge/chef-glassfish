@@ -267,15 +267,12 @@ action :create do
     command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
     command_string << replace_in_domain_file("%%%MAX_MEM_SIZE%%%", new_resource.max_memory)
     command_string << replace_in_domain_file("%%%MIN_MEM_SIZE%%%", new_resource.min_memory)
+    command_string << "rm -f #{domain_dir_path}/docroot/index.html"
     command_string << asadmin_command("verify-domain-xml #{domain_dir_arg} #{new_resource.domain_name}", false)
 
     user new_resource.system_user
     group new_resource.system_group
     code command_string.join("\n")
-  end
-
-  file "#{domain_dir_path}/docroot/index.html" do
-    action :delete
   end
 
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.

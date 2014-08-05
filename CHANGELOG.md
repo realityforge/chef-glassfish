@@ -1,4 +1,6 @@
 ## v0.5.30:
+* Bug     : Only delete the index.html in docroot during install, not
+            every converge.
 * Enhance : Recursively create omq runtime directory.
 * Enhance : Ensure auth_realm properties are updated if changed after initial
             creation.
