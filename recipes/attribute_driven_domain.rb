@@ -320,6 +320,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - threadpools"
+
   if definition['threadpools']
     gf_sort(definition['threadpools']).each_pair do |key, config|
       glassfish_thread_pool key do
