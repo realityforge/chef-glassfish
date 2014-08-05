@@ -1,3 +1,5 @@
+## v0.6.2:
+
 ## v0.6.0:
 * Enhance : Avoid some warnings from asadmin that are internal glassfish4 issues.
 * Enhance : Add LWRPs to manage concurrency resources within GlassFish 4.
