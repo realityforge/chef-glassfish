@@ -1,4 +1,6 @@
 ## v0.6.2:
+* Enhance : Increase the default stack of the glassfish domain so that it works
+            on later versions of 64-bit Java 7.
 
 ## v0.6.0:
 * Enhance : Avoid some warnings from asadmin that are internal glassfish4 issues.
