@@ -183,7 +183,8 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
 
   lines.each do |line|
     if line =~ /CLI[0-9]+: Warning.*/
-      Chef::Log.warn "Ignoring asadmin output: #{line}"
+      # CLI031 Warnings are a result of internal changes in glassfish and we can not control them
+      Chef::Log.warn "Ignoring asadmin output: #{line}" unless (line =~/CLI031: Warning.*/)
     else
       existing = line.scan(/^(\S+)/).flatten[0]
       yield existing
