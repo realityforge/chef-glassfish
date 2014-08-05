@@ -227,8 +227,8 @@ action :create do
               :authbind => requires_authbind,
               :vmargs => vm_args.join(" "),
               :listen_ports => listen_ports)
-      sv_timeout 100
-      action [:enable]
+      sv_timeout 300
+      action [:nothing]
     end
   else
     raise "Unknown init style #{new_resource.init_style}"
@@ -310,6 +310,7 @@ action :create do
   ruby_block service_resource_name do
     block do
       s = run_context.resource_collection.lookup(service_resource_name)
+      s.run_action(:enable)
       s.run_action(:start)
     end
   end
