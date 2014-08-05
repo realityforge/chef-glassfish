@@ -11,7 +11,7 @@
 * Enhance : Support using 'root' as the system user. Submitted By Mike Thomas.
 * Enhance : Improve mechanism for accessing version to be portable to older
             versions of ruby. Submitted By Mike Thomas.
-* Enhance : Improve documentation for the attribtue driven recipe. Submitted
+* Enhance : Improve documentation for the attribute driven recipe. Submitted
             by Mike Thomas.
 * Enhance : Support `requires_restart` parameter on the glassfish_library
             LWRP. Submitted by Mike Thomas.
