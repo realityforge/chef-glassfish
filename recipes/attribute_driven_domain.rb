@@ -84,7 +84,7 @@ Another approach using a vagrant file is to set the json attribute such as;
                         'maxqueuesize' => 256
                       }
                     },
-                    'iiop-listeners' => {
+                    'iiop_listeners' => {
                       'orb-listener-1' => {
                         'enabled' => true,
                         'iiopport' => 1072,
@@ -351,8 +351,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - iiop listeners"
 
-  if definition['iiop-listeners']
-    gf_sort(definition['iiop-listeners']).each_pair do |key, config|
+  if definition['iiop_listeners']
+    gf_sort(definition['iiop_listeners']).each_pair do |key, config|
       glassfish_iiop_listener key do
         domain_name domain_key
         admin_port admin_port if admin_port
@@ -1016,10 +1016,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing iiop-listeners"
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing iiop_listeners"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-iiop-listeners') do |existing|
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing iiop-listeners #{existing}"
-    unless definition['iiop-listeners'] && definition['iiop-listeners'][existing]
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing iiop_listeners #{existing}"
+    unless definition['iiop_listeners'] && definition['iiop_listeners'][existing]
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing iiop-listener #{existing}"
       glassfish_iiop_listener existing do
         domain_name domain_key
