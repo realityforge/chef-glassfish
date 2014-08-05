@@ -109,6 +109,36 @@ Another approach using a vagrant file is to set the json attribute such as;
                         'maxqueuesize' => 256
                       }
                     },
+                    'iiop_listeners' => {
+                      'orb-listener-1' => {
+                        'enabled' => true,
+                        'iiopport' => 1072,
+                        'securityenabled' => false
+                      }
+                    },
+                    'context_services' => {
+                      'concurrent/MyAppContextService' => {
+                        'description' => 'My Apps ContextService'
+                      }
+                    },
+                    'managed_thread_factories' => {
+                      'concurrent/myThreadFactory' => {
+                        'threadpriority' => 12,
+                        'description' => 'My Thread Factory'
+                      }
+                    },
+                    'managed_executor_services' => {
+                      'concurrent/myExecutorService' => {
+                        'threadpriority' => 12,
+                        'description' => 'My Executor Service'
+                      }
+                    },
+                    'managed_scheduled_executor_services' => {
+                      'concurrent/myScheduledExecutorService' => {
+                        'corepoolsize' => 12,
+                        'description' => 'My Executor Service'
+                      }
+                    },
                     'jdbc_connection_pools' => {
                         'RealmPool' => {
                             'config' => {
@@ -208,14 +238,19 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_auth_realm](#glassfish_auth_realm)
 * [glassfish_connector_connection_pool](#glassfish_connector_connection_pool)
 * [glassfish_connector_resource](#glassfish_connector_resource)
+* [glassfish_context_service](#glassfish_context_service)
 * [glassfish_custom_resource](#glassfish_custom_resource)
 * [glassfish_deployable](#glassfish_deployable)
 * [glassfish_domain](#glassfish_domain) - Creates a GlassFish application domain, creates an OS-level service and starts the service.
+* [glassfish_iiop_listener](#glassfish_iiop_listener)
 * [glassfish_javamail_resource](#glassfish_javamail_resource)
 * [glassfish_jdbc_connection_pool](#glassfish_jdbc_connection_pool)
 * [glassfish_jdbc_resource](#glassfish_jdbc_resource)
 * [glassfish_jms_resource](#glassfish_jms_resource)
 * [glassfish_library](#glassfish_library)
+* [glassfish_managed_executor_service](#glassfish_managed_executor_service)
+* [glassfish_managed_scheduled_executor_service](#glassfish_managed_scheduled_executor_service)
+* [glassfish_managed_thread_factory](#glassfish_managed_thread_factory)
 * [glassfish_mq](#glassfish_mq) - Creates an OpenMQ message broker instance, creates an OS-level service and starts the service.
 * [glassfish_mq_destination](#glassfish_mq_destination) - Creates or deletes a queue or a topic in an OpenMQ message broker instance.
 * [glassfish_mq_ensure_running](#glassfish_mq_ensure_running) - Ensures that a OpenMQ message broker instance has had a chance to finish starting before proceeding.
@@ -377,6 +412,31 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
+## glassfish_context_service
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- jndi_name:
+- target:  Defaults to <code>"server"</code>.
+- enabled: Determines whether container contexts are propagated to threads. If set to true, the contexts specified in the --contextinfo option are propagated. If set to false, no contexts are propagated and the --contextinfo option is ignored. Defaults to <code>true</code>.
+- contextinfoenabled:  Defaults to <code>true</code>.
+- contextinfo: Descriptive details about the resource. Defaults to <code>"Classloader,JNDI,Security,WorkArea"</code>.
+- description:
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
 ## glassfish_custom_resource
 
 ### Actions
@@ -491,6 +551,32 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
         "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyDomain"}'
       }
     end
+
+## glassfish_iiop_listener
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- iioplistener_id:
+- target:  Defaults to <code>"server"</code>.
+- listeneraddress: Either the IP address or the hostname (resolvable by DNS).
+- iiopport: The IIOP port number. Defaults to <code>1072</code>.
+- securityenabled: If set to true, the IIOP listener runs SSL. You can turn SSL2 or SSL3 ON or OFF and set ciphers using an SSL element. The security setting globally enables or disables SSL by making certificates available to the server instance. Defaults to <code>false</code>.
+- enabled: If set to true, the IIOP listener is enabled at runtime. Defaults to <code>true</code>.
+- properties: Optional attribute name/value pairs for configuring the IIOP listener. Defaults to <code>{}</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_javamail_resource
 
@@ -655,6 +741,96 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 - init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
+
+## glassfish_managed_executor_service
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- jndi_name:
+- target:  Defaults to <code>"server"</code>.
+- enabled: Determines whether container contexts are propagated to threads. If set to true, the contexts specified in the --contextinfo option are propagated. If set to false, no contexts are propagated and the --contextinfo option is ignored. Defaults to <code>true</code>.
+- contextinfoenabled:  Defaults to <code>true</code>.
+- contextinfo: Descriptive details about the resource. Defaults to <code>"Classloader,JNDI,Security,WorkArea"</code>.
+- description:
+- threadpriority: Specifies the priority to assign to created threads. Defaults to <code>5</code>.
+- longrunningtasks: Specifies whether the resource should be used for long-running tasks. If set to true, long-running tasks are not reported as stuck. Defaults to <code>false</code>.
+- hungafterseconds: Specifies the number of seconds that a task can execute before it is considered unresponsive. If the value is 0 tasks are never considered unresponsive. Defaults to <code>0</code>.
+- corepoolsize: Specifies the number of threads to keep in a thread pool, even if they are idle. Defaults to <code>0</code>.
+- maximumpoolsize: Specifies the maximum number of threads that a thread pool can contain. Defaults to <code>2147483647</code>.
+- keepaliveseconds: Specifies the number of seconds that threads can remain idle when the number of threads is greater than corepoolsize. Defaults to <code>60</code>.
+- threadlifetimeseconds: Specifies the number of seconds that threads can remain in a thread pool before being purged, regardless of whether the number of threads is greater than corepoolsize or whether the threads are idle. The value of 0 means that threads are never purged. Defaults to <code>0</code>.
+- taskqueuecapacity: Specifies the number of submitted tasks that can be stored in the task queue awaiting execution. Defaults to <code>2147483647</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+## glassfish_managed_scheduled_executor_service
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- jndi_name:
+- target:  Defaults to <code>"server"</code>.
+- enabled: Determines whether container contexts are propagated to threads. If set to true, the contexts specified in the --contextinfo option are propagated. If set to false, no contexts are propagated and the --contextinfo option is ignored. Defaults to <code>true</code>.
+- contextinfoenabled:  Defaults to <code>true</code>.
+- contextinfo: Descriptive details about the resource. Defaults to <code>"Classloader,JNDI,Security,WorkArea"</code>.
+- description:
+- threadpriority: Specifies the priority to assign to created threads. Defaults to <code>5</code>.
+- longrunningtasks: Specifies whether the resource should be used for long-running tasks. If set to true, long-running tasks are not reported as stuck. Defaults to <code>false</code>.
+- hungafterseconds: Specifies the number of seconds that a task can execute before it is considered unresponsive. If the value is 0 tasks are never considered unresponsive. Defaults to <code>0</code>.
+- corepoolsize: Specifies the number of threads to keep in a thread pool, even if they are idle. Defaults to <code>0</code>.
+- keepaliveseconds: Specifies the number of seconds that threads can remain idle when the number of threads is greater than corepoolsize. Defaults to <code>60</code>.
+- threadlifetimeseconds: Specifies the number of seconds that threads can remain in a thread pool before being purged, regardless of whether the number of threads is greater than corepoolsize or whether the threads are idle. The value of 0 means that threads are never purged. Defaults to <code>0</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+## glassfish_managed_thread_factory
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- jndi_name:
+- target:  Defaults to <code>"server"</code>.
+- enabled: Determines whether container contexts are propagated to threads. If set to true, the contexts specified in the --contextinfo option are propagated. If set to false, no contexts are propagated and the --contextinfo option is ignored. Defaults to <code>true</code>.
+- contextinfoenabled:  Defaults to <code>true</code>.
+- contextinfo: Descriptive details about the resource. Defaults to <code>"Classloader,JNDI,Security,WorkArea"</code>.
+- description:
+- threadpriority: Specifies the priority to assign to created threads. Defaults to <code>5</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
 ## glassfish_mq
 
