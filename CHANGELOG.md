@@ -1,4 +1,6 @@
 ## v0.6.0:
+* Change  : Default to installing GlassFish 4.0.
+
 ## v0.5.30:
 * Enhance : Add thread_pool LWRP to manage the thread-pools within GlassFish.
             Ensure it is correctly called attribute_driven_domain recipe.
