@@ -35,6 +35,19 @@ action :create do
     group new_resource.system_group
     code asadmin_command(command.join(' '))
   end
+
+  properties.each_pair do |key, value|
+    variable = "configs.config.server-config.security-service.auth-realm.#{new_resource.name}.property.#{key}"
+    glassfish_property "#{variable}=#{value}" do
+      domain_name new_resource.domain_name
+      admin_port new_resource.admin_port
+      username new_resource.username
+      password_file new_resource.password_file
+      secure new_resource.secure
+      key variable
+      value value.to_s
+    end
+  end
 end
 
 action :delete do

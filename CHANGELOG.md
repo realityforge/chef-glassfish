@@ -1,4 +1,6 @@
 ## v0.5.30:
+* Enhance : Ensure auth_realm properties are updated if changed after initial
+            creation.
 * Enhance : Initial support for RHEL by using a custom upstart script.
             Submitted By Jim Dowling.
 * Enhance : Support using 'root' as the system user. Submitted By Mike Thomas.
