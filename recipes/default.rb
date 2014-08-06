@@ -77,3 +77,10 @@ cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/domain.x
   group node['glassfish']['group']
   mode 0644
 end
+
+cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/default-web.xml" do
+  source "default-web-#{node['glassfish']['version']}.xml"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0644
+end

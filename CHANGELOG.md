@@ -1,4 +1,6 @@
 ## v0.6.2:
+* Enhance : Include a default-web.xml that turns off the xpowerdBy flag for the
+            jsp servlet.
 * Enhance : Increase the default stack of the glassfish domain so that it works
             on later versions of 64-bit Java 7.
 

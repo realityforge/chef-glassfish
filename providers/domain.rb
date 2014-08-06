@@ -269,6 +269,7 @@ action :create do
     command_string << replace_in_domain_file("%%%MIN_MEM_SIZE%%%", new_resource.min_memory)
     command_string << "rm -f #{domain_dir_path}/docroot/index.html"
     command_string << "rm -rf #{domain_dir_path}/osgi-cache  #{domain_dir_path}/generated"
+    command_string << "cp #{node['glassfish']['base_dir']}/glassfish/lib/templates/default-web.xml #{domain_dir_path}/config/default-web.xml"
     command_string << asadmin_command("verify-domain-xml #{domain_dir_arg} #{new_resource.domain_name}", false)
 
     user new_resource.system_user
