@@ -267,7 +267,7 @@ action :create do
     command_string << replace_in_domain_file("%%%MAX_MEM_SIZE%%%", new_resource.max_memory)
     command_string << replace_in_domain_file("%%%MIN_MEM_SIZE%%%", new_resource.min_memory)
     command_string << asadmin_command("verify-domain-xml #{domain_dir_arg} #{new_resource.domain_name}", false)
-
+    command_string << "echo \"#{command_string}\" >> /tmp/jim"
     user new_resource.system_user
     group new_resource.system_group
     code command_string.join("\n")
