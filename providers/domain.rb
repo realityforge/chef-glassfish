@@ -254,7 +254,8 @@ action :create do
 
     create_args = []
     create_args << "--checkports=false"
-    create_args << "--savemasterpassword=true" 
+    create_args << "--savemasterpassword" 
+#    create_args << "--savemasterpassword=true" 
 #if node['glassfish']['version'][0..0] == '4'
     create_args << "--instanceport #{new_resource.port}"
     create_args << "--adminport #{new_resource.admin_port}"
@@ -262,7 +263,8 @@ action :create do
     create_args << domain_dir_arg
     command_string = []
     command_string << (requires_authbind ? "authbind --deep " : "") + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
-    command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node['cpu'].size - 2)
+#    command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node['cpu'].size - 2)
+    command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", 2)
     command_string << replace_in_domain_file("%%%MAX_PERM_SIZE%%%", new_resource.max_perm_size)
     command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
     command_string << replace_in_domain_file("%%%MAX_MEM_SIZE%%%", new_resource.max_memory)
