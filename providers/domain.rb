@@ -320,7 +320,7 @@ action :create do
     content <<-SH
 #!/bin/sh
 
-#{Asadmin.asadmin_command(node, '$*', :remote_command => true, :terse => false, :echo => true, :username => new_resource.username, :password_file => new_resource.password_file, :secure => new_resource.secure, :admin_port => new_resource.admin_port)}
+#{Asadmin.asadmin_command(node, '"$@"', :remote_command => true, :terse => false, :echo => true, :username => new_resource.username, :password_file => new_resource.password_file, :secure => new_resource.secure, :admin_port => new_resource.admin_port)}
     SH
   end
 
