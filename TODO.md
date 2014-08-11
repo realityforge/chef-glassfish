@@ -2,6 +2,8 @@
 
 This file documents basic tasks that still need completion.
 
+* Currently admin objects and jms resources contend. If you define admin resources then
+  the jms resource list may delete them and vice-versa.
 * Update LWRPs so that they will update resource configuration when input config changes.
   - connector-connection-pool
   - admin_object
