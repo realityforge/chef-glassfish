@@ -1,4 +1,6 @@
 ## v0.6.2:
+* Enhance : Add RealityForge::GlassFish helper class and record the "current"
+            domain in the attribute-driven recipe.
 * Bug     : Fix bug in domain specific asadmin script so that parameters are
             passed through as is.
 * Enhance : Include a default-web.xml that turns off the xpowerdBy flag for the

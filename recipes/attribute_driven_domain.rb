@@ -224,16 +224,20 @@ def gf_sort(hash)
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
+  RealityForge::GlassFish.set_current_domain(node, domain_key)
   if definition['recipes'] && definition['recipes']['before']
     gf_sort(definition['recipes']['before']).each_pair do |recipe, config|
       Chef::Log.info "Including domain 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
       include_recipe recipe
     end
   end
+  RealityForge::GlassFish.set_current_domain(node, nil)
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
+
+  RealityForge::GlassFish.set_current_domain(node, domain_key)
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key}"
 
@@ -1251,15 +1255,18 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - complete"
+  RealityForge::GlassFish.set_current_domain(node, nil)
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
+  RealityForge::GlassFish.set_current_domain(node, domain_key)
   if definition['recipes'] && definition['recipes']['after']
     gf_sort(definition['recipes']['after']).each_pair do |recipe, config|
       Chef::Log.info "Including domain 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
       include_recipe recipe
     end
   end
+  RealityForge::GlassFish.set_current_domain(node, nil)
 end
 
 domain_names = node['glassfish']['domains'].keys
