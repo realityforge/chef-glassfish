@@ -35,10 +35,11 @@ node['openmq']['extra_libraries'].values.each do |extra_library|
   end
 end
 
-node['openmq']['instances'].each_pair do |instance, definition|
-  instance = instance.to_s
+node['openmq']['instances'].each_pair do |instance_key, definition|
+  instance_key = instance_key.to_s
+  RealityForge::GlassFish.set_current_broker_instance(node, instance_key)
 
-  Chef::Log.info "Defining GlassFish #{instance} OpenMQ Server"
+  Chef::Log.info "Defining GlassFish #{instance_key} OpenMQ Server"
 
   requires_authbind = false
 
@@ -56,7 +57,7 @@ node['openmq']['instances'].each_pair do |instance, definition|
     include_recipe 'runit::default'
   end
 
-  glassfish_mq instance do
+  glassfish_mq instance_key do
     max_memory definition['max_memory'] if definition['max_memory']
     max_stack_size definition['max_stack_size'] if definition['max_stack_size']
     port definition['port'] if definition['port']
@@ -75,4 +76,5 @@ node['openmq']['instances'].each_pair do |instance, definition|
     queues node['openmq']['destinations']['queues'].to_hash
     topics node['openmq']['destinations']['topics'].to_hash
   end
+  RealityForge::GlassFish.set_current_broker_instance(node, nil)
 end

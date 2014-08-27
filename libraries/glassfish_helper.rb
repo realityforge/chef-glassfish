@@ -30,6 +30,22 @@ class RealityForge #nodoc
       def set_current_domain(node, domain_key)
         node.run_state['glassfish_domain'] = domain_key
       end
+
+      # Return the current broker instance.
+      #
+      # The instance is typically set when configuration run starts
+      #
+      def get_current_broker_instance(node)
+        broker_instance = node.run_state['broker_instance']
+        raise 'No broker instance specified' unless broker_instance
+        broker_instance
+      end
+
+      # Set the current broker instance.
+      #
+      def set_current_broker_instance(node, broker_instance)
+        node.run_state['broker_instance'] = broker_instance
+      end
     end
   end
 end
