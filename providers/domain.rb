@@ -18,141 +18,141 @@ include Chef::Asadmin
 
 def default_logging_properties
   {
-    "handlers" => "java.util.logging.ConsoleHandler",
-    "java.util.logging.ConsoleHandler.formatter" => "com.sun.enterprise.server.logging.UniformLogFormatter",
+    'handlers' => 'java.util.logging.ConsoleHandler',
+    'java.util.logging.ConsoleHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
 
-    "com.sun.enterprise.server.logging.GFFileHandler.formatter" => "com.sun.enterprise.server.logging.UniformLogFormatter",
-    "com.sun.enterprise.server.logging.GFFileHandler.file" => "${com.sun.aas.instanceRoot}/logs/server.log",
-    "com.sun.enterprise.server.logging.GFFileHandler.rotationTimelimitInMinutes" => "0",
-    "com.sun.enterprise.server.logging.GFFileHandler.flushFrequency" => "1",
-    "com.sun.enterprise.server.logging.GFFileHandler.logtoConsole" => "false",
-    "com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes" => "2000000",
-    "com.sun.enterprise.server.logging.GFFileHandler.retainErrorsStasticsForHours" => "0",
-    "com.sun.enterprise.server.logging.GFFileHandler.maxHistoryFiles" => "3",
-    "com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange" => "false",
+    'com.sun.enterprise.server.logging.GFFileHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
+    'com.sun.enterprise.server.logging.GFFileHandler.file' => '${com.sun.aas.instanceRoot}/logs/server.log',
+    'com.sun.enterprise.server.logging.GFFileHandler.rotationTimelimitInMinutes' => '0',
+    'com.sun.enterprise.server.logging.GFFileHandler.flushFrequency' => '1',
+    'com.sun.enterprise.server.logging.GFFileHandler.logtoConsole' => 'false',
+    'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => '2000000',
+    'com.sun.enterprise.server.logging.GFFileHandler.retainErrorsStasticsForHours' => '0',
+    'com.sun.enterprise.server.logging.GFFileHandler.maxHistoryFiles' => '3',
+    'com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange' => 'false',
 
-    "com.sun.enterprise.server.logging.SyslogHandler.useSystemLogging" => "false",
+    'com.sun.enterprise.server.logging.SyslogHandler.useSystemLogging' => 'false',
 
-    "log4j.logger.org.hibernate.validator.util.Version" => "warn",
+    'log4j.logger.org.hibernate.validator.util.Version' => 'warn',
 
     #All log level details
-    ".level" => "INFO",
+    '.level' => 'INFO',
 
-    "com.sun.enterprise.server.logging.GFFileHandler.level" => "ALL",
-    "javax.enterprise.system.tools.admin.level" => "INFO",
-    "org.apache.jasper.level" => "INFO",
-    "javax.enterprise.resource.corba.level" => "INFO",
-    "javax.enterprise.system.core.level" => "INFO",
-    "javax.enterprise.system.core.classloading.level" => "INFO",
-    "javax.enterprise.resource.jta.level" => "INFO",
-    "java.util.logging.ConsoleHandler.level" => "FINEST",
-    "javax.enterprise.system.webservices.saaj.level" => "INFO",
-    "javax.enterprise.system.tools.deployment.level" => "INFO",
-    "javax.enterprise.system.container.ejb.level" => "INFO",
-    "javax.enterprise.system.core.transaction.level" => "INFO",
-    "org.apache.catalina.level" => "INFO",
-    "javax.enterprise.system.container.ejb.mdb.level" => "INFO",
-    "org.apache.coyote.level" => "INFO",
-    "javax.level" => "INFO",
-    "javax.enterprise.resource.javamail.level" => "INFO",
-    "javax.enterprise.system.webservices.rpc.level" => "INFO",
-    "javax.enterprise.system.container.web.level" => "INFO",
-    "javax.enterprise.system.util.level" => "INFO",
-    "javax.enterprise.resource.resourceadapter.level" => "INFO",
-    "javax.enterprise.resource.jms.level" => "INFO",
-    "javax.enterprise.system.core.config.level" => "INFO",
-    "javax.enterprise.system.level" => "INFO",
-    "javax.enterprise.system.core.security.level" => "INFO",
-    "javax.enterprise.system.container.cmp.level" => "INFO",
-    "javax.enterprise.system.webservices.registry.level" => "INFO",
-    "javax.enterprise.system.core.selfmanagement.level" => "INFO",
-    "javax.enterprise.resource.jdo.level" => "INFO",
-    "javax.enterprise.system.core.naming.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.application.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.resource.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.config.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.context.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.facelets.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.lifecycle.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.managedbean.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.renderkit.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.taglib.level" => "INFO",
-    "javax.enterprise.resource.webcontainer.jsf.timing.level" => "INFO",
-    "javax.enterprise.resource.sqltrace.level" => "FINE",
-    "javax.org.glassfish.persistence.level" => "INFO",
-    "org.jvnet.hk2.osgiadapter.level" => "INFO",
-    "javax.enterprise.system.tools.backup.level" => "INFO",
-    "org.glassfish.admingui.level" => "INFO",
-    "javax.enterprise.system.ssl.security.level" => "INFO",
-    "ShoalLogger.level" => "CONFIG",
-    "org.eclipse.persistence.session.level" => "INFO",
+    'com.sun.enterprise.server.logging.GFFileHandler.level' => 'ALL',
+    'javax.enterprise.system.tools.admin.level' => 'INFO',
+    'org.apache.jasper.level' => 'INFO',
+    'javax.enterprise.resource.corba.level' => 'INFO',
+    'javax.enterprise.system.core.level' => 'INFO',
+    'javax.enterprise.system.core.classloading.level' => 'INFO',
+    'javax.enterprise.resource.jta.level' => 'INFO',
+    'java.util.logging.ConsoleHandler.level' => 'FINEST',
+    'javax.enterprise.system.webservices.saaj.level' => 'INFO',
+    'javax.enterprise.system.tools.deployment.level' => 'INFO',
+    'javax.enterprise.system.container.ejb.level' => 'INFO',
+    'javax.enterprise.system.core.transaction.level' => 'INFO',
+    'org.apache.catalina.level' => 'INFO',
+    'javax.enterprise.system.container.ejb.mdb.level' => 'INFO',
+    'org.apache.coyote.level' => 'INFO',
+    'javax.level' => 'INFO',
+    'javax.enterprise.resource.javamail.level' => 'INFO',
+    'javax.enterprise.system.webservices.rpc.level' => 'INFO',
+    'javax.enterprise.system.container.web.level' => 'INFO',
+    'javax.enterprise.system.util.level' => 'INFO',
+    'javax.enterprise.resource.resourceadapter.level' => 'INFO',
+    'javax.enterprise.resource.jms.level' => 'INFO',
+    'javax.enterprise.system.core.config.level' => 'INFO',
+    'javax.enterprise.system.level' => 'INFO',
+    'javax.enterprise.system.core.security.level' => 'INFO',
+    'javax.enterprise.system.container.cmp.level' => 'INFO',
+    'javax.enterprise.system.webservices.registry.level' => 'INFO',
+    'javax.enterprise.system.core.selfmanagement.level' => 'INFO',
+    'javax.enterprise.resource.jdo.level' => 'INFO',
+    'javax.enterprise.system.core.naming.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.application.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.resource.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.config.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.context.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.facelets.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.lifecycle.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.managedbean.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.renderkit.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.taglib.level' => 'INFO',
+    'javax.enterprise.resource.webcontainer.jsf.timing.level' => 'INFO',
+    'javax.enterprise.resource.sqltrace.level' => 'FINE',
+    'javax.org.glassfish.persistence.level' => 'INFO',
+    'org.jvnet.hk2.osgiadapter.level' => 'INFO',
+    'javax.enterprise.system.tools.backup.level' => 'INFO',
+    'org.glassfish.admingui.level' => 'INFO',
+    'javax.enterprise.system.ssl.security.level' => 'INFO',
+    'ShoalLogger.level' => 'CONFIG',
+    'org.eclipse.persistence.session.level' => 'INFO',
   }
 end
 
 def default_realm_confs
   {
-    "fileRealm" => "com.sun.enterprise.security.auth.login.FileLoginModule",
-    "ldapRealm" => "com.sun.enterprise.security.auth.login.LDAPLoginModule",
-    "solarisRealm" => "com.sun.enterprise.security.auth.login.SolarisLoginModule",
-    "jdbcRealm" => "com.sun.enterprise.security.auth.login.JDBCLoginModule",
-    "jdbcDigestRealm" => "com.sun.enterprise.security.auth.login.JDBCDigestLoginModule",
-    "pamRealm" => "com.sun.enterprise.security.auth.login.PamLoginModule",
+    'fileRealm' => 'com.sun.enterprise.security.auth.login.FileLoginModule',
+    'ldapRealm' => 'com.sun.enterprise.security.auth.login.LDAPLoginModule',
+    'solarisRealm' => 'com.sun.enterprise.security.auth.login.SolarisLoginModule',
+    'jdbcRealm' => 'com.sun.enterprise.security.auth.login.JDBCLoginModule',
+    'jdbcDigestRealm' => 'com.sun.enterprise.security.auth.login.JDBCDigestLoginModule',
+    'pamRealm' => 'com.sun.enterprise.security.auth.login.PamLoginModule',
   }
 end
 
 def default_jvm_options
   [
     # Don't rely on the JVMs default encoding
-    "-Dfile.encoding=UTF-8",
+    '-Dfile.encoding=UTF-8',
 
     # Glassfish should be headless by default
-    "-Djava.awt.headless=true",
+    '-Djava.awt.headless=true',
 
-    # Remove the "Server" header altogether
-    "-Dproduct.name=",
+    # Remove the 'Server' header altogether
+    '-Dproduct.name=',
 
     # JVM options
-    "-XX:+UnlockDiagnosticVMOptions",
+    '-XX:+UnlockDiagnosticVMOptions',
     "-XX:MaxPermSize=#{new_resource.max_perm_size}m",
-    #"-XX:PermSize=64m",
+    #'-XX:PermSize=64m',
     "-Xss#{new_resource.max_stack_size}k",
     "-Xms#{new_resource.min_memory}m",
     "-Xmx#{new_resource.max_memory}m",
-    "-XX:NewRatio=2",
-    "-client",
+    '-XX:NewRatio=2',
+    '-client',
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
     "-Djava.endorsed.dirs=#{node['glassfish']['base_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
 
       # Configuration to enable effective JMX management
     "-Djava.rmi.server.hostname=#{node['fqdn']}",
-    "-Djava.net.preferIPv4Stack=true",
+    '-Djava.net.preferIPv4Stack=true',
 
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
-    "-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory",
+    '-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory',
     "-Dcom.sun.aas.installRoot=#{node['glassfish']['base_dir']}/glassfish",
-    "-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as",
-    "-DANTLR_USE_DIRECT_CLASS_LOADING=true",
-    "-Djava.awt.headless=true",
-    "-Djdbc.drivers=org.apache.derby.jdbc.ClientDriver",
+    '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
+    '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
+    '-Djava.awt.headless=true',
+    '-Djdbc.drivers=org.apache.derby.jdbc.ClientDriver',
     "-javaagent:#{node['glassfish']['base_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
 
     #osgi_jvm_options
-    "-Dosgi.shell.telnet.maxconn=1",
-    "-Dfelix.fileinstall.disableConfigSave=false",
+    '-Dosgi.shell.telnet.maxconn=1',
+    '-Dfelix.fileinstall.disableConfigSave=false',
     "-Dfelix.fileinstall.dir=#{node['glassfish']['base_dir']}/glassfish/modules/autostart/",
-    "-Dosgi.shell.telnet.port=6666",
-    "-Dfelix.fileinstall.log.level=2",
-    "-Dfelix.fileinstall.poll=5000",
-    "-Dosgi.shell.telnet.ip=127.0.0.1",
-    "-Dfelix.fileinstall.bundles.startTransient=true",
-    "-Dfelix.fileinstall.bundles.new.start=true",
-    "-Dgosh.args=--nointeractive",
+    '-Dosgi.shell.telnet.port=6666',
+    '-Dfelix.fileinstall.log.level=2',
+    '-Dfelix.fileinstall.poll=5000',
+    '-Dosgi.shell.telnet.ip=127.0.0.1',
+    '-Dfelix.fileinstall.bundles.startTransient=true',
+    '-Dfelix.fileinstall.bundles.new.start=true',
+    '-Dgosh.args=--nointeractive',
 
     #security_jvm_options
     "-Djavax.net.ssl.keyStore=#{domain_dir_path}/config/keystore.jks",
     "-Djava.security.policy=#{domain_dir_path}/config/server.policy",
     "-Djavax.net.ssl.trustStore=#{domain_dir_path}/config/cacerts.jks",
-    "-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as",
+    '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
     "-Djava.security.auth.login.config=#{domain_dir_path}/config/login.conf",
   ]
 end
@@ -180,7 +180,7 @@ action :create do
     end
   end
 
-  if new_resource.system_user != node['glassfish']['user'] and new_resource.system_user != "root"
+  if new_resource.system_user != node['glassfish']['user'] and new_resource.system_user != 'root'
     user new_resource.system_user do
       comment "GlassFish #{new_resource.domain_name} Domain"
       gid new_resource.system_group
@@ -201,28 +201,28 @@ action :create do
   args = default_jvm_options.dup
   args += new_resource.java_agents.map{ |agent| "-javaagent:#{agent}"}
   args += new_resource.extra_jvm_options
-  args << "-cp"
+  args << '-cp'
   args << "#{node['glassfish']['base_dir']}/glassfish/modules/glassfish.jar"
-  args << "com.sun.enterprise.glassfish.bootstrap.ASMain"
-  args << "-domainname"
+  args << 'com.sun.enterprise.glassfish.bootstrap.ASMain'
+  args << '-domainname'
   args << new_resource.domain_name
-  args << "-instancename"
-  args << "server"
-  args << "-verbose"
-  args << "false"
-  args << "-debug"
-  args << "false"
-  args << "-upgrade"
-  args << "false"
-  args << "-type"
-  args << "DAS"
-  args << "-domaindir"
+  args << '-instancename'
+  args << 'server'
+  args << '-verbose'
+  args << 'false'
+  args << '-debug'
+  args << 'false'
+  args << '-upgrade'
+  args << 'false'
+  args << '-type'
+  args << 'DAS'
+  args << '-domaindir'
   args << domain_dir_path
 
   directory node['glassfish']['domains_dir'] do
     owner node['glassfish']['user']
     group node['glassfish']['group']
-    mode "0755"
+    mode '0755'
     recursive true
   end
 
@@ -230,10 +230,10 @@ action :create do
     template new_resource.password_file do
       cookbook 'glassfish'
       only_if { new_resource.password }
-      source "password.erb"
+      source 'password.erb'
       owner new_resource.system_user
       group new_resource.system_group
-      mode "0600"
+      mode '0600'
       variables :password => new_resource.password
     end
   end
@@ -254,14 +254,14 @@ action :create do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '"
 
     create_args = []
-    create_args << "--checkports=false"
-    create_args << "--savemasterpassword=true" if node['glassfish']['version'][0..0] == '4'
+    create_args << '--checkports=false'
+    create_args << '--savemasterpassword=true' if node['glassfish']['version'][0..0] == '4'
     create_args << "--instanceport #{new_resource.port}"
     create_args << "--adminport #{new_resource.admin_port}"
-    create_args << "--nopassword=false" if new_resource.username
+    create_args << '--nopassword=false' if new_resource.username
     create_args << domain_dir_arg
     command_string = []
-    command_string << (requires_authbind ? "authbind --deep " : "") + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    command_string << (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
     command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node['cpu'].size - 2)
     command_string << replace_in_domain_file("%%%MAX_PERM_SIZE%%%", new_resource.max_perm_size)
     command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
@@ -279,7 +279,7 @@ action :create do
 
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
   #file "#{domain_dir_path}/master-password" do
-  ruby_block "copy master-password" do
+  ruby_block 'copy master-password' do
     source_file = "#{domain_dir_path}/config/master-password"
     dest_file = "#{domain_dir_path}/master-password"
 
@@ -294,8 +294,8 @@ action :create do
   end
 
   template "#{domain_dir_path}/config/logging.properties" do
-    source "logging.properties.erb"
-    mode "0400"
+    source 'logging.properties.erb'
+    mode '0400'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
@@ -304,8 +304,8 @@ action :create do
   end
 
   template "#{domain_dir_path}/config/login.conf" do
-    source "login.conf.erb"
-    mode "0400"
+    source 'login.conf.erb'
+    mode '0400'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
@@ -314,7 +314,7 @@ action :create do
   end
 
   file "#{domain_dir_path}/bin/#{new_resource.domain_name}_asadmin" do
-    mode "0700"
+    mode '0700'
     owner new_resource.system_user
     group new_resource.system_group
     content <<-SH
@@ -327,12 +327,12 @@ action :create do
   if new_resource.init_style == 'upstart'
     template "/etc/init/glassfish-#{new_resource.domain_name}.conf" do
       case node['platform_family']
-      when "debian"
-        source "glassfish-upstart.conf.erb"
-      when "rhel"
-        source "glassfish-upstart-rhel.conf.erb"
+      when 'debian'
+        source 'glassfish-upstart.conf.erb'
+      when 'rhel'
+        source 'glassfish-upstart-rhel.conf.erb'
       end
-      mode "0644"
+      mode '0644'
       cookbook 'glassfish'
 
       variables(:resource => new_resource, :args => args, :authbind => requires_authbind, :listen_ports => [new_resource.admin_port, new_resource.port])
@@ -356,8 +356,8 @@ action :create do
       action [:enable, :start]
     end
 
-    bash "runit check" do
-      code "#{node["runit"]["sv_bin"]} -w '120' check #{node["runit"]["sv_dir"]}/#{service_name}"
+    bash 'runit check' do
+      code "#{node['runit']['sv_bin']} -w '120' check #{node['runit']['sv_dir']}/#{service_name}"
     end
   else
     raise "Unknown init style #{new_resource.init_style}"
