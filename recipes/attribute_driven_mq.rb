@@ -22,6 +22,14 @@ The `attribute_driven_mq` recipe interprets attributes on the node and defines t
 #>
 =end
 
+def gf_priority(value)
+  value.is_a?(Hash) && value['priority'] ? value['priority'] : 100
+end
+
+def gf_sort(hash)
+  Hash[hash.sort_by {|key, value| "#{"%04d" % gf_priority(value)}#{key}"}]
+end
+
 include_recipe 'glassfish::default'
 
 node['openmq']['extra_libraries'].values.each do |extra_library|
@@ -33,6 +41,17 @@ node['openmq']['extra_libraries'].values.each do |extra_library|
     group node['glassfish']['group']
     action :create_if_missing
   end
+end
+
+gf_sort(node['openmq']['instances']).each_pair do |instance_key, definition|
+  RealityForge::GlassFish.set_current_broker_instance(node, instance_key)
+  if definition['recipes'] && definition['recipes']['before']
+    gf_sort(definition['recipes']['before']).each_pair do |recipe, config|
+      Chef::Log.info "Including broker 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+      include_recipe recipe
+    end
+  end
+  RealityForge::GlassFish.set_current_broker_instance(node, nil)
 end
 
 node['openmq']['instances'].each_pair do |instance_key, definition|
@@ -75,6 +94,17 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
     access_control_rules node['openmq']['access_control_rules'].to_hash
     queues node['openmq']['destinations']['queues'].to_hash
     topics node['openmq']['destinations']['topics'].to_hash
+  end
+  RealityForge::GlassFish.set_current_broker_instance(node, nil)
+end
+
+gf_sort(node['openmq']['instances']).each_pair do |instance_key, definition|
+  RealityForge::GlassFish.set_current_broker_instance(node, instance_key)
+  if definition['recipes'] && definition['recipes']['after']
+    gf_sort(definition['recipes']['after']).each_pair do |recipe, config|
+      Chef::Log.info "Including broker 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+      include_recipe recipe
+    end
   end
   RealityForge::GlassFish.set_current_broker_instance(node, nil)
 end
