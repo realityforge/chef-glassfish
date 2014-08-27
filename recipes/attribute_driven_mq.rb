@@ -22,7 +22,7 @@ The `attribute_driven_mq` recipe interprets attributes on the node and defines t
 #>
 =end
 
-include_recipe "glassfish::default"
+include_recipe 'glassfish::default'
 
 node['openmq']['extra_libraries'].values.each do |extra_library|
   library_location = "#{node['glassfish']['base_dir']}/mq/lib/ext/#{File.basename(extra_library)}"
