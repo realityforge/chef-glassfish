@@ -15,7 +15,7 @@
 class RealityForge #nodoc
   module GlassFish #nodoc
     class << self
-      # Return the current domain name
+      # Return the current glassfish domain name
       #
       # The domain is typically set when configuration run starts
       #
@@ -25,7 +25,7 @@ class RealityForge #nodoc
         domain_key
       end
 
-      # Set the current domain name
+      # Set the current glassfish domain name
       #
       def set_current_domain(node, domain_key)
         node.run_state['glassfish_domain'] = domain_key
