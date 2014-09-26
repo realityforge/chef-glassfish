@@ -220,7 +220,7 @@ def gf_priority(value)
 end
 
 def gf_sort(hash)
-  Hash[hash.sort_by {|key, value| "#{"%04d" % gf_priority(value)}#{key}"}]
+  Hash[hash.sort_by { |key, value| "#{"%04d" % gf_priority(value)}#{key}" }]
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
@@ -839,7 +839,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         config = definition['deployables'][key]
         # OSGi does not keep the version in the name so we need to store it on the filesystem
         if config['type'].to_s == 'osgi'
-          candidate_name = Asadmin.versioned_component_name(key, config['type'], config['version'], config['url'], nil )
+          candidate_name = Asadmin.versioned_component_name(key, config['type'], config['version'], config['url'], nil)
           if candidate_name == versioned_component_name
             keep = true
             break
@@ -1159,7 +1159,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       end
     end
   end
-
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing managed_scheduled_executor_services"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-managed-scheduled-executor-services') do |existing|
