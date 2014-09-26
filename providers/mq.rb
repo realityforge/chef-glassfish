@@ -74,8 +74,8 @@ def mq_config_settings(resource)
   configs["imq.bridge.admin.user"] = resource.admin_user
   user = resource.users[resource.admin_user]
   raise "Missing user details for admin user '#{resource.admin_user}'" unless user
-  configs["imq.bridge.admin.password"] = user[:password]
-  configs["imq.imqcmd.password"] = user[:password]
+  configs["imq.bridge.admin.password"] = user['password']
+  configs["imq.imqcmd.password"] = user['password']
 
   if bridges.size > 0
     configs["imq.bridge.enabled"] = "true"
