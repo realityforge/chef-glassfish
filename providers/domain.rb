@@ -165,10 +165,6 @@ def domain_dir_arg
   "--domaindir #{node['glassfish']['domains_dir']}"
 end
 
-def replace_in_domain_file(key, value)
-  "sed -i 's/#{key}/#{value}/g' #{domain_dir_path}/config/domain.xml 2> /dev/null > /dev/null"
-end
-
 use_inline_resources
 
 action :create do
@@ -262,11 +258,6 @@ action :create do
     create_args << domain_dir_arg
     command_string = []
     command_string << (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
-    command_string << replace_in_domain_file("%%%CPU_NODE_COUNT%%%", node['cpu'].size - 2)
-    command_string << replace_in_domain_file("%%%MAX_PERM_SIZE%%%", new_resource.max_perm_size)
-    command_string << replace_in_domain_file("%%%MAX_STACK_SIZE%%%", new_resource.max_stack_size)
-    command_string << replace_in_domain_file("%%%MAX_MEM_SIZE%%%", new_resource.max_memory)
-    command_string << replace_in_domain_file("%%%MIN_MEM_SIZE%%%", new_resource.min_memory)
     command_string << "rm -f #{domain_dir_path}/docroot/index.html"
     command_string << "rm -rf #{domain_dir_path}/osgi-cache  #{domain_dir_path}/generated"
     command_string << "cp #{node['glassfish']['base_dir']}/glassfish/lib/templates/default-web.xml #{domain_dir_path}/config/default-web.xml"
