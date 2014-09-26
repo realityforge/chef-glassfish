@@ -930,7 +930,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         end
       end
     end
-    unless found
+
+    jms_defined_resources = []
+    gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
+      restype = resource_config['restype'] || 'javax.jms.Queue'
+      jms_defined_resources << "#{key}-Connection-Pool" if ['javax.jms.ConnectionFactory','javax.jms.TopicConnectionFactory','javax.jms.QueueConnectionFactory'].include?(restype)
+    end
+
+    unless found || jms_defined_resources.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing connector pool #{existing}"
       glassfish_connector_connection_pool existing do
         domain_name domain_key
@@ -949,18 +956,21 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-resources') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing resource connector #{existing}"
     found = false
-    if definition['resource_adapters']
-      gf_sort(definition['resource_adapters']).each_pair do |key, configuration|
-        if configuration['connection_pools']
-          gf_sort(configuration['connection_pools']).each_pair do |pool_name, pool_configuration|
-            if pool_configuration['resources'] && pool_configuration['resources'][existing]
-              found = true
-            end
-          end
+    gf_sort(definition['resource_adapters'] || {}).each_pair do |key, configuration|
+      gf_sort(configuration['connection_pools'] || {}).each_pair do |pool_name, pool_configuration|
+        if pool_configuration['resources'] && pool_configuration['resources'][existing]
+          found = true
         end
       end
     end
-    unless found
+
+    jms_defined_resources = []
+    gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
+      restype = resource_config['restype'] || 'javax.jms.Queue'
+      jms_defined_resources << key if ['javax.jms.ConnectionFactory','javax.jms.TopicConnectionFactory','javax.jms.QueueConnectionFactory'].include?(restype)
+    end
+
+    unless found || jms_defined_resources.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing resource connector #{existing}"
       glassfish_connector_resource existing do
         domain_name domain_key
@@ -979,14 +989,19 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-admin-objects') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing admin object #{existing}"
     found = false
-    if definition['resource_adapters']
-      gf_sort(definition['resource_adapters']).each_pair do |key, configuration|
-        if configuration['admin_objects'] && configuration['admin_objects'][existing]
-          found = true
-        end
+    gf_sort(definition['resource_adapters'] || {}).each_pair do |key, configuration|
+      if configuration['admin_objects'] && configuration['admin_objects'][existing]
+        found = true
       end
     end
-    unless found
+
+    jms_defined_resources = []
+    gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
+      restype = resource_config['restype'] || 'javax.jms.Queue'
+      jms_defined_resources << key if ['javax.jms.Queue','javax.jms.Topic'].include?(restype)
+    end
+
+    unless found || jms_defined_resources.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing admin object #{existing}"
       glassfish_admin_object existing do
         domain_name domain_key
@@ -1069,10 +1084,23 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  jmsra_defined_resources = []
+  if definition['resource_adapters'] &&
+    definition['resource_adapters']['jmsra']
+    if definition['resource_adapters']['jmsra']['connection_pools']
+      definition['resource_adapters']['jmsra']['connection_pools'].each_value do |pool|
+        pool['resources'].keys.each { |k| jmsra_defined_resources << k } if pool['resources']
+      end
+    end
+    if definition['resource_adapters']['jmsra']['admin_objects']
+      definition['resource_adapters']['jmsra']['admin_objects'].keys.each { |k| jmsra_defined_resources << k }
+    end
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing jms resources"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jms-resources') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing jms resource #{existing}"
-    unless definition['jms_resources'] && definition['jms_resources'][existing]
+    unless (definition['jms_resources'] && definition['jms_resources'][existing]) || jmsra_defined_resources.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing jms resource #{existing}"
       glassfish_jms_resource existing do
         domain_name domain_key
