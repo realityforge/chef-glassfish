@@ -333,186 +333,164 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
-
-  if definition['extra_libraries']
-    gf_sort(definition['extra_libraries']).values.each do |config|
-      config = config.is_a?(Hash) ? config : {'url' => config}
-      url = config['url']
-      library_type = config['type'] || 'ext'
-      requires_restart = config['requires_restart'] || false
-      glassfish_library url do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        library_type library_type
-        requires_restart requires_restart
-        init_style definition['config']['init_style'] if definition['config']['init_style']
-      end
+  gf_sort(definition['extra_libraries'] || {}).values.each do |config|
+    config = config.is_a?(Hash) ? config : {'url' => config}
+    url = config['url']
+    library_type = config['type'] || 'ext'
+    requires_restart = config['requires_restart'] || false
+    glassfish_library url do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      library_type library_type
+      requires_restart requires_restart
+      init_style definition['config']['init_style'] if definition['config']['init_style']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - threadpools"
 
-  if definition['threadpools']
-    gf_sort(definition['threadpools']).each_pair do |key, config|
-      glassfish_thread_pool key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
+  gf_sort(definition['threadpools'] || {}).each_pair do |key, config|
+    glassfish_thread_pool key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
 
-        maxthreadpoolsize config['maxthreadpoolsize'] if config['maxthreadpoolsize']
-        minthreadpoolsize config['minthreadpoolsize'] if config['minthreadpoolsize']
-        idletimeout config['idletimeout'] if config['idletimeout']
-        maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
-        init_style definition['config']['init_style'] if definition['config']['init_style']
-      end
+      maxthreadpoolsize config['maxthreadpoolsize'] if config['maxthreadpoolsize']
+      minthreadpoolsize config['minthreadpoolsize'] if config['minthreadpoolsize']
+      idletimeout config['idletimeout'] if config['idletimeout']
+      maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
+      init_style definition['config']['init_style'] if definition['config']['init_style']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - iiop listeners"
+  gf_sort(definition['iiop_listeners'] || {}).each_pair do |key, config|
+    glassfish_iiop_listener key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
 
-  if definition['iiop_listeners']
-    gf_sort(definition['iiop_listeners']).each_pair do |key, config|
-      glassfish_iiop_listener key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-
-        listeneraddress config['listeneraddress'] if config['listeneraddress']
-        iiopport config['iiopport'] if config['iiopport']
-        enabled config['enabled'] unless config['enabled'].nil?
-        securityenabled config['securityenabled'] unless config['securityenabled'].nil?
-        maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
-        properties config['properties'] if config['properties']
-      end
+      listeneraddress config['listeneraddress'] if config['listeneraddress']
+      iiopport config['iiopport'] if config['iiopport']
+      enabled config['enabled'] unless config['enabled'].nil?
+      securityenabled config['securityenabled'] unless config['securityenabled'].nil?
+      maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
+      properties config['properties'] if config['properties']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - context_services"
-
-  if definition['context_services']
-    gf_sort(definition['context_services']).each_pair do |key, config|
-      glassfish_context_service key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        enabled config['enabled'] unless config['enabled'].nil?
-        contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
-        contextinfo config['contextinfo'] if config['contextinfo']
-        description config['description'] if config['description']
-      end
+  gf_sort(definition['context_services'] || {}).each_pair do |key, config|
+    glassfish_context_service key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      enabled config['enabled'] unless config['enabled'].nil?
+      contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
+      contextinfo config['contextinfo'] if config['contextinfo']
+      description config['description'] if config['description']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - managed_thread_factories"
+  gf_sort(definition['managed_thread_factories'] || {}).each_pair do |key, config|
+    glassfish_managed_thread_factory key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
 
-  if definition['managed_thread_factories']
-    gf_sort(definition['managed_thread_factories']).each_pair do |key, config|
-      glassfish_managed_thread_factory key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-
-        enabled config['enabled'] unless config['enabled'].nil?
-        contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
-        contextinfo config['contextinfo'] if config['contextinfo']
-        description config['description'] if config['description']
-        threadpriority config['threadpriority'] if config['threadpriority']
-      end
+      enabled config['enabled'] unless config['enabled'].nil?
+      contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
+      contextinfo config['contextinfo'] if config['contextinfo']
+      description config['description'] if config['description']
+      threadpriority config['threadpriority'] if config['threadpriority']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - managed_executor_services"
 
-  if definition['managed_executor_services']
-    gf_sort(definition['managed_executor_services']).each_pair do |key, config|
-      glassfish_managed_executor_service key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
+  gf_sort(definition['managed_executor_services'] || {}).each_pair do |key, config|
+    glassfish_managed_executor_service key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
 
-        enabled config['enabled'] unless config['enabled'].nil?
-        contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
-        contextinfo config['contextinfo'] if config['contextinfo']
-        description config['description'] if config['description']
-        threadpriority config['threadpriority'] if config['threadpriority']
-        threadpriority config['corepoolsize'] if config['corepoolsize']
-        threadpriority config['hungafterseconds'] if config['hungafterseconds']
-        threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
-        threadpriority config['longrunningtasks'] if config['longrunningtasks']
-        threadpriority config['maximumpoolsize'] if config['maximumpoolsize']
-        threadpriority config['taskqueuecapacity'] if config['taskqueuecapacity']
-        threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
-      end
+      enabled config['enabled'] unless config['enabled'].nil?
+      contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
+      contextinfo config['contextinfo'] if config['contextinfo']
+      description config['description'] if config['description']
+      threadpriority config['threadpriority'] if config['threadpriority']
+      threadpriority config['corepoolsize'] if config['corepoolsize']
+      threadpriority config['hungafterseconds'] if config['hungafterseconds']
+      threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
+      threadpriority config['longrunningtasks'] if config['longrunningtasks']
+      threadpriority config['maximumpoolsize'] if config['maximumpoolsize']
+      threadpriority config['taskqueuecapacity'] if config['taskqueuecapacity']
+      threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - managed_scheduled_executor_services"
+  gf_sort(definition['managed_scheduled_executor_services'] || {}).each_pair do |key, config|
+    glassfish_managed_executor_service key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
 
-  if definition['managed_scheduled_executor_services']
-    gf_sort(definition['managed_scheduled_executor_services']).each_pair do |key, config|
-      glassfish_managed_executor_service key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-
-        enabled config['enabled'] unless config['enabled'].nil?
-        contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
-        contextinfo config['contextinfo'] if config['contextinfo']
-        description config['description'] if config['description']
-        threadpriority config['threadpriority'] if config['threadpriority']
-        threadpriority config['corepoolsize'] if config['corepoolsize']
-        threadpriority config['hungafterseconds'] if config['hungafterseconds']
-        threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
-        threadpriority config['longrunningtasks'] if config['longrunningtasks']
-        threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
-      end
+      enabled config['enabled'] unless config['enabled'].nil?
+      contextinfoenabled config['contextinfoenabled'] unless config['contextinfoenabled'].nil?
+      contextinfo config['contextinfo'] if config['contextinfo']
+      description config['description'] if config['description']
+      threadpriority config['threadpriority'] if config['threadpriority']
+      threadpriority config['corepoolsize'] if config['corepoolsize']
+      threadpriority config['hungafterseconds'] if config['hungafterseconds']
+      threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
+      threadpriority config['longrunningtasks'] if config['longrunningtasks']
+      threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - properties"
-
-  if definition['properties']
-    gf_sort(definition['properties']).each_pair do |key, value|
-      glassfish_property "#{key}=#{value}" do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        key key
-        value value.to_s
-      end
+  gf_sort(definition['properties'] || {}).each_pair do |key, value|
+    glassfish_property "#{key}=#{value}" do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      key key
+      value value.to_s
     end
   end
 
@@ -521,101 +499,72 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   ## that are provided by OSGi
   ##
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
-  if definition['deployables']
-    gf_sort(definition['deployables']).each_pair do |component_name, configuration|
-      if configuration['type'] && configuration['type'].to_s == 'osgi'
-        if configuration['recipes'] && configuration['recipes']['before']
-          gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
-            Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
-            include_recipe recipe
-          end
+  gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
+    if configuration['type'] && configuration['type'].to_s == 'osgi'
+      if configuration['recipes'] && configuration['recipes']['before']
+        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+          Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+          include_recipe recipe
         end
-        glassfish_deployable component_name.to_s do
-          domain_name domain_key
-          admin_port admin_port if admin_port
-          username username if username
-          password_file password_file if password_file
-          secure secure if secure
-          system_user system_username if system_username
-          system_group system_group if system_group
-          version configuration['version']
-          url configuration['url']
-          type :osgi
-        end
-        if configuration['recipes'] && configuration['recipes']['after']
-          gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
-            Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
-            include_recipe recipe
-          end
+      end
+      glassfish_deployable component_name.to_s do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        version configuration['version']
+        url configuration['url']
+        type :osgi
+      end
+      if configuration['recipes'] && configuration['recipes']['after']
+        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+          Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+          include_recipe recipe
         end
       end
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - realms"
-  if definition['realms']
-    gf_sort(definition['realms']).each_pair do |key, configuration|
-      glassfish_auth_realm key.to_s do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        target configuration['target'] if configuration['target']
-        classname configuration['classname'] if configuration['classname']
-        jaas_context configuration['jaas_context'] if configuration['jaas_context']
-        assign_groups configuration['assign_groups'] if configuration['assign_groups']
-        properties configuration['properties'] if configuration['properties']
-      end
+  gf_sort(definition['realms'] || {}).each_pair do |key, configuration|
+    glassfish_auth_realm key.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      target configuration['target'] if configuration['target']
+      classname configuration['classname'] if configuration['classname']
+      jaas_context configuration['jaas_context'] if configuration['jaas_context']
+      assign_groups configuration['assign_groups'] if configuration['assign_groups']
+      properties configuration['properties'] if configuration['properties']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - jdbc_connection_pools"
-
-  if definition['jdbc_connection_pools']
-    gf_sort(definition['jdbc_connection_pools']).each_pair do |key, configuration|
-      pool_name = key.to_s
-      glassfish_jdbc_connection_pool pool_name do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        configuration['config'].each_pair do |config_key, value|
-          self.send(config_key, value)
-        end if configuration['config']
-      end
-      if configuration['resources']
-        gf_sort(configuration['resources']).each_pair do |resource_name, resource_configuration|
-        Chef::Log.info "Defining GlassFish JDBC Resource #{resource_name}, config: #{resource_configuration}"
-
-          glassfish_jdbc_resource resource_name.to_s do
-            domain_name domain_key
-            admin_port admin_port if admin_port
-            username username if username
-            password_file password_file if password_file
-            secure secure if secure
-            system_user system_username if system_username
-            system_group system_group if system_group
-            connectionpoolid pool_name
-            resource_configuration.each_pair do |config_key, value|
-              self.send(config_key, value) unless config_key == 'priority'
-            end
-          end
-        end
-      end
+  gf_sort(definition['jdbc_connection_pools'] || {}).each_pair do |key, configuration|
+    pool_name = key.to_s
+    glassfish_jdbc_connection_pool pool_name do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      configuration['config'].each_pair do |config_key, value|
+        self.send(config_key, value)
+      end if configuration['config']
     end
-  end
+    gf_sort(configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
+      Chef::Log.info "Defining GlassFish JDBC Resource #{resource_name}, config: #{resource_configuration}"
 
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - resource_adapters"
-  if definition['resource_adapters']
-    gf_sort(definition['resource_adapters']).each_pair do |resource_adapter_key, resource_configuration|
-      resource_adapter_key = resource_adapter_key.to_s
-      glassfish_resource_adapter resource_adapter_key do
+      glassfish_jdbc_resource resource_name.to_s do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
@@ -623,140 +572,46 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         secure secure if secure
         system_user system_username if system_username
         system_group system_group if system_group
-        resource_configuration['config'].each_pair do |config_key, value|
-          self.send(config_key, value)
-        end if resource_configuration['config']
-      end
-      if resource_configuration['connection_pools']
-        gf_sort(resource_configuration['connection_pools']).each_pair do |pool_key, pool_configuration|
-          pool_key = pool_key.to_s
-          glassfish_connector_connection_pool pool_key do
-            domain_name domain_key
-            admin_port admin_port if admin_port
-            username username if username
-            password_file password_file if password_file
-            secure secure if secure
-            system_user system_username if system_username
-            system_group system_group if system_group
-            raname resource_adapter_key
-            pool_configuration['config'].each_pair do |config_key, value|
-              self.send(config_key, value)
-            end if pool_configuration['config']
-          end
-          if pool_configuration['resources']
-            gf_sort(pool_configuration['resources']).each_pair do |resource_name, resource_configuration|
-              glassfish_connector_resource resource_name.to_s do
-                domain_name domain_key
-                admin_port admin_port if admin_port
-                username username if username
-                password_file password_file if password_file
-                secure secure if secure
-                system_user system_username if system_username
-                system_group system_group if system_group
-                poolname pool_key.to_s
-                resource_configuration.each_pair do |config_key, value|
-                  self.send(config_key, value) unless config_key == 'priority'
-                end
-              end
-            end
-          end
-        end
-      end
-      if resource_configuration['admin_objects']
-        gf_sort(resource_configuration['admin_objects']).each_pair do |admin_object_key, admin_object_configuration|
-          admin_object_key = admin_object_key.to_s
-          glassfish_admin_object admin_object_key do
-            domain_name domain_key
-            admin_port admin_port if admin_port
-            username username if username
-            password_file password_file if password_file
-            secure secure if secure
-            system_user system_username if system_username
-            system_group system_group if system_group
-            raname resource_adapter_key
-            admin_object_configuration.each_pair do |config_key, value|
-              self.send(config_key, value) unless config_key == 'priority'
-            end
-          end
-        end
-      end
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - jms_resources"
-  if definition['jms_resources']
-    gf_sort(definition['jms_resources']).each_pair do |key, value|
-      hash = value.is_a?(Hash) ? value : {'value' => value}
-      hash['restype'] = 'javax.jms.Queue' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
-      glassfish_jms_resource key.to_s do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        target hash['target'] if hash['target']
-        enabled hash['enabled'] if hash['enabled']
-        description hash['description'] if hash['description']
-        properties hash['properties'] if hash['properties']
-        restype hash['restype'] if hash['restype']
-      end
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - custom_resources"
-  if definition['custom_resources']
-    gf_sort(definition['custom_resources']).each_pair do |key, value|
-      hash = value.is_a?(Hash) ? value : {'value' => value}
-      hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
-      glassfish_custom_resource key.to_s do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        target hash['target'] if hash['target']
-        enabled hash['enabled'] if hash['enabled']
-        description hash['description'] if hash['description']
-        properties hash['properties'] if hash['properties']
-        restype hash['restype'] if hash['restype']
-        factoryclass hash['factoryclass'] if hash['factoryclass']
-        value hash['value'].to_s unless hash['value'].nil?
-      end
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - javamail_resources"
-  if definition['javamail_resources']
-    gf_sort(definition['javamail_resources']).each_pair do |key, javamail_configuration|
-      glassfish_javamail_resource key.to_s do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        javamail_configuration.each_pair do |config_key, value|
+        connectionpoolid pool_name
+        resource_configuration.each_pair do |config_key, value|
           self.send(config_key, value) unless config_key == 'priority'
         end
       end
     end
   end
 
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
-  if definition['deployables']
-    gf_sort(definition['deployables']).each_pair do |component_name, configuration|
-      if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
-        if configuration['recipes'] && configuration['recipes']['before']
-          gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
-            include_recipe recipe
-          end
-        end
-        glassfish_deployable component_name.to_s do
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - resource_adapters"
+  gf_sort(definition['resource_adapters'] || {}).each_pair do |resource_adapter_key, resource_configuration|
+    resource_adapter_key = resource_adapter_key.to_s
+    glassfish_resource_adapter resource_adapter_key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      resource_configuration['config'].each_pair do |config_key, value|
+        self.send(config_key, value)
+      end if resource_configuration['config']
+    end
+    gf_sort(resource_configuration['connection_pools'] || {}).each_pair do |pool_key, pool_configuration|
+      pool_key = pool_key.to_s
+      glassfish_connector_connection_pool pool_key do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        raname resource_adapter_key
+        pool_configuration['config'].each_pair do |config_key, value|
+          self.send(config_key, value)
+        end if pool_configuration['config']
+      end
+      gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
+        glassfish_connector_resource resource_name.to_s do
           domain_name domain_key
           admin_port admin_port if admin_port
           username username if username
@@ -764,45 +619,139 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           secure secure if secure
           system_user system_username if system_username
           system_group system_group if system_group
-          version configuration['version']
-          url configuration['url']
-          context_root configuration['context_root'] if configuration['context_root']
-          target configuration['target'] if configuration['target']
-          enabled configuration['enabled'] if configuration['enabled']
-          generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
-          virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
-          availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
-          keep_state configuration['keep_state'] if configuration['keep_state']
-          verify configuration['verify'] if configuration['verify']
-          precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
-          async_replication configuration['async_replication'] if configuration['async_replication']
-          properties configuration['properties'] if configuration['properties']
-          descriptors configuration['descriptors'] if configuration['descriptors']
-          lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
-        end
-        if configuration['web_env_entries']
-          gf_sort(configuration['web_env_entries']).each_pair do |key, value|
-            hash = value.is_a?(Hash) ? value : {'value' => value}
-            glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
-              domain_name domain_key
-              admin_port admin_port if admin_port
-              username username if username
-              password_file password_file if password_file
-              secure secure if secure
-              system_user system_username if system_username
-              system_group system_group if system_group
-              webapp component_name
-              name key
-              type hash['type'] if hash['type']
-              value hash['value'].to_s unless hash['value'].nil?
-              description hash['description'] if hash['description']
-            end
+          poolname pool_key.to_s
+          resource_configuration.each_pair do |config_key, value|
+            self.send(config_key, value) unless config_key == 'priority'
           end
         end
-        if configuration['recipes'] && configuration['recipes']['after']
-          gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
-            include_recipe recipe
-          end
+      end
+    end
+    gf_sort(resource_configuration['admin_objects'] || {}).each_pair do |admin_object_key, admin_object_configuration|
+      admin_object_key = admin_object_key.to_s
+      glassfish_admin_object admin_object_key do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        raname resource_adapter_key
+        admin_object_configuration.each_pair do |config_key, value|
+          self.send(config_key, value) unless config_key == 'priority'
+        end
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - jms_resources"
+  gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
+    glassfish_jms_resource key.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      target resource_config['target'] if resource_config['target']
+      enabled resource_config['enabled'] if resource_config['enabled']
+      description resource_config['description'] if resource_config['description']
+      properties resource_config['properties'] if resource_config['properties']
+      restype (resource_config['restype'] || 'javax.jms.Queue')
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - custom_resources"
+  gf_sort(definition['custom_resources'] || {}).each_pair do |key, value|
+    hash = value.is_a?(Hash) ? value : {'value' => value}
+    hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
+    glassfish_custom_resource key.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      target hash['target'] if hash['target']
+      enabled hash['enabled'] if hash['enabled']
+      description hash['description'] if hash['description']
+      properties hash['properties'] if hash['properties']
+      restype hash['restype'] if hash['restype']
+      factoryclass hash['factoryclass'] if hash['factoryclass']
+      value hash['value'].to_s unless hash['value'].nil?
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - javamail_resources"
+  gf_sort(definition['javamail_resources'] || {}).each_pair do |key, javamail_configuration|
+    glassfish_javamail_resource key.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      javamail_configuration.each_pair do |config_key, value|
+        self.send(config_key, value) unless config_key == 'priority'
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
+  gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
+    if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
+      if configuration['recipes'] && configuration['recipes']['before']
+        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+          include_recipe recipe
+        end
+      end
+      glassfish_deployable component_name.to_s do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        version configuration['version']
+        url configuration['url']
+        context_root configuration['context_root'] if configuration['context_root']
+        target configuration['target'] if configuration['target']
+        enabled configuration['enabled'] if configuration['enabled']
+        generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+        virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+        availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+        keep_state configuration['keep_state'] if configuration['keep_state']
+        verify configuration['verify'] if configuration['verify']
+        precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+        async_replication configuration['async_replication'] if configuration['async_replication']
+        properties configuration['properties'] if configuration['properties']
+        descriptors configuration['descriptors'] if configuration['descriptors']
+        lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+      end
+      gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
+        hash = value.is_a?(Hash) ? value : {'value' => value}
+        glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
+          domain_name domain_key
+          admin_port admin_port if admin_port
+          username username if username
+          password_file password_file if password_file
+          secure secure if secure
+          system_user system_username if system_username
+          system_group system_group if system_group
+          webapp component_name
+          name key
+          type hash['type'] if hash['type']
+          value hash['value'].to_s unless hash['value'].nil?
+          description hash['description'] if hash['description']
+        end
+      end
+      if configuration['recipes'] && configuration['recipes']['after']
+        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+          include_recipe recipe
         end
       end
     end
@@ -864,30 +813,27 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking web-env entry for existing resources"
-
-  if definition['deployables']
-    gf_sort(definition['deployables']).each_pair do |component_name, configuration|
-      next if configuration['type'] && configuration['type'].to_s == 'osgi'
-      Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking web-env entry for #{component_name}"
-      gf_scan_existing_resources(admin_port,
-                                 username,
-                                 password_file,
-                                 secure,
-                                 "list-web-env-entry #{component_name}") do |existing|
-        unless configuration['web_env_entries'] && configuration['web_env_entries'][existing]
-          Chef::Log.info "Defining GlassFish Domain #{domain_key} - unsetting #{existing} web-env entry for #{component_name}"
-          glassfish_web_env_entry "#{domain_key}: #{component_name} unset #{existing}" do
-            domain_name domain_key
-            admin_port admin_port if admin_port
-            username username if username
-            password_file password_file if password_file
-            secure secure if secure
-            system_user system_username if system_username
-            system_group system_group if system_group
-            webapp component_name
-            name existing
-            action :unset
-          end
+  gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
+    next if configuration['type'] && configuration['type'].to_s == 'osgi'
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking web-env entry for #{component_name}"
+    gf_scan_existing_resources(admin_port,
+                               username,
+                               password_file,
+                               secure,
+                               "list-web-env-entry #{component_name}") do |existing|
+      unless configuration['web_env_entries'] && configuration['web_env_entries'][existing]
+        Chef::Log.info "Defining GlassFish Domain #{domain_key} - unsetting #{existing} web-env entry for #{component_name}"
+        glassfish_web_env_entry "#{domain_key}: #{component_name} unset #{existing}" do
+          domain_name domain_key
+          admin_port admin_port if admin_port
+          username username if username
+          password_file password_file if password_file
+          secure secure if secure
+          system_user system_username if system_username
+          system_group system_group if system_group
+          webapp component_name
+          name existing
+          action :unset
         end
       end
     end
