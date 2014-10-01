@@ -1,4 +1,5 @@
 ## v0.6.2:
+* Enhance : Add default-web.xml template to support deploying glassfish 4.1.
 * Bug     : Avoid recreating jms resources every run. Reported by Karsten Planz.
 * Enhance : Add RealityForge::GlassFish helper class and record the "current"
             glassfish domain and broker instance in the attribute-driven recipes.
