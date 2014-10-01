@@ -27,6 +27,8 @@ default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfis
 default['glassfish']['base_dir'] = '/usr/local/glassfish'
 #<> GlassFish Install Directory: The directory into which glassfish is actually installed.
 default['glassfish']['install_dir'] = nil
+#<> A flag determining whether we should remove the domains directory.
+default['glassfish']['remove_domains_dir_on_install'] = true
 #<> GlassFish Domain Directory: The directory containing all the domain instance data and configuration.
 default['glassfish']['domains_dir'] = '/srv/glassfish'
 #<> GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain.
