@@ -26,6 +26,12 @@ or <code>glassfish::attribute_driven_mq</code>.
 
 include_recipe 'java'
 
+directory node['glassfish']['base_dir'] do
+  mode '0755'
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+end
+
 group node['glassfish']['group'] do
 end
 
@@ -37,50 +43,28 @@ user node['glassfish']['user'] do
   system true
 end
 
-package_url = node['glassfish']['package_url']
-base_package_filename = File.basename(package_url)
-cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{base_package_filename}"
-check_proc = Proc.new { ::File.exists?(node['glassfish']['base_dir']) }
-
-remote_file cached_package_filename do
-  not_if { check_proc.call }
-  source package_url
-  mode '0600'
-  action :create_if_missing
-end
-
-package 'unzip'
-
-bash 'unpack_glassfish' do
-  not_if { check_proc.call }
-  code <<-EOF
-rm -rf /tmp/glassfish
-mkdir /tmp/glassfish
-cd /tmp/glassfish
-unzip -qq #{cached_package_filename}
-mkdir -p #{File.dirname(node['glassfish']['base_dir'])}
-mv glassfish#{node['glassfish']['version'][0..0]} #{node['glassfish']['base_dir']}
-mkdir -p #{node['glassfish']['base_dir']}/glassfish/lib/templates
-chown -R #{node['glassfish']['user']} #{node['glassfish']['base_dir']}
-chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
-chmod -R ugo-w #{node['glassfish']['base_dir']}
-# Next line required to enable creation of .asadmintruststore
-chmod u+w #{node['glassfish']['base_dir']}
-rm -rf #{node['glassfish']['base_dir']}/glassfish/domains/domain1
-test -d #{node['glassfish']['base_dir']}
-EOF
-end
-
-cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/domain.xml" do
-  source 'domain.xml'
+a = archive 'glassfish' do
+  url node['glassfish']['package_url']
+  version node['glassfish']['version']
   owner node['glassfish']['user']
   group node['glassfish']['group']
-  mode 0644
+  extract_action 'unzip_and_strip_dir'
 end
 
-cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/default-web.xml" do
-  source "default-web-#{node['glassfish']['version']}.xml"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0644
+node.override['glassfish']['install_dir'] = a.target_directory
+
+directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
+  recursive true
+  action :nothing
+  subscribes :delete, "archive[glassfish]", :immediately
+end
+
+if node['glassfish']['remove_domains_dir_on_install']
+  # We remove the domains directory on initial install as it is expected that they will need to be
+  # recreated due to upgrade in glassfish version
+  directory node['glassfish']['domains_dir'] do
+    recursive true
+    action :nothing
+    subscribes :delete, "archive[glassfish]", :immediately
+  end
 end

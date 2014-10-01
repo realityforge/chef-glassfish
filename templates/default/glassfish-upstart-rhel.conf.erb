@@ -16,7 +16,7 @@ umask 0077
 
 <% config_dir = "#{node['glassfish']['domains_dir']}/#{@resource.domain_name}/config" %>
 pre-start script
-  test -f <%= node['glassfish']['base_dir'] %>/glassfish/modules/glassfish.jar || { stop; exit 0; }
+  test -f <%= node['glassfish']['install_dir'] %>/glassfish/modules/glassfish.jar || { stop; exit 0; }
   test -d <%= config_dir %> || { stop; exit 0; }
 end script
 

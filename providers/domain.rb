@@ -121,7 +121,7 @@ def default_jvm_options
     '-XX:NewRatio=2',
     '-client',
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
-    "-Djava.endorsed.dirs=#{node['glassfish']['base_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
+    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
 
       # Configuration to enable effective JMX management
     "-Djava.rmi.server.hostname=#{node['fqdn']}",
@@ -129,17 +129,17 @@ def default_jvm_options
 
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
     '-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory',
-    "-Dcom.sun.aas.installRoot=#{node['glassfish']['base_dir']}/glassfish",
+    "-Dcom.sun.aas.installRoot=#{node['glassfish']['install_dir']}/glassfish",
     '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
     '-Djava.awt.headless=true',
     '-Djdbc.drivers=org.apache.derby.jdbc.ClientDriver',
-    "-javaagent:#{node['glassfish']['base_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
+    "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
 
     #osgi_jvm_options
     '-Dosgi.shell.telnet.maxconn=1',
     '-Dfelix.fileinstall.disableConfigSave=false',
-    "-Dfelix.fileinstall.dir=#{node['glassfish']['base_dir']}/glassfish/modules/autostart/",
+    "-Dfelix.fileinstall.dir=#{node['glassfish']['install_dir']}/glassfish/modules/autostart/",
     '-Dosgi.shell.telnet.port=6666',
     '-Dfelix.fileinstall.log.level=2',
     '-Dfelix.fileinstall.poll=5000',
@@ -198,7 +198,7 @@ action :create do
   args += new_resource.java_agents.map{ |agent| "-javaagent:#{agent}"}
   args += new_resource.extra_jvm_options
   args << '-cp'
-  args << "#{node['glassfish']['base_dir']}/glassfish/modules/glassfish.jar"
+  args << "#{node['glassfish']['install_dir']}/glassfish/modules/glassfish.jar"
   args << 'com.sun.enterprise.glassfish.bootstrap.ASMain'
   args << '-domainname'
   args << new_resource.domain_name

@@ -33,7 +33,7 @@ end
 include_recipe 'glassfish::default'
 
 node['openmq']['extra_libraries'].values.each do |extra_library|
-  library_location = "#{node['glassfish']['base_dir']}/mq/lib/ext/#{File.basename(extra_library)}"
+  library_location = "#{node['glassfish']['install_dir']}/mq/lib/ext/#{File.basename(extra_library)}"
   remote_file library_location do
     source extra_library
     mode "0640"

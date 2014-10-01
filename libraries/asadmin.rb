@@ -78,7 +78,7 @@ class Chef
         args << "--port #{options[:admin_port]}"
       end
 
-      "#{node['glassfish']['base_dir']}/glassfish/bin/asadmin #{args.join(" ")} #{command}"
+      "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin #{args.join(" ")} #{command}"
     end
   end
 end

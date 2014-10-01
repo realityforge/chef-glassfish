@@ -1,4 +1,5 @@
 ## v0.6.2:
+* Enhance : Use the archive cookbook to retrieve the glassfish package.
 * Enhance : Add default-web.xml template to support deploying glassfish 4.1.
 * Bug     : Avoid recreating jms resources every run. Reported by Karsten Planz.
 * Enhance : Add RealityForge::GlassFish helper class and record the "current"
