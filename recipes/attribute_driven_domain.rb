@@ -281,6 +281,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - secure_admin"
 
+  remote_access = definition['config']['remote_access']
+
   # TODO: Merge glassfish_secure_admin into glassfish_domain?
   glassfish_secure_admin "#{domain_key}: secure_admin" do
     domain_name domain_key
@@ -291,11 +293,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     system_user system_username if system_username
     system_group system_group if system_group
     init_style definition['config']['init_style'] if definition['config']['init_style']
-    action ('true' == definition['config']['remote_access'].to_s) ? :enable : :disable
+    action ('true' == remote_access.to_s) ? :enable : :disable
   end
 
   if admin_port
-    require 'net/https'
+    require 'net/https' if remote_access
 
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - wait till up"
 
@@ -305,13 +307,15 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         loop do
           raise "GlassFish failed to become operational" if count > 50
           count = count + 1
-          admin_url = "https://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
+          admin_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
           begin
             uri = URI(admin_url)
             res = nil
             http = Net::HTTP.new(uri.hostname, uri.port)
-            http.use_ssl = true
-            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            if remote_access
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            end
             http.start do |http|
               request = Net::HTTP::Get.new(uri.request_uri)
               request.basic_auth username, definition['config']['password']

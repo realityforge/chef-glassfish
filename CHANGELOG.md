@@ -1,4 +1,5 @@
 ## v0.6.2:
+* Bug     : Fix the ssl bug so that domain without remote_access can be deployed.
 * Enhance : Use the archive cookbook to retrieve the glassfish package.
 * Enhance : Add default-web.xml template to support deploying glassfish 4.1.
 * Bug     : Avoid recreating jms resources every run. Reported by Karsten Planz.
