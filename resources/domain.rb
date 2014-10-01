@@ -69,6 +69,8 @@ attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
 #<> @attribute username The username to use when communicating with the domain.
 attribute :username, :kind_of => String, :default => nil
+#<> @attribute master_password Password used to access the keystore. Defaults to password if unset.
+attribute :master_password, :kind_of => String, :default => nil
 #<> @attribute password Password to use when communicating with the domain. Must be set if username is set.
 attribute :password, :kind_of => String, :default => nil
 #<> @attribute password_file The file in which the password is saved. Should be set if username is set.

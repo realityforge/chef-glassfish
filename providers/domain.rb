@@ -222,6 +222,8 @@ action :create do
     recursive true
   end
 
+  master_password = new_resource.master_password || new_resource.password
+
   if new_resource.password_file
     template new_resource.password_file do
       cookbook 'glassfish'
@@ -230,7 +232,7 @@ action :create do
       owner new_resource.system_user
       group new_resource.system_group
       mode '0600'
-      variables :password => new_resource.password
+      variables :password => new_resource.password, :master_password => master_password
     end
   end
 
@@ -246,26 +248,46 @@ action :create do
     user new_resource.system_user
   end
 
+  cookbook_file "#{domain_dir_path}/config/default-web.xml" do
+    source "default-web-#{node['glassfish']['version']}.xml"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode '0644'
+    action :nothing
+  end
+
+  directory "#{domain_dir_path}/osgi-cache" do
+    recursive true
+    action :nothing
+  end
+
+  directory "#{domain_dir_path}/generated" do
+    recursive true
+    action :nothing
+  end
+
+  file "#{domain_dir_path}/docroot/index.html" do
+    action :nothing
+  end
+
   bash "create domain #{new_resource.domain_name}" do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '"
 
     create_args = []
     create_args << '--checkports=false'
-    create_args << '--savemasterpassword=true' if node['glassfish']['version'][0..0] == '4'
+    create_args << '--savemasterpassword=true'
     create_args << "--instanceport #{new_resource.port}"
     create_args << "--adminport #{new_resource.admin_port}"
     create_args << '--nopassword=false' if new_resource.username
     create_args << domain_dir_arg
-    command_string = []
-    command_string << (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
-    command_string << "rm -f #{domain_dir_path}/docroot/index.html"
-    command_string << "rm -rf #{domain_dir_path}/osgi-cache  #{domain_dir_path}/generated"
-    command_string << "cp #{node['glassfish']['base_dir']}/glassfish/lib/templates/default-web.xml #{domain_dir_path}/config/default-web.xml"
-    command_string << asadmin_command("verify-domain-xml #{domain_dir_arg} #{new_resource.domain_name}", false)
 
     user new_resource.system_user
     group new_resource.system_group
-    code command_string.join("\n")
+    code (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    notifies :create, "cookbook_file[#{domain_dir_path}/config/default-web.xml]", :immediate
+    notifies :delete, "directory[#{domain_dir_path}/osgi-cache]", :immediate
+    notifies :delete, "directory[#{domain_dir_path}/generated]", :immediate
+    notifies :delete, "file[#{domain_dir_path}/docroot/index.html]", :immediate
   end
 
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
