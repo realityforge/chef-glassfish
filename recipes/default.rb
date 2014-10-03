@@ -51,12 +51,14 @@ a = archive 'glassfish' do
   extract_action 'unzip_and_strip_dir'
 end
 
+exists_at_run_start = ::File.exist?(a.target_directory)
+
 node.override['glassfish']['install_dir'] = a.target_directory
 
 directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
   recursive true
-  action :nothing
-  subscribes :delete, "archive[glassfish]", :immediately
+  action :delete
+  not_if {exists_at_run_start}
 end
 
 if node['glassfish']['remove_domains_dir_on_install']
@@ -65,6 +67,6 @@ if node['glassfish']['remove_domains_dir_on_install']
   directory node['glassfish']['domains_dir'] do
     recursive true
     action :nothing
-    subscribes :delete, "archive[glassfish]", :immediately
+    not_if {exists_at_run_start}
   end
 end
