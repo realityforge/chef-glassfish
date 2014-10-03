@@ -1068,7 +1068,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing custom resources"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-custom-resources') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing custom resource #{existing}"
-    unless definition['custom_resources'] && definition['custom_resources'][existing]
+    unless definition['custom_resources'] && !definition['custom_resources'][existing].nil?
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing custom resource #{existing}"
       glassfish_custom_resource existing do
         domain_name domain_key
