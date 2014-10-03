@@ -1,6 +1,27 @@
 ## v0.6.2:
+* Bug     : Stop using versions in names of deployables as several bugs within
+            GlassFish are triggered by this feature. In particular this includes
+            bugs in the concurrency, batch and SOAP libraries. This results in
+            versions of the artifacts being stored on the filesystem.
+* Bug     : Don't attempt to create user if system_user for glassfish domain is
+            set to root.
+* Enhance : Explicitly support master_password configuration for a glassfish
+            domain.
+* Change  : Add a configuration property `node['glassfish']['remove_domains_dir_on_install']`
+            that controls whether the domains directory is removed when glassfish
+            version is upgraded or initially installed.
+* Change  : Avoid custom domain.xml and use domain.xml files supplied by
+            glassfish.
+* Bug     : Rework jms_resources and connector related resources so that
+            the resources defined in each section will not contend.
+* Bug     : Fix compatibility with later versions of Chef 11.
+* Bug     : Fix bug with attribute_driven_domain recipe so that boolean
+            `custom_resources` with a false value are not deleted at the end
+            of a converge.
 * Bug     : Fix the ssl bug so that domain without remote_access can be deployed.
-* Enhance : Use the archive cookbook to retrieve the glassfish package.
+* Enhance : Use the archive cookbook to retrieve the glassfish package. Use the
+            `node['glassfish']['install_dir']` configuration property to get at
+            base directory of version.
 * Enhance : Add default-web.xml template to support deploying glassfish 4.1.
 * Bug     : Avoid recreating jms resources every run. Reported by Karsten Planz.
 * Enhance : Add RealityForge::GlassFish helper class and record the "current"
