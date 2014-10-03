@@ -766,44 +766,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
                              username,
                              password_file,
                              secure,
-                             'list-applications') do |versioned_component_name|
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - scanning existing application #{versioned_component_name}"
-    name_parts = versioned_component_name.split(':')
-    key = name_parts[0]
-    version_parts = name_parts.size > 1 ? name_parts[1].split('+') : ['']
-    version = version_parts[0]
-    plan_version = name_parts.size > 1 ? version_parts[1] : nil
-
-    keep = false
-    if definition['deployables']
-      if definition['deployables'][key]
-        config = definition['deployables'][key]
-        if config['type'].to_s != 'osgi'
-          if config['version'] == version || Digest::SHA1.hexdigest(config['url']) == version
-            if (!plan_version && (!config['descriptors'] || config['descriptors'].empty?)) ||
-              (Asadmin.generate_component_plan_digest(config['descriptors']) == plan_version)
-              keep = true
-            end
-          end
-        end
-      end
-
-      definition['deployables'].keys.each do |key|
-        config = definition['deployables'][key]
-        # OSGi does not keep the version in the name so we need to store it on the filesystem
-        if config['type'].to_s == 'osgi'
-          candidate_name = Asadmin.versioned_component_name(key, config['type'], config['version'], config['url'], nil)
-          if candidate_name == versioned_component_name
-            keep = true
-            break
-          end
-        end
-      end
-    end
-
-    unless keep
-      Chef::Log.info "Defining GlassFish Domain #{domain_key} - undeploying existing resource #{versioned_component_name}"
-      glassfish_deployable versioned_component_name do
+                             'list-applications') do |application_name|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - scanning existing application #{application_name}"
+    unless definition['deployables'].keys.include?(application_name)
+      Chef::Log.info "Defining GlassFish Domain #{domain_key} - undeploying existing resource #{application_name}"
+      glassfish_deployable application_name do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username

@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'digest/sha1'
 
 actions :deploy, :undeploy, :enable, :disable
 
@@ -60,4 +61,8 @@ def initialize(*args)
   super
   @system_user = node['glassfish']['user']
   @system_group = node['glassfish']['group']
+end
+
+def version_value
+  version.nil? ? Digest::SHA1.hexdigest(url) : version
 end
