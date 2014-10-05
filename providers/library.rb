@@ -60,7 +60,7 @@ action :add do
   end
 
   command = []
-  command << "add-library"
+  command << 'add-library'
   command << type_flag
   command << "--upload" << new_resource.upload
   command << cached_package_filename
