@@ -30,7 +30,7 @@ action :create do
   command << new_resource.resource_adapter_name
 
   bash "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -x -- '#{new_resource.resource_adapter_name}'"
+    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -43,7 +43,7 @@ action :delete do
   command << new_resource.resource_adapter_name
 
   bash "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -x -- '#{new_resource.resource_adapter_name}'"
+    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

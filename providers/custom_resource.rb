@@ -33,7 +33,7 @@ action :create do
   command << new_resource.jndi_name
 
   bash "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
-    not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -x -- '#{new_resource.jndi_name}'"
+    not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -65,7 +65,7 @@ action :delete do
   command << new_resource.jndi_name
 
   bash "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
-    only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -x -- '#{new_resource.jndi_name}'"
+    only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

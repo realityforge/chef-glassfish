@@ -1,4 +1,6 @@
 ## v0.6.2:
+* Bug     : Ensure that the grep in the guards used when determining whether to
+            create/update resources do not treat values as special grep characters.
 * Bug     : Stop using versions in names of deployables as several bugs within
             GlassFish are triggered by this feature. In particular this includes
             bugs in the concurrency, batch and SOAP libraries. This results in

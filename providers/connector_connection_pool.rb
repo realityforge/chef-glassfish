@@ -36,7 +36,7 @@ action :create do
 
 
   bash "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
-    not_if "#{asadmin_command('list-connector-connection-pools')} | grep -x -- '#{new_resource.pool_name}'"
+    not_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -50,7 +50,7 @@ action :delete do
   command << new_resource.pool_name
 
   bash "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
-    only_if "#{asadmin_command('list-connector-connection-pools')} | grep -x -- '#{new_resource.pool_name}'"
+    only_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

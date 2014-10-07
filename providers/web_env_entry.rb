@@ -32,7 +32,7 @@ action :set do
   command << new_resource.webapp
 
   bash "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || "description not specified"})'"
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || "description not specified"})'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -46,7 +46,7 @@ action :unset do
   command << new_resource.webapp
 
   bash "asadmin_unset-web-env-entry #{new_resource.name}" do
-    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -x -- '#{new_resource.name}'"
+    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

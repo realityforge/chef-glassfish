@@ -29,7 +29,7 @@ action :create do
   command << new_resource.name
 
   bash "asadmin_create-jms-resource #{new_resource.name}" do
-    not_if "#{asadmin_command('list-jms-resources')} #{new_resource.target} | grep -x -- '#{new_resource.name}'"
+    not_if "#{asadmin_command('list-jms-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -43,7 +43,7 @@ action :delete do
   command << new_resource.name
 
   bash "asadmin_delete-custom-resource #{new_resource.name}" do
-    only_if "#{asadmin_command('list-jms-resources')} #{new_resource.target} | grep -x -- '#{new_resource.name}'"
+    only_if "#{asadmin_command('list-jms-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

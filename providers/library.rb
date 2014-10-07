@@ -40,7 +40,7 @@ action :add do
   end
 
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
-  check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
+  check_command = "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'"
 
   directory ::File.dirname(cached_package_filename) do
     not_if check_command
@@ -84,7 +84,7 @@ action :remove do
   command << ::File.basename(new_resource.url)
 
   bash "asadmin_remove-library #{new_resource.url}" do
-    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -x -- '#{::File.basename(new_resource.url)}'"
+    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

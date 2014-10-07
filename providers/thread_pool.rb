@@ -45,7 +45,7 @@ action :create do
   command << new_resource.threadpool_id
 
   bash "asadmin_threadpool #{new_resource.threadpool_id}" do
-    not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -x -- '#{new_resource.threadpool_id}'"
+    not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -83,7 +83,7 @@ action :delete do
   command << new_resource.threadpool_id
 
   bash "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
-    only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -x -- '#{new_resource.threadpool_id}'"
+    only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
