@@ -20,19 +20,19 @@ use_inline_resources
 
 action :set do
   command = []
-  command << "set-web-env-entry"
-  command << "--name" << new_resource.name
-  command << "--type" << new_resource.type
-  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << 'set-web-env-entry'
+  command << '--name' << new_resource.name
+  command << '--type' << new_resource.type
+  command << '--description' << "'#{new_resource.description}'" if new_resource.description
   if new_resource.value.nil?
-    command << "--ignoreDescriptorItem"
+    command << '--ignoreDescriptorItem'
   else
     command << "'--value=#{new_resource.value}'"
   end
   command << new_resource.webapp
 
   bash "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || "description not specified"})'"
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -41,8 +41,8 @@ end
 
 action :unset do
   command = []
-  command << "unset-web-env-entry"
-  command << "--name" << new_resource.name
+  command << 'unset-web-env-entry'
+  command << '--name' << new_resource.name
   command << new_resource.webapp
 
   bash "asadmin_unset-web-env-entry #{new_resource.name}" do

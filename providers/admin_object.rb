@@ -21,12 +21,12 @@ use_inline_resources
 action :create do
 
   command = []
-  command << "create-admin-object"
-  command << "--raname" << new_resource.raname
-  command << "--restype" << new_resource.restype
-  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << "--description" << "'#{new_resource.description}'" if new_resource.description
-  command << "--classname" << new_resource.classname if new_resource.classname
+  command << 'create-admin-object'
+  command << '--raname' << new_resource.raname
+  command << '--restype' << new_resource.restype
+  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << '--description' << "'#{new_resource.description}'" if new_resource.description
+  command << '--classname' << new_resource.classname if new_resource.classname
   command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << asadmin_target_flag
   command << new_resource.name
@@ -41,7 +41,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-admin-object"
+  command << 'delete-admin-object'
   command << asadmin_target_flag
   command << new_resource.name
 

@@ -18,12 +18,12 @@ class Chef
   module Imqcmd
     def imqcmd_command(command)
       args = []
-      args << "-f"
-      args << "-javahome #{node["java"]["java_home"]}"
+      args << '-f'
+      args << "-javahome #{node['java']['java_home']}"
       args << "-b #{new_resource.host}:#{new_resource.port}"
       args << "-u #{new_resource.username}"
       args << "-passfile #{new_resource.passfile}"
-      "#{node['glassfish']['install_dir']}/mq/bin/imqcmd #{args.join(" ")} #{command}"
+      "#{node['glassfish']['install_dir']}/mq/bin/imqcmd #{args.join(' ')} #{command}"
     end
   end
 end

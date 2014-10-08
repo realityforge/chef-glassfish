@@ -79,7 +79,7 @@ end
 
 action :remove do
   command = []
-  command << "remove-library"
+  command << 'remove-library'
   command << type_flag
   command << ::File.basename(new_resource.url)
 

@@ -36,7 +36,7 @@ action :create do
   end
 
   command = []
-  command << "create-threadpool"
+  command << 'create-threadpool'
   command << asadmin_target_flag
   command << '--maxthreadpoolsize' << new_resource.maxthreadpoolsize
   command << '--minthreadpoolsize' << new_resource.minthreadpoolsize
@@ -78,7 +78,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-threadpool"
+  command << 'delete-threadpool'
   command << asadmin_target_flag
   command << new_resource.threadpool_id
 

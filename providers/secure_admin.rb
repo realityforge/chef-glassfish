@@ -35,11 +35,11 @@ action :enable do
     raise "Unknown init style #{new_resource.init_style}"
   end
 
-  bash "asadmin_enable-secure-admin" do
+  bash 'asadmin_enable-secure-admin' do
     not_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'"
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command("enable-secure-admin")
+    code asadmin_command('enable-secure-admin')
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'upstart'
     notifies :restart, "runit_service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'runit'
   end
@@ -52,11 +52,11 @@ action :disable do
     action :nothing
   end
 
-  bash "asadmin_disable-secure-admin" do
+  bash 'asadmin_disable-secure-admin' do
     only_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'"
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command("disable-secure-admin")
+    code asadmin_command('disable-secure-admin')
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
 end

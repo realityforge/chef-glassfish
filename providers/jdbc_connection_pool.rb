@@ -26,13 +26,13 @@ action :create do
     ::Chef::Resource::GlassfishJdbcConnectionPool::BOOLEAN_ATTRIBUTES
 
   command = []
-  command << "create-jdbc-connection-pool"
+  command << 'create-jdbc-connection-pool'
   parameters.each do |key|
     command << "--#{key}=#{new_resource.send(key)}" if new_resource.send(key)
   end
 
-  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << '--description' << "'#{new_resource.description}'" if new_resource.description
   command << new_resource.name
 
 
@@ -64,8 +64,8 @@ end
 
 action :delete do
   command = []
-  command << "delete-jdbc-connection-pool"
-  command << "--cascade=true"
+  command << 'delete-jdbc-connection-pool'
+  command << '--cascade=true'
   command << new_resource.name
 
   bash "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do

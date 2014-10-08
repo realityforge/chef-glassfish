@@ -20,13 +20,13 @@ use_inline_resources
 
 action :create do
   command = []
-  command << "create-auth-realm"
+  command << 'create-auth-realm'
   command << asadmin_target_flag
-  command << "--classname" << new_resource.classname
+  command << '--classname' << new_resource.classname
   properties = new_resource.properties.dup
   properties['jaas-context'] = new_resource.jaas_context if new_resource.jaas_context
   properties['assign-groups'] = new_resource.assign_groups if new_resource.assign_groups
-  command << "--property" << encode_parameters(properties)
+  command << '--property' << encode_parameters(properties)
   command << new_resource.name
 
   bash "asadmin_create_auth_realm #{new_resource.name}" do
@@ -52,7 +52,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-auth-realm"
+  command << 'delete-auth-realm'
   command << asadmin_target_flag
   command << new_resource.name
 

@@ -21,65 +21,65 @@
 
 def mq_config_settings(resource)
   configs = {}
-  configs["imq.log.timezone"] = node["tz"] || "GMT"
+  configs['imq.log.timezone'] = node['tz'] || 'GMT'
 
   # Specify supported LogHandlers
-  configs["imq.log.handlers"] = "file,console"
+  configs['imq.log.handlers'] = 'file,console'
 
   # FileLogHandler settings.
   # The FileLogHandler logs messages to a set of rolling files.
   # The rollover criteria can be the file size (bytes) and/or
   # the file age (seconds). 0 means don't rollover based on that criteria.
-  configs["imq.log.file.rolloverbytes"] = "268435456"
-  configs["imq.log.file.rolloversecs"] = "604800"
-  configs["imq.log.file.dirpath"] = "${imq.instanceshome}${/}${imq.instancename}${/}log"
-  configs["imq.log.file.filename"] = "omq.log"
-  configs["imq.log.file.output"] = "ERROR|WARNING"
+  configs['imq.log.file.rolloverbytes'] = '268435456'
+  configs['imq.log.file.rolloversecs'] = '604800'
+  configs['imq.log.file.dirpath'] = "${imq.instanceshome}${/}${imq.instancename}${/}log"
+  configs['imq.log.file.filename'] = 'omq.log'
+  configs['imq.log.file.output'] = 'ERROR|WARNING'
 
   # Console settings.
   # The console handler logs messages to an OutputStream. This can either be
   # System.err (ERR) or System.out (OUT).
-  configs["imq.log.console.stream"] = "ERR"
-  configs["imq.log.console.output"] = "ERROR|WARNING"
+  configs['imq.log.console.stream'] = 'ERR'
+  configs['imq.log.console.output'] = 'ERROR|WARNING'
 
   configs.merge!(resource.config)
 
   bridges = []
   services = []
 
-  configs["imq.portmapper.port"] = resource.port
+  configs['imq.portmapper.port'] = resource.port
 
   if resource.admin_port
-    services << "admin"
-    configs["imq.admin.tcp.port"] = resource.admin_port
+    services << 'admin'
+    configs['imq.admin.tcp.port'] = resource.admin_port
   end
 
   if resource.jms_port
-    services << "jms"
-    configs["imq.jms.tcp.port"] = resource.jms_port
+    services << 'jms'
+    configs['imq.jms.tcp.port'] = resource.jms_port
   end
 
   if resource.stomp_port
-    bridges << "stomp"
-    configs["imq.bridge.stomp.tcp.enabled"] = "true"
-    configs["imq.bridge.stomp.tcp.port"] = resource.stomp_port
-    configs["imq.bridge.stomp.logfile.limit"] = "268435456"
-    configs["imq.bridge.stomp.logfile.count"] = "3"
+    bridges << 'stomp'
+    configs['imq.bridge.stomp.tcp.enabled'] = 'true'
+    configs['imq.bridge.stomp.tcp.port'] = resource.stomp_port
+    configs['imq.bridge.stomp.logfile.limit'] = '268435456'
+    configs['imq.bridge.stomp.logfile.count'] = '3'
   end
 
   if services.size > 0
-    configs["imq.service.activelist"] = services.join(',')
+    configs['imq.service.activelist'] = services.join(',')
   end
 
-  configs["imq.bridge.admin.user"] = resource.admin_user
+  configs['imq.bridge.admin.user'] = resource.admin_user
   user = resource.users[resource.admin_user]
   raise "Missing user details for admin user '#{resource.admin_user}'" unless user
-  configs["imq.bridge.admin.password"] = user['password']
-  configs["imq.imqcmd.password"] = user['password']
+  configs['imq.bridge.admin.password'] = user['password']
+  configs['imq.imqcmd.password'] = user['password']
 
   if bridges.size > 0
-    configs["imq.bridge.enabled"] = "true"
-    configs["imq.bridge.activelist"] = bridges.join(',')
+    configs['imq.bridge.enabled'] = 'true'
+    configs['imq.bridge.activelist'] = bridges.join(',')
   end
 
   configs
@@ -110,45 +110,45 @@ action :create do
     recursive true
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
   end
 
   directory "#{node['openmq']['var_home']}/instances" do
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
   end
 
   directory instance_dir do
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
   end
 
   directory "#{instance_dir}/etc" do
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
   end
 
   directory "#{instance_dir}/log" do
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
   end
 
   # Not sure why this is required... but something runs service as root which created this file as root owned
   file "#{instance_dir}/log/log.txt" do
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
     action :touch
   end
 
   directory "#{instance_dir}/props" do
     owner new_resource.system_user
     group new_resource.system_group
-    mode "0700"
+    mode '0700'
   end
 
   vm_args = []
@@ -156,11 +156,11 @@ action :create do
   vm_args << "-Xss#{new_resource.max_stack_size}k"
   vm_args << "-Djava.util.logging.config.file=#{instance_dir}/etc/logging.properties"
   if new_resource.jmx_port
-    vm_args << "-Dcom.sun.management.jmxremote"
+    vm_args << '-Dcom.sun.management.jmxremote'
     vm_args << "-Dcom.sun.management.jmxremote.port=#{new_resource.jmx_port}"
     vm_args << "-Dcom.sun.management.jmxremote.access.file=#{instance_dir}/etc/jmxremote.access"
     vm_args << "-Dcom.sun.management.jmxremote.password.file=#{instance_dir}/etc/jmxremote.password"
-    vm_args << "-Dcom.sun.management.jmxremote.ssl=false"
+    vm_args << '-Dcom.sun.management.jmxremote.ssl=false'
   end
 
   if new_resource.port < 1024
@@ -200,13 +200,13 @@ action :create do
 
   if new_resource.init_style == 'upstart'
     template "/etc/init/#{service_name}.conf" do
-      source "omq-upstart.conf.erb"
-      mode "0644"
+      source 'omq-upstart.conf.erb'
+      mode '0644'
       cookbook 'glassfish'
 
       variables(:resource => new_resource,
                 :authbind => requires_authbind,
-                :vmargs => vm_args.join(" "))
+                :vmargs => vm_args.join(' '))
     end
 
     service service_name do
@@ -225,7 +225,7 @@ action :create do
               :listen_ports => listen_ports,
               :instance_name => new_resource.instance,
               :authbind => requires_authbind,
-              :vmargs => vm_args.join(" "),
+              :vmargs => vm_args.join(' '),
               :listen_ports => listen_ports)
       sv_timeout 300
       action [:nothing]
@@ -238,7 +238,7 @@ action :create do
     file "#{instance_dir}/etc/jmxremote.access" do
       owner new_resource.system_user
       group new_resource.system_group
-      mode "0400"
+      mode '0400'
       action :create
       content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
       notifies :restart, service_resource_name, :delayed
@@ -247,7 +247,7 @@ action :create do
     file "#{instance_dir}/etc/jmxremote.password" do
       owner new_resource.system_user
       group new_resource.system_group
-      mode "0400"
+      mode '0400'
       action :create
       content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
       notifies :restart, service_resource_name, :delayed
@@ -270,8 +270,8 @@ action :create do
       end
       keep_existing
     end
-    source "config.properties.erb"
-    mode "0600"
+    source 'config.properties.erb'
+    mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
@@ -280,8 +280,8 @@ action :create do
   end
 
   template "#{instance_dir}/etc/logging.properties" do
-    source "logging.properties.erb"
-    mode "0400"
+    source 'logging.properties.erb'
+    mode '0400'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
@@ -290,8 +290,8 @@ action :create do
   end
 
   template "#{instance_dir}/etc/passwd" do
-    source "passwd.erb"
-    mode "0400"
+    source 'passwd.erb'
+    mode '0400'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
@@ -299,8 +299,8 @@ action :create do
   end
 
   template "#{instance_dir}/etc/accesscontrol.properties" do
-    source "accesscontrol.properties.erb"
-    mode "0400"
+    source 'accesscontrol.properties.erb'
+    mode '0400'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group

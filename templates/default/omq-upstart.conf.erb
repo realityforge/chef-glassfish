@@ -13,10 +13,10 @@ kill timeout 10
 umask 0022
 
 <% omq_home = "#{node['glassfish']['install_dir']}/mq" %>
-<% authbind_prefix = @authbind ? "/usr/bin/authbind --deep " : "" %>
+<% authbind_prefix = @authbind ? '/usr/bin/authbind --deep ' : '' %>
 
 pre-start script
     test -x <%= omq_home %>/bin/imqbrokerd || { stop; exit 0; }
 end script
 
-exec su <%= node['glassfish']['user'] %> -c '<%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= node['openmq']['var_home'] %> -javahome <%= node["java"]["java_home"] %> -name "<%= @resource.instance %>"'
+exec su <%= node['glassfish']['user'] %> -c '<%= authbind_prefix %><%= omq_home %>/bin/imqbrokerd -vmargs "<%= @vmargs %>" -varhome <%= node['openmq']['var_home'] %> -javahome <%= node['java']['java_home'] %> -name "<%= @resource.instance %>"'

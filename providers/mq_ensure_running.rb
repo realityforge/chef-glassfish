@@ -14,14 +14,14 @@
 # limitations under the License.
 #
 
-require "socket"
+require 'socket'
 
 action :run do
-  ruby_block "block_until_running" do
+  ruby_block 'block_until_running' do
     block do
       count = 0
       loop do
-        raise "OpenMQ broker never came online" if count > 50
+        raise 'OpenMQ broker never came online' if count > 50
         begin
           s = TCPSocket.new new_resource.host, new_resource.port
           break

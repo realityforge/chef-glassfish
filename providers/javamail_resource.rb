@@ -21,16 +21,16 @@ use_inline_resources
 action :create do
 
   command = []
-  command << "create-javamail-resource"
-  command << "--mailhost" << new_resource.mailhost
-  command << "--mailuser" << new_resource.mailuser
-  command << "--fromaddress" << new_resource.fromaddress
-  command << "--storeprotocol" << new_resource.storeprotocol if new_resource.storeprotocol
-  command << "--storeprotocolclass" << new_resource.storeprotocolclass if new_resource.storeprotocolclass
-  command << "--transprotocol" << new_resource.transprotocol if new_resource.transprotocol
-  command << "--transprotocolclass" << new_resource.transprotocolclass if new_resource.transprotocolclass
-  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << 'create-javamail-resource'
+  command << '--mailhost' << new_resource.mailhost
+  command << '--mailuser' << new_resource.mailuser
+  command << '--fromaddress' << new_resource.fromaddress
+  command << '--storeprotocol' << new_resource.storeprotocol if new_resource.storeprotocol
+  command << '--storeprotocolclass' << new_resource.storeprotocolclass if new_resource.storeprotocolclass
+  command << '--transprotocol' << new_resource.transprotocol if new_resource.transprotocol
+  command << '--transprotocolclass' << new_resource.transprotocolclass if new_resource.transprotocolclass
+  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << '--description' << "'#{new_resource.description}'" if new_resource.description
   command << "--debug=#{new_resource.debug}" if new_resource.debug
   command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << asadmin_target_flag
@@ -46,7 +46,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-javamail-resource"
+  command << 'delete-javamail-resource'
   command << asadmin_target_flag
   command << new_resource.jndi_name
 

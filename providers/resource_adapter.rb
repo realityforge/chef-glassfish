@@ -21,12 +21,12 @@ use_inline_resources
 action :create do
 
   command = []
-  command << "create-resource-adapter-config"
+  command << 'create-resource-adapter-config'
 
-  command << "--threadpoolid" << new_resource.threadpoolid if new_resource.threadpoolid
-  command << "--objecttype" << new_resource.objecttype if new_resource.objecttype
+  command << '--threadpoolid' << new_resource.threadpoolid if new_resource.threadpoolid
+  command << '--objecttype' << new_resource.objecttype if new_resource.objecttype
 
-  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
   command << new_resource.resource_adapter_name
 
   bash "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
@@ -39,7 +39,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-resource-adapter-config"
+  command << 'delete-resource-adapter-config'
   command << new_resource.resource_adapter_name
 
   bash "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do

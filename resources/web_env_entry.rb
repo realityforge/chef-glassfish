@@ -41,7 +41,7 @@ attribute :webapp, :kind_of => String, :required => true
 #<> @attribute name The key name of the web env entry.
 attribute :name, :kind_of => String, :required => true
 #<> @attribute type The java type name of env entry.
-attribute :type, :kind_of => String, :default => "java.lang.String"
+attribute :type, :kind_of => String, :default => 'java.lang.String'
 #<> @attribute value The value of the entry.
 attribute :value, :kind_of => String, :default => nil
 #<> @attribute description A description of the entry.

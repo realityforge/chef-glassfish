@@ -36,7 +36,7 @@ node['openmq']['extra_libraries'].values.each do |extra_library|
   library_location = "#{node['glassfish']['install_dir']}/mq/lib/ext/#{File.basename(extra_library)}"
   remote_file library_location do
     source extra_library
-    mode "0640"
+    mode '0640'
     owner node['glassfish']['user']
     group node['glassfish']['group']
     action :create_if_missing

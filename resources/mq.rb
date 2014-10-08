@@ -65,9 +65,9 @@ attribute :logging_properties,
           :kind_of => Hash,
           :default =>
             {
-              "handlers" => "java.util.logging.ConsoleHandler",
-              ".level" => "INFO",
-              "java.util.logging.ConsoleHandler.level" => "INFO",
+              'handlers' => 'java.util.logging.ConsoleHandler',
+              '.level' => 'INFO',
+              'java.util.logging.ConsoleHandler.level' => 'INFO',
             }
 #<> @attribute config A map of key-value properties that are merged into the OpenMQ configuration file.
 attribute :config, :kind_of => Hash, :default => {}

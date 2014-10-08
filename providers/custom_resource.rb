@@ -20,15 +20,15 @@ use_inline_resources
 
 action :create do
   command = []
-  command << "create-custom-resource"
-  command << "--restype" << new_resource.restype
-  factoryclass = new_resource.factoryclass || "org.glassfish.resources.custom.factory.PrimitivesAndStringFactory"
-  command << "--factoryclass" << factoryclass
+  command << 'create-custom-resource'
+  command << '--restype' << new_resource.restype
+  factoryclass = new_resource.factoryclass || 'org.glassfish.resources.custom.factory.PrimitivesAndStringFactory'
+  command << '--factoryclass' << factoryclass
   command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << '--description' << "'#{new_resource.description}'" if new_resource.description
   properties = new_resource.properties.dup
   properties['value'] = new_resource.value unless new_resource.value.nil?
-  command << "--property" << encode_parameters(properties) unless properties.empty?
+  command << '--property' << encode_parameters(properties) unless properties.empty?
   command << asadmin_target_flag
   command << new_resource.jndi_name
 
@@ -60,7 +60,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-custom-resource"
+  command << 'delete-custom-resource'
   command << asadmin_target_flag
   command << new_resource.jndi_name
 

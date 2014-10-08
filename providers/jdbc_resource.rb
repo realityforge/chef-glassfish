@@ -21,10 +21,10 @@ use_inline_resources
 action :create do
 
   command = []
-  command << "create-jdbc-resource"
-  command << "--connectionpoolid" << new_resource.connectionpoolid
-  command << "--property" << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << "--description" << "'#{new_resource.description}'" if new_resource.description
+  command << 'create-jdbc-resource'
+  command << '--connectionpoolid' << new_resource.connectionpoolid
+  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  command << '--description' << "'#{new_resource.description}'" if new_resource.description
   command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   command << asadmin_target_flag
   command << new_resource.name
@@ -57,7 +57,7 @@ end
 
 action :delete do
   command = []
-  command << "delete-jdbc-resource"
+  command << 'delete-jdbc-resource'
   command << asadmin_target_flag
   command << new_resource.name
 

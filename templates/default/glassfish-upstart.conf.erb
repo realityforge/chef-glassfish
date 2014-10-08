@@ -28,7 +28,7 @@ env <% key %>=<% value %>
 <% end %>
 
 chdir <%= config_dir %>
-exec <%= @authbind ? "/usr/bin/authbind --deep " : "" %><%= node["java"]["java_home"] %>/bin/java <%= @args.join(' ') %>
+exec <%= @authbind ? '/usr/bin/authbind --deep ' : '' %><%= node['java']['java_home'] %>/bin/java <%= @args.join(' ') %>
 
 # Uglies to wait until the broker is actually up before completion of the 'start'
 post-start script
