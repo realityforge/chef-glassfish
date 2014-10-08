@@ -252,7 +252,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     include_recipe 'authbind'
   end
 
-  if 'runit' == definition['config']['init_style']
+  init_style = definition['config']['init_style'] || (node['platform'] == 'debian' ? 'runit' : 'upstart')
+  if 'runit' == init_style
     include_recipe 'runit::default'
   end
 
@@ -274,7 +275,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
     java_agents definition['config']['java_agents'] if definition['config']['java_agents']
-    init_style definition['config']['init_style'] if definition['config']['init_style']
+    init_style init_style if init_style
     system_user system_username if system_username
     system_group system_group if system_group
   end
@@ -292,7 +293,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     secure secure if secure
     system_user system_username if system_username
     system_group system_group if system_group
-    init_style definition['config']['init_style'] if definition['config']['init_style']
+    init_style init_style if init_style
     action ('true' == remote_access.to_s) ? :enable : :disable
   end
 
@@ -305,7 +306,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       block do
         count = 0
         loop do
-          raise "GlassFish failed to become operational" if count > 50
+          raise 'GlassFish failed to become operational' if count > 50
           count = count + 1
           admin_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
           begin
@@ -319,7 +320,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
             http.start do |http|
               request = Net::HTTP::Get.new(uri.request_uri)
               request.basic_auth username, definition['config']['password']
-              request['Accept'] = "application/json"
+              request['Accept'] = 'application/json'
               res = http.request(request)
             end
             break if res.kind_of?(Net::HTTPOK)
@@ -352,7 +353,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_group system_group if system_group
       library_type library_type
       requires_restart requires_restart
-      init_style definition['config']['init_style'] if definition['config']['init_style']
+      init_style init_style if init_style
     end
   end
 
@@ -372,7 +373,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       minthreadpoolsize config['minthreadpoolsize'] if config['minthreadpoolsize']
       idletimeout config['idletimeout'] if config['idletimeout']
       maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
-      init_style definition['config']['init_style'] if definition['config']['init_style']
+      init_style init_style if init_style
     end
   end
 

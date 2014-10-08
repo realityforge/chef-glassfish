@@ -1,4 +1,5 @@
 ## v0.6.2:
+* Enhance : Under debian default the init style to runit.
 * Bug     : Ensure that the grep in the guards used when determining whether to
             create/update resources do not treat values as special grep characters.
 * Bug     : Stop using versions in names of deployables as several bugs within
