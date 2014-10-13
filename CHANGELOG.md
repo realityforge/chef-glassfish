@@ -1,4 +1,7 @@
 ## v0.6.2:
+* Bug     : Ensure undeploy action of the glassfish_deployable resource correctly
+            correctly matches against deployable's name in the only_if guard.
+            Submitted by sshapoval.
 * Enhance : Under debian default the init style to runit.
 * Bug     : Ensure that the grep in the guards used when determining whether to
             create/update resources do not treat values as special grep characters.
