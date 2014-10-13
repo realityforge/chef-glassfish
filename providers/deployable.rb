@@ -146,7 +146,7 @@ action :undeploy do
   command << new_resource.component_name
 
   bash "asadmin_undeploy #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '"
+    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name}'"
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
