@@ -6,6 +6,8 @@ The glassfish cookbook installs and configures the GlassFish application server 
 with the GlassFish application server. The cookbook also defines resources to create and configure GlassFish
 application domains and OpenMQ broker instances.
 
+A sample project with a Vagrantfile that launches a glassfish instance is available in [chef-glassfish-example](https://github.com/realityforge/chef-glassfish-example) project.
+
 # Requirements
 
 ## Platform:
@@ -16,6 +18,7 @@ application domains and OpenMQ broker instances.
 
 * java
 * authbind
+* archive
 * cutlery
 * runit (Recommended but not required)
 
@@ -26,6 +29,8 @@ application domains and OpenMQ broker instances.
 * `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `4.0`.
 * `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip`.
 * `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
+* `node['glassfish']['install_dir']` - GlassFish Install Directory: The directory into which glassfish is actually installed. Defaults to `nil`.
+* `node['glassfish']['remove_domains_dir_on_install']` - A flag determining whether we should remove the domains directory. Defaults to `true`.
 * `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
 * `node['glassfish']['domains']` - GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain. Defaults to `Mash.new`.
 * `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `Mash.new`.
@@ -72,6 +77,7 @@ Another approach using a vagrant file is to set the json attribute such as;
                         "admin_port" => 4848,
                         "username" => "adminuser",
                         "password" => "adminpw",
+                        "master_password" => "mykeystorepassword",
                         "remote_access" => false,
                         "secure" => false
                     },
@@ -516,7 +522,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - min_memory:  Defaults to <code>512</code>.
 - max_memory: The amount of heap memory to allocate to the domain in MiB. Defaults to <code>512</code>.
 - max_perm_size: The amount of perm gen memory to allocate to the domain in MiB. Defaults to <code>96</code>.
-- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>256</code>.
+- max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>350</code>.
 - port: The port on which the HTTP service will bind. Defaults to <code>8080</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - extra_jvm_options: An array of extra arguments to pass the JVM. Defaults to <code>[]</code>.
@@ -526,6 +532,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
 - username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- master_password: Password used to access the keystore. Defaults to password if unset. Defaults to <code>nil</code>.
 - password: Password to use when communicating with the domain. Must be set if username is set. Defaults to <code>nil</code>.
 - password_file: The file in which the password is saved. Should be set if username is set. Defaults to <code>nil</code>.
 - secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
