@@ -47,6 +47,7 @@ Another approach using a vagrant file is to set the json attribute such as;
                         "admin_port" => 4848,
                         "username" => "adminuser",
                         "password" => "adminpw",
+                        "master_password" => "mykeystorepassword",
                         "remote_access" => false,
                         "secure" => false
                     },
@@ -270,6 +271,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     password_file password_file if password_file
     secure secure if secure
     password definition['config']['password'] if definition['config']['password']
+    master_password definition['config']['master_password'] if definition['config']['master_password']
     logging_properties definition['logging_properties'] if definition['logging_properties']
     realm_types definition['realm_types'] if definition['realm_types']
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
