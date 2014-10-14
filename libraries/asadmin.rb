@@ -28,7 +28,7 @@ class Chef
       string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) {|match| "\\#{match}" }
     end
 
-    def asadmin_command(command, remote_command = true)
+    def asadmin_command(command, remote_command = true, params = {})
       options = {}
       options[:remote_command] = remote_command
       options[:terse] = new_resource.terse
@@ -37,6 +37,7 @@ class Chef
       options[:password_file] = new_resource.password_file
       options[:secure] = new_resource.secure
       options[:admin_port] = new_resource.admin_port
+      options.merge!(params)
       Asadmin.asadmin_command(node, command, options)
     end
 

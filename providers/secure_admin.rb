@@ -39,7 +39,7 @@ action :enable do
     not_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'"
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command('enable-secure-admin')
+    code asadmin_command('enable-secure-admin', true, :secure => false)
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'upstart'
     notifies :restart, "runit_service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'runit'
   end

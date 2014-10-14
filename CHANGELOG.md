@@ -1,4 +1,6 @@
 ## v0.6.2:
+* Bug     : Fix the secure_admin LWRP so that it works, even when the secure flag is
+            set for the domain.
 * Enhance : Later versions of Java 7 and Java 8 require that keystore passwords
             are greater than 6 characters. If a domain's `master_password` is under
             6 characters then the creation of a domain would silently fail to create
