@@ -224,6 +224,14 @@ action :create do
 
   master_password = new_resource.master_password || new_resource.password
 
+  if master_password.length <= 6
+    if new_resource.master_password.nil?
+      raise 'The master_password parameter is unspecified and defaulting to the domain password. The user must specify a master_password greater than 6 characters or increase the size of the domain password to be greater than 6 characters.'
+    else
+      raise 'The master_password parameter must be greater than 6 characters.'
+    end
+  end
+
   if new_resource.password_file
     template new_resource.password_file do
       cookbook 'glassfish'

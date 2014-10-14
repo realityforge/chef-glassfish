@@ -1,4 +1,11 @@
 ## v0.6.2:
+* Enhance : Later versions of Java 7 and Java 8 require that keystore passwords
+            are greater than 6 characters. If a domain's `master_password` is under
+            6 characters then the creation of a domain would silently fail to create
+            the keystore and then the 'enable-secure-admin' resource would fail. If
+            the `master_password` is unspecified then the `password` attribute for
+            the domain must be 6 characters or more. This is now enforced by raising
+            an exception during domain creation if the password is not long enough.
 * Bug     : Ensure undeploy action of the glassfish_deployable resource correctly
             correctly matches against deployable's name in the only_if guard.
             Submitted by sshapoval.
