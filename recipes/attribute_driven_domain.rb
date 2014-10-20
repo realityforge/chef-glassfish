@@ -306,32 +306,45 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
-        count = 0
-        loop do
-          raise 'GlassFish failed to become operational' if count > 50
-          count = count + 1
-          admin_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}/management/domain/nodes"
+
+        def is_url_responding_with_200?(url, username, password)
           begin
-            uri = URI(admin_url)
+            uri = URI(url)
             res = nil
             http = Net::HTTP.new(uri.hostname, uri.port)
-            if remote_access
+            if url =~ /https\:/
               http.use_ssl = true
               http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             end
             http.start do |http|
               request = Net::HTTP::Get.new(uri.request_uri)
-              request.basic_auth username, definition['config']['password']
+              request.basic_auth username, password
               request['Accept'] = 'application/json'
               res = http.request(request)
             end
-            break if res.kind_of?(Net::HTTPOK)
+            return true if res.kind_of?(Net::HTTPOK)
             puts "GlassFish not responding OK - #{res}"
           rescue Exception => e
-            puts "GlassFish error while accessing web interface at #{admin_url}"
+            puts "GlassFish error while accessing web interface at #{url}"
             puts e.message
             puts e.backtrace.join("\n")
+            return url
           end
+        end
+
+        fail_count = 0
+        loop do
+          raise 'GlassFish failed to become operational' if fail_count > 50
+          base_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}"
+          nodes_url = "#{base_url}/management/domain/nodes"
+          applications_url = "#{base_url}/management/domain/applications"
+          password = definition['config']['password']
+          if is_url_responding_with_200?(nodes_url, username, password) &&
+            is_url_responding_with_200?(applications_url, username, password)
+            sleep 1
+            break
+          end
+          fail_count = fail_count + 1
           sleep 1
         end
       end

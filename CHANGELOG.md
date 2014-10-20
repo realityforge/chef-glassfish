@@ -1,4 +1,7 @@
 ## v0.6.2:
+* Change  : Check multiple urls to ensure glassfish is up and add a wait after the
+            check. This attempts to ensure that the admin console is correctly
+            initialized prior to accessing it in other resources.
 * Bug     : Fix the secure_admin LWRP so that it works, even when the secure flag is
             set for the domain.
 * Enhance : Later versions of Java 7 and Java 8 require that keystore passwords
