@@ -307,7 +307,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
 
-        def is_url_responding_with_200?(url, username, password)
+        def is_url_responding_with_code?(url, username, password, code)
           begin
             uri = URI(url)
             res = nil
@@ -322,8 +322,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
               request['Accept'] = 'application/json'
               res = http.request(request)
             end
-            return true if res.kind_of?(Net::HTTPOK)
-            puts "GlassFish not responding OK - #{res}"
+            return true if res.code.to_s == code.to_s
+            puts "GlassFish not responding OK - #{res.code} to #{url}"
           rescue Exception => e
             puts "GlassFish error while accessing web interface at #{url}"
             puts e.message
@@ -339,8 +339,9 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           nodes_url = "#{base_url}/management/domain/nodes"
           applications_url = "#{base_url}/management/domain/applications"
           password = definition['config']['password']
-          if is_url_responding_with_200?(nodes_url, username, password) &&
-            is_url_responding_with_200?(applications_url, username, password)
+          if is_url_responding_with_code?(nodes_url, username, password, 200) &&
+            is_url_responding_with_code?(applications_url, username, password, 200) &&
+            is_url_responding_with_code?(base_url, username, password, 200)
             sleep 1
             break
           end
