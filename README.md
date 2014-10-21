@@ -213,6 +213,14 @@ Another approach using a vagrant file is to set the json attribute such as;
                             'url' => 'https://s3.amazonaws.com/somebucket/apps/app.war',
                             'context_root' => '/'
                          }
+                    },
+                    "custom_resources" => {
+                      "env/myapp/timeout" => {
+                        "restype" => "java.lang.Long",
+                        "value" => 300000
+                      },
+                      "env/myapp/mykey" => "123",
+                      "env/myapp/someString" => "XYZ"
                     }
                 }
             }
