@@ -358,7 +358,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     config = config.is_a?(Hash) ? config : {'url' => config}
     url = config['url']
     library_type = config['type'] || 'ext'
-    requires_restart = config['requires_restart'] || false
+    requires_restart = config['requires_restart'].nil? ? false : config['requires_restart']
     glassfish_library url do
       domain_name domain_key
       admin_port admin_port if admin_port
