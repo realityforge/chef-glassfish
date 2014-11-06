@@ -1,3 +1,8 @@
+## v0.6.4:
+* Enhance : Add timeouts to all the bash resources, including the only_if and not_if
+            checks. This avoids the scenario where a hung GlassFish results in a hung
+            chef run.
+
 ## v0.6.2:
 * Change  : Check multiple urls to ensure glassfish is up and add a wait after the
             check. This attempts to ensure that the admin console is correctly

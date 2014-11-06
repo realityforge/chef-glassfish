@@ -20,6 +20,7 @@ use_inline_resources
 
 action :run do
   bash "asadmin #{new_resource.command}" do
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     ignore_failure new_resource.ignore_failure

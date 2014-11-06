@@ -98,6 +98,8 @@ action :deploy do
         rm -rf #{build_dir}
         test -f #{deployment_plan}
         CMD
+
+        timeout 150
         code command
         not_if { ::File.exists?(deployment_plan) }
       end
@@ -125,6 +127,7 @@ action :deploy do
       command << '--deploymentplan' << deployment_plan if deployment_plan
       command << a.target_artifact
 
+      timeout 150
       user new_resource.system_user
       group new_resource.system_group
       code asadmin_command(command.join(' '))
@@ -146,7 +149,8 @@ action :undeploy do
   command << new_resource.component_name
 
   bash "asadmin_undeploy #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name}'"
+    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -174,7 +178,8 @@ action :disable do
   command << new_resource.component_name
 
   bash "asadmin_disable #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled"
+    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -188,7 +193,8 @@ action :enable do
   command << new_resource.component_name
 
   bash "asadmin_enable #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled"
+    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

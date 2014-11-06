@@ -33,7 +33,8 @@ action :create do
   command << new_resource.iioplistener_id
 
   bash "asadmin_create-iiop-listener #{new_resource.iioplistener_id}" do
-    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'"
+    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -67,7 +68,8 @@ action :delete do
   command << new_resource.iioplistener_id
 
   bash "asadmin_delete_iiop-listener #{new_resource.iioplistener_id}" do
-    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'"
+    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

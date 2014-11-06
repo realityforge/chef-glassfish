@@ -22,7 +22,8 @@ action :create do
   Chef::Log.info "Creating MQ Destination #{new_resource.destination_name}"
 
   bash "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null"
+    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code imqcmd_command("create dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")
@@ -40,6 +41,7 @@ action :create do
 
   bash "imqcmd_update_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
     only_if { processed_config.size > 0 }
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code imqcmd_command("update dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name} #{processed_config.collect { |k, v| "-o #{k}=#{v}" }.join(' ')}")
@@ -49,7 +51,8 @@ end
 
 action :destroy do
   bash "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null"
+    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code imqcmd_command("destroy dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")

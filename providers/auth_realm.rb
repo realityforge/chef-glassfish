@@ -30,7 +30,8 @@ action :create do
   command << new_resource.name
 
   bash "asadmin_create_auth_realm #{new_resource.name}" do
-    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'"
+    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -57,7 +58,8 @@ action :delete do
   command << new_resource.name
 
   bash "asadmin_delete_auth_realm #{new_resource.name}" do
-    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'"
+    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

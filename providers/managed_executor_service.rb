@@ -38,7 +38,8 @@ action :create do
   command << new_resource.jndi_name
 
   bash "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
-    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'"
+    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -80,7 +81,8 @@ action :delete do
   command << new_resource.jndi_name
 
   bash "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
-    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'"
+    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))

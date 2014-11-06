@@ -66,7 +66,8 @@ action :add do
   command << cached_package_filename
 
   bash "asadmin_add-library #{new_resource.url}" do
-    not_if check_command
+    not_if check_command, :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
@@ -84,7 +85,8 @@ action :remove do
   command << ::File.basename(new_resource.url)
 
   bash "asadmin_remove-library #{new_resource.url}" do
-    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'"
+    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => 150
+    timeout 150
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
