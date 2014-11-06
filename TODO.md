@@ -27,4 +27,3 @@ This file documents basic tasks that still need completion.
     end
 
   - Update the version of jersey or metro or jfs implementation.
-
