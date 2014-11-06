@@ -58,7 +58,7 @@ node.override['glassfish']['install_dir'] = a.target_directory
 directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
   recursive true
   action :delete
-  not_if {exists_at_run_start}
+  not_if { exists_at_run_start }
 end
 
 if node['glassfish']['remove_domains_dir_on_install']
@@ -67,6 +67,6 @@ if node['glassfish']['remove_domains_dir_on_install']
   directory node['glassfish']['domains_dir'] do
     recursive true
     action :nothing
-    not_if {exists_at_run_start}
+    not_if { exists_at_run_start }
   end
 end
