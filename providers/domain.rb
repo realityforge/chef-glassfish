@@ -335,6 +335,13 @@ action :create do
     notifies :restart, service_resource_name, :delayed
   end
 
+  # Directory required for Payara 4.1.144
+  directory "#{domain_dir_path}/bin" do
+    owner new_resource.system_user
+    group new_resource.system_group
+    mode '0755'
+  end
+
   file "#{domain_dir_path}/bin/#{new_resource.domain_name}_asadmin" do
     mode '0700'
     owner new_resource.system_user

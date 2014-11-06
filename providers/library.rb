@@ -62,7 +62,7 @@ action :add do
   command = []
   command << 'add-library'
   command << type_flag
-  command << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1'
+  command << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.144'
   command << cached_package_filename
 
   bash "asadmin_add-library #{new_resource.url}" do
