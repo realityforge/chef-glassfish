@@ -21,6 +21,8 @@ default['glassfish']['group'] = 'glassfish-admin'
 
 #<> Version: The version of the GlassFish install package.
 default['glassfish']['version'] = '4.0'
+#<> variant: The variant of the GlassFish install package. Usually payara or glassfish.
+default['glassfish']['variant'] = 'glassfish'
 #<> Package URL: The url to the GlassFish install package.
 default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 #<> GlassFish Base Directory: The base directory of the GlassFish install.

@@ -1,4 +1,5 @@
 ## v0.6.4:
+* Enhance : Add an attribute describing the install variant (Payara or GlassFish).
 * Enhance : Add timeouts to all the bash resources, including the only_if and not_if
             checks. This avoids the scenario where a hung GlassFish results in a hung
             chef run.
