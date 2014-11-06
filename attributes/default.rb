@@ -24,7 +24,7 @@ default['glassfish']['version'] = '4.0'
 #<> variant: The variant of the GlassFish install package. Usually payara or glassfish.
 default['glassfish']['variant'] = 'glassfish'
 #<> Package URL: The url to the GlassFish install package.
-default['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
+default['glassfish']['package_url'] = nil
 #<> GlassFish Base Directory: The base directory of the GlassFish install.
 default['glassfish']['base_dir'] = '/usr/local/glassfish'
 #<> GlassFish Install Directory: The directory into which glassfish is actually installed.

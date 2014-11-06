@@ -1,4 +1,7 @@
 ## v0.6.4:
+* Enhance : Set the default `node['glassfish']['package_url']` to nil and attempt
+            to derive the package url in the default.rb recipe. The url is derived
+            based on the specified version.
 * Enhance : Add an attribute describing the install variant (Payara or GlassFish).
 * Enhance : Add timeouts to all the bash resources, including the only_if and not_if
             checks. This avoids the scenario where a hung GlassFish results in a hung

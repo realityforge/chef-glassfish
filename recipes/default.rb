@@ -24,6 +24,15 @@ or <code>glassfish::attribute_driven_mq</code>.
 #>
 =end
 
+if node['glassfish']['package_url'].nil?
+  elsif ['3.1.2.2', '4.0', '4.1'].include?(node['glassfish']['version'])
+    raise "The version #{node['glassfish']['version']} requires that node['glassfish']['variant'] be set to 'glassfish'" unless node['glassfish']['variant'] == 'glassfish'
+    node.override['glassfish']['package_url'] = "http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
+  end
+end
+
+raise "glassfish.package_url not specified and unable to be derived. Please specify an attribute value for node['glassfish']['package_url']" unless node['glassfish']['package_url']
+
 include_recipe 'java'
 
 directory node['glassfish']['base_dir'] do
