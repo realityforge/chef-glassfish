@@ -27,7 +27,8 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 * `node['glassfish']['user']` - GlassFish User: The user that GlassFish executes as. Defaults to `glassfish`.
 * `node['glassfish']['group']` - GlassFish Admin Group: The group allowed to manage GlassFish domains. Defaults to `glassfish-admin`.
 * `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `4.0`.
-* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `http://dlc.sun.com.edgesuite.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip`.
+* `node['glassfish']['variant']` - variant: The variant of the GlassFish install package. Usually payara or glassfish. Defaults to `glassfish`.
+* `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `nil`.
 * `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
 * `node['glassfish']['install_dir']` - GlassFish Install Directory: The directory into which glassfish is actually installed. Defaults to `nil`.
 * `node['glassfish']['remove_domains_dir_on_install']` - A flag determining whether we should remove the domains directory. Defaults to `true`.
