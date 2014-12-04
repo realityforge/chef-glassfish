@@ -695,6 +695,9 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_sort(definition['custom_resources'] || {}).each_pair do |key, value|
     hash = value.is_a?(Hash) ? value : {'value' => value}
     hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
+    hash['restype'] = 'java.lang.Integer' if hash['restype'].nil? && hash['value'].is_a?(Fixnum)
+    hash['restype'] = 'java.lang.Long' if hash['restype'].nil? && hash['value'].is_a?(Bignum)
+    hash['restype'] = 'java.lang.Float' if hash['restype'].nil? && hash['value'].is_a?(Float)
     glassfish_custom_resource key.to_s do
       domain_name domain_key
       admin_port admin_port if admin_port

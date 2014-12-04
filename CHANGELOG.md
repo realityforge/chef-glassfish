@@ -1,4 +1,5 @@
 ## v0.6.6:
+* Enhance : Guess the type of `custom_resource` values based on the ruby value.
 
 ## v0.6.4:
 * Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle 
