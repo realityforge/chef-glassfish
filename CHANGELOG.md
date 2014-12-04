@@ -1,3 +1,5 @@
+## v0.6.6:
+
 ## v0.6.4:
 * Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle 
             branded GlassFish.
