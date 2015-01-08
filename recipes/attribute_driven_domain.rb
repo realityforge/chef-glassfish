@@ -49,6 +49,7 @@ Another approach using a vagrant file is to set the json attribute such as;
                         "password" => "adminpw",
                         "master_password" => "mykeystorepassword",
                         "remote_access" => false,
+                        "jvm_options" => ["-DMYAPP_CONFIG_DIR=/usr/local/myapp/config", "-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true"],
                         "secure" => false
                     },
                     'extra_libraries' => {
