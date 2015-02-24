@@ -293,7 +293,9 @@ action :create do
     user new_resource.system_user
     group new_resource.system_group
     code (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
-    notifies :create, "cookbook_file[#{domain_dir_path}/config/default-web.xml]", :immediate
+    unless node['glassfish']['variant'] == 'payara'
+      notifies :create, "cookbook_file[#{domain_dir_path}/config/default-web.xml]", :immediate
+    end
     notifies :delete, "directory[#{domain_dir_path}/osgi-cache]", :immediate
     notifies :delete, "directory[#{domain_dir_path}/generated]", :immediate
     notifies :delete, "file[#{domain_dir_path}/docroot/index.html]", :immediate
