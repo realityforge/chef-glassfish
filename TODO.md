@@ -10,7 +10,6 @@ This file documents basic tasks that still need completion.
   - resource-adapter
   - web-env-entry
   - jms_resource
-  - jdbc_connection_pool
   - connector_resource
   - javamail_resource
 * Add LWRPs to manage the http-listener and protocol settings.
