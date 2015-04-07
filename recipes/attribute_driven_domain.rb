@@ -264,7 +264,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - domain"
 
-  glassfish_domain domain_key do
+  domain = glassfish_domain domain_key do
     min_memory definition['config']['min_memory'] if definition['config']['min_memory']
     max_memory definition['config']['max_memory'] if definition['config']['max_memory']
     max_perm_size definition['config']['max_perm_size'] if definition['config']['max_perm_size']
@@ -366,6 +366,19 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     system_group system_group if system_group
 
     action :create
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - jvm_options"
+  glassfish_jvm_options "JvmOptions #{domain_key}" do
+    domain_name domain_key
+    admin_port admin_port if admin_port
+    username username if username
+    password_file password_file if password_file
+    secure secure if secure
+    system_user system_username if system_username
+    system_group system_group if system_group
+
+    options domain.jvm_options
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
