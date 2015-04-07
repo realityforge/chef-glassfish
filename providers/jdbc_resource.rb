@@ -19,22 +19,31 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
+  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  may_need_create =
+    cache_present ?
+      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-resource.#{new_resource.name}.") :
+      true
 
-  command = []
-  command << 'create-jdbc-resource'
-  command << '--connectionpoolid' << new_resource.connectionpoolid
-  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << '--description' << "'#{new_resource.description}'" if new_resource.description
-  command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-  command << asadmin_target_flag
-  command << new_resource.name
+  if may_need_create
+    command = []
+    command << 'create-jdbc-resource'
+    command << '--connectionpoolid' << new_resource.connectionpoolid
+    command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+    command << '--description' << "'#{new_resource.description}'" if new_resource.description
+    command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
+    command << asadmin_target_flag
+    command << new_resource.name
 
-  bash "asadmin_create_jdbc_resource #{new_resource.name}" do
-    not_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target}| grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    bash "asadmin_create_jdbc_resource #{new_resource.name}" do
+      unless cache_present
+        not_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target}| grep -F -x -- '#{new_resource.name}'", :timeout => 150
+      end
+      timeout 150
+      user new_resource.system_user
+      group new_resource.system_group
+      code asadmin_command(command.join(' '))
+    end
   end
 
   sets = {'pool-name' => new_resource.connectionpoolid, 'description' => new_resource.description}
@@ -57,16 +66,27 @@ action :create do
 end
 
 action :delete do
-  command = []
-  command << 'delete-jdbc-resource'
-  command << asadmin_target_flag
-  command << new_resource.name
+  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  may_need_delete =
+    cache_present ?
+      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-resource.#{new_resource.name}.") :
+      true
 
-  bash "asadmin_delete_jdbc_resource #{new_resource.name}" do
-    only_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  if may_need_delete
+
+    command = []
+    command << 'delete-jdbc-resource'
+    command << asadmin_target_flag
+    command << new_resource.name
+
+    bash "asadmin_delete_jdbc_resource #{new_resource.name}" do
+      unless cache_present
+        only_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
+      end
+      timeout 150
+      user new_resource.system_user
+      group new_resource.system_group
+      code asadmin_command(command.join(' '))
+    end
   end
 end
