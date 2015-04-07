@@ -2,6 +2,8 @@
 
 This file documents basic tasks that still need completion.
 
+* Used cached properties in all of the resource providers. Mark prefixes of properties that are created as
+  unknown and then do a comparison at the end to make sure glassfish cookbook has checked all the corner cases.
 * Currently admin objects and jms resources contend. If you define admin resources then
   the jms resource list may delete them and vice-versa.
 * Update LWRPs so that they will update resource configuration when input config changes.
