@@ -111,7 +111,7 @@ action :deploy do
       command << asadmin_target_flag
       command << '--name' << new_resource.component_name
       command << "--enabled=#{new_resource.enabled}"
-      command << '--upload=true' unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.144'
+      command << '--upload=true' unless node['glassfish']['version'] == '4.1'
       command << '--force=true'
       command << '--type' << new_resource.type if new_resource.type
       command << "--contextroot=#{new_resource.context_root}" if new_resource.context_root
