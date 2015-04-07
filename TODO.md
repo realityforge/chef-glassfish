@@ -16,7 +16,6 @@ This file documents basic tasks that still need completion.
 * Add LWRPs to manage the http-listener and protocol settings.
 * Add LWRPs to manage the JMS server configuration.
 * In GlassFish 4 supply deployment order for all deployables - derive it from existing priority. Make sure it is updated at runtime via deployment-order.
-* Howto: set server.ejb-container.property.disable-nonportable-jndi-names="true"
 * Add some mechanism for more reasonable production ready templates
   - See http://alexandru-ersenie.com/tag/glassfish-multiple-domains/
 * Add mechanism for updating or removing specific modules. i.e.
