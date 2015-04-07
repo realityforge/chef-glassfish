@@ -17,7 +17,7 @@
 class Chef
   module Asadmin
     def encode_parameters(properties)
-      "'#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(":")}'"
+      "'#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(':')}'"
     end
 
     def asadmin_target_flag
