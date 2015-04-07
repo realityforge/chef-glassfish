@@ -46,6 +46,32 @@ class RealityForge #nodoc
       def set_current_broker_instance(node, broker_instance)
         node.run_state['broker_instance'] = broker_instance
       end
+
+      def any_cached_property_start_with?(node, domain_key, property_key)
+        get_property_cache(node, domain_key).keys.any?{|k| k =~/^#{property_key}/ }
+      end
+
+      def is_property_cache_present?(node, domain_key)
+        !!node.run_state["glassfish_properties_#{domain_key}"]
+      end
+
+      def get_property_cache(node, domain_key)
+        values = node.run_state["glassfish_properties_#{domain_key}"]
+        raise 'No properties cached' unless values
+        values
+      end
+
+      def set_property_cache(node, domain_key, values)
+        node.run_state["glassfish_properties_#{domain_key}"] = values
+      end
+
+      def set_cached_property(node, domain_key, key, value)
+        get_property_cache(node, domain_key)[key] = value
+      end
+
+      def get_cached_property(node, domain_key, key)
+        get_property_cache(node, domain_key)[key] || ''
+      end
     end
   end
 end

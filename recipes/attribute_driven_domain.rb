@@ -362,6 +362,19 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - caching properties"
+  glassfish_property_cache "#{domain_key} Cache" do
+    domain_name domain_key
+    admin_port admin_port if admin_port
+    username username if username
+    password_file password_file if password_file
+    secure secure if secure
+    system_user system_username if system_username
+    system_group system_group if system_group
+
+    action :create
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
   gf_sort(definition['extra_libraries'] || {}).values.each do |config|
     config = config.is_a?(Hash) ? config : {'url' => config}
@@ -1227,6 +1240,20 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       end
     end
   end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing cached properties"
+  glassfish_property_cache "#{domain_key} Cache" do
+    domain_name domain_key
+    admin_port admin_port if admin_port
+    username username if username
+    password_file password_file if password_file
+    secure secure if secure
+    system_user system_username if system_username
+    system_group system_group if system_group
+
+    action :delete
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - complete"
   RealityForge::GlassFish.set_current_domain(node, nil)
 end
