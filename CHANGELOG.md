@@ -1,4 +1,8 @@
-## v0.6.6:
+## v0.7.1:
+* Enhance : Remove runit and and upstart as supported init styles. Largely due to
+            problems getting GlassFish to in Payara releases simultaneously with
+            GlassFish releases is difficult when the cookbook reaches into the
+            innards of glassfish.
 * Enhance : Guess the type of `custom_resource` values based on the ruby value.
 
 ## v0.6.4:

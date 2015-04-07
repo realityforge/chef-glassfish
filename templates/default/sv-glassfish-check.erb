@@ -1,6 +1,0 @@
-#!/bin/sh
-set -e
-
-<% @options[:listen_ports].each do |port| %>
-lsof -itcp:<%= port %>
-<% end %>

@@ -23,20 +23,9 @@ end
 use_inline_resources
 
 action :add do
-  if new_resource.init_style == 'upstart'
-    service "glassfish-#{new_resource.domain_name}" do
-      provider Chef::Provider::Service::Upstart
-      supports :restart => true, :status => true
-      action :nothing
-    end
-  elsif new_resource.init_style == 'runit'
-    runit_service "glassfish-#{new_resource.domain_name}" do
-      sv_timeout 100
-      supports :restart => true, :status => true
-      action :nothing
-    end
-  else
-    raise "Unknown init style #{new_resource.init_style}"
+  service "glassfish-#{new_resource.domain_name}" do
+    supports :restart => true, :status => true
+    action :nothing
   end
 
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
@@ -62,7 +51,7 @@ action :add do
   command = []
   command << 'add-library'
   command << type_flag
-  command << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.144'
+  command << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.151'
   command << cached_package_filename
 
   bash "asadmin_add-library #{new_resource.url}" do
@@ -72,8 +61,7 @@ action :add do
     group new_resource.system_group
     code asadmin_command(command.join(' '))
     if new_resource.requires_restart
-      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'upstart'
-      notifies :restart, "runit_service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'runit'
+      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
     end
   end
 end

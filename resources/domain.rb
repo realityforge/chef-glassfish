@@ -87,13 +87,104 @@ attribute :system_user, :kind_of => String, :default => nil
 #<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
 attribute :system_group, :kind_of => String, :default => nil
 
-#<> @attribute init_style The init system used to run the service.
-attribute :init_style, :equal_to => ['upstart', 'runit'], :default => 'upstart'
-
 default_action :create
 
 def initialize(*args)
   super
   @system_user = node['glassfish']['user']
   @system_group = node['glassfish']['group']
+end
+
+def domain_dir_path
+  "#{node['glassfish']['domains_dir']}/#{domain_name}"
+end
+
+def runtime_jvm_options
+  [
+    # JVM options
+    '-XX:+UnlockDiagnosticVMOptions',
+    "-XX:MaxPermSize=#{max_perm_size}m",
+    "-Xss#{max_stack_size}k",
+    "-Xms#{min_memory}m",
+    "-Xmx#{max_memory}m",
+    '-XX:NewRatio=2',
+    '-server'
+  ]
+end
+
+def common_jvm_options
+  [
+    # Configuration to enable effective JMX management
+    "-Djava.rmi.server.hostname=#{node['fqdn']}",
+    '-Djava.net.preferIPv4Stack=true',
+
+    # Don't rely on the JVMs default encoding
+    '-Dfile.encoding=UTF-8',
+
+    # Remove the 'Server' header altogether
+    '-Dproduct.name=',
+
+    # Glassfish should be headless by default
+    '-Djava.awt.headless=true',
+  ]
+end
+
+def installation_jvm_options
+  [
+    "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
+    '-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory',
+    "-Dcom.sun.aas.installRoot=#{node['glassfish']['install_dir']}/glassfish",
+    '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
+    "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
+    "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
+    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
+  ]
+end
+
+def osgi_jvm_options
+  [
+    #osgi_jvm_options
+    '-Dosgi.shell.telnet.maxconn=1',
+    '-Dfelix.fileinstall.disableConfigSave=false',
+    "-Dfelix.fileinstall.dir=#{node['glassfish']['install_dir']}/glassfish/modules/autostart/",
+    '-Dosgi.shell.telnet.port=6666',
+    '-Dfelix.fileinstall.log.level=2',
+    '-Dfelix.fileinstall.poll=5000',
+    '-Dosgi.shell.telnet.ip=127.0.0.1',
+    '-Dfelix.fileinstall.bundles.startTransient=true',
+    '-Dfelix.fileinstall.bundles.new.start=true',
+    '-Dgosh.args=--nointeractive',
+  ]
+end
+
+def security_jvm_options
+  [
+    '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
+    "-Djavax.net.ssl.keyStore=#{domain_dir_path}/config/keystore.jks",
+    "-Djava.security.policy=#{domain_dir_path}/config/server.policy",
+    "-Djavax.net.ssl.trustStore=#{domain_dir_path}/config/cacerts.jks",
+    '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
+    "-Djava.security.auth.login.config=#{domain_dir_path}/config/login.conf",
+  ]
+end
+
+def development_jvm_options
+  [
+    '-Djdbc.drivers=org.apache.derby.jdbc.ClientDriver',
+  ]
+end
+
+def default_jvm_options
+  runtime_jvm_options +
+    development_jvm_options +
+    common_jvm_options +
+    installation_jvm_options +
+    osgi_jvm_options +
+    security_jvm_options
+end
+
+def jvm_options
+  default_jvm_options +
+    java_agents.map { |agent| "-javaagent:#{agent}" } +
+    extra_jvm_options
 end

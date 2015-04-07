@@ -1,0 +1,28 @@
+
+umask 0077
+<% @new_resource.env_variables.sort.each do |key, value| -%>
+export <% key %>=<% value %>
+<% end %>
+
+<%
+   prefix = "su -s /bin/sh #{node['glassfish']['user']} -c 'exec #{@authbind ? '/usr/bin/authbind --deep ' : ''}"
+   asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
+   domaindir = "--domaindir #{node['glassfish']['domains_dir']}"
+%>
+case "$1" in
+status)
+    <%= "#{prefix} #{asadmin} list-domains #{domaindir}' | grep '#{@new_resource.domain_name} running'" %>
+    exit $?
+    ;;
+start)
+    <%= "#{prefix} #{@start_domain_command}'" %>
+    ;;
+stop)
+    <%= "#{prefix} #{@stop_domain_command}'" %>
+    ;;
+restart)
+    <%= "#{prefix} #{@restart_domain_command}'" %>
+    ;;
+*)
+    echo "usage: $0 (start|stop|status|restart|help)"
+esac

@@ -262,11 +262,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     include_recipe 'authbind'
   end
 
-  init_style = definition['config']['init_style'] || (node['platform'] == 'debian' ? 'runit' : 'upstart')
-  if 'runit' == init_style
-    include_recipe 'runit::default'
-  end
-
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - domain"
 
   glassfish_domain domain_key do
@@ -286,7 +281,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
     java_agents definition['config']['java_agents'] if definition['config']['java_agents']
-    init_style init_style if init_style
     system_user system_username if system_username
     system_group system_group if system_group
   end
@@ -304,7 +298,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     secure secure if secure
     system_user system_username if system_username
     system_group system_group if system_group
-    init_style init_style if init_style
     action ('true' == remote_access.to_s) ? :enable : :disable
   end
 
@@ -391,7 +384,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_group system_group if system_group
       library_type library_type
       requires_restart requires_restart
-      init_style init_style if init_style
     end
   end
 
@@ -411,7 +403,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       minthreadpoolsize config['minthreadpoolsize'] if config['minthreadpoolsize']
       idletimeout config['idletimeout'] if config['idletimeout']
       maxqueuesize config['maxqueuesize'] if config['maxqueuesize']
-      init_style init_style if init_style
     end
   end
 

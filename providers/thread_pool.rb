@@ -19,20 +19,9 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  if new_resource.init_style == 'upstart'
-    service "glassfish-#{new_resource.domain_name}" do
-      provider Chef::Provider::Service::Upstart
-      supports :restart => true, :status => true
-      action :nothing
-    end
-  elsif new_resource.init_style == 'runit'
-    runit_service "glassfish-#{new_resource.domain_name}" do
-      sv_timeout 100
-      supports :restart => true, :status => true
-      action :nothing
-    end
-  else
-    raise "Unknown init style #{new_resource.init_style}"
+  service "glassfish-#{new_resource.domain_name}" do
+    supports :restart => true, :status => true
+    action :nothing
   end
 
   command = []
@@ -50,8 +39,7 @@ action :create do
     user new_resource.system_user
     group new_resource.system_group
     code asadmin_command(command.join(' '))
-    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'upstart'
-    notifies :restart, "runit_service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.init_style == 'runit'
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
 
   properties = {
@@ -71,8 +59,7 @@ action :create do
       secure new_resource.secure
       key variable
       value value.to_s
-      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed if new_resource.init_style == 'upstart'
-      notifies :restart, "runit_service[glassfish-#{new_resource.domain_name}]", :delayed if new_resource.init_style == 'runit'
+      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
     end
   end
 end
