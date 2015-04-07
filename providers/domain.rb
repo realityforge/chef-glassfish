@@ -264,16 +264,6 @@ action :create do
     action :nothing
   end
 
-  directory "#{domain_dir_path}/osgi-cache" do
-    recursive true
-    action :nothing
-  end
-
-  directory "#{domain_dir_path}/generated" do
-    recursive true
-    action :nothing
-  end
-
   file "#{domain_dir_path}/docroot/index.html" do
     action :nothing
   end
