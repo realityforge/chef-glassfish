@@ -1,4 +1,7 @@
-
+!/bin/bash
+#
+# chkconfig: 2345 90 5
+# description
 umask 0077
 <% @new_resource.env_variables.sort.each do |key, value| -%>
 export <% key %>=<% value %>
