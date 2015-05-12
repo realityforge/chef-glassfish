@@ -252,6 +252,15 @@ action :create do
     mode '0755'
   end
 
+  # Directory required for Payara 4.1.152
+  %w(lib lib/ext).each do |dir|
+    directory "#{new_resource.domain_dir_path}/#{dir}" do
+      owner new_resource.system_user
+      group new_resource.system_group
+      mode '0755'
+    end
+  end
+
   file "#{new_resource.domain_dir_path}/bin/#{new_resource.domain_name}_asadmin" do
     mode '0700'
     owner new_resource.system_user
