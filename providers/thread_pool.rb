@@ -19,27 +19,38 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
+  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  may_need_create =
+    cache_present ?
+      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}") :
+      true
+
   service "glassfish-#{new_resource.domain_name}" do
     supports :restart => true, :status => true
     action :nothing
   end
 
-  command = []
-  command << 'create-threadpool'
-  command << asadmin_target_flag
-  command << '--maxthreadpoolsize' << new_resource.maxthreadpoolsize
-  command << '--minthreadpoolsize' << new_resource.minthreadpoolsize
-  command << '--idletimeout' << new_resource.idletimeout
-  command << '--maxqueuesize' << new_resource.maxqueuesize
-  command << new_resource.threadpool_id
+  if may_need_create
 
-  bash "asadmin_threadpool #{new_resource.threadpool_id}" do
-    not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
-    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
+    command = []
+    command << 'create-threadpool'
+    command << asadmin_target_flag
+    command << '--maxthreadpoolsize' << new_resource.maxthreadpoolsize
+    command << '--minthreadpoolsize' << new_resource.minthreadpoolsize
+    command << '--idletimeout' << new_resource.idletimeout
+    command << '--maxqueuesize' << new_resource.maxqueuesize
+    command << new_resource.threadpool_id
+
+    bash "asadmin_threadpool #{new_resource.threadpool_id}" do
+      unless cache_present
+        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
+      end
+      timeout 150
+      user new_resource.system_user
+      group new_resource.system_group
+      code asadmin_command(command.join(' '))
+      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
+    end
   end
 
   properties = {
@@ -49,32 +60,44 @@ action :create do
     'min-thread-pool-size' => new_resource.minthreadpoolsize
   }
 
-  properties.each_pair do |key, value|
-    variable = "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}.#{key}"
-    glassfish_property "#{variable}=#{value}" do
-      domain_name new_resource.domain_name
-      admin_port new_resource.admin_port
-      username new_resource.username
-      password_file new_resource.password_file
-      secure new_resource.secure
-      key variable
-      value value.to_s
-      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
+  if !cache_present || !may_need_create
+    properties.each_pair do |key, value|
+      variable = "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}.#{key}"
+      glassfish_property "#{variable}=#{value}" do
+        domain_name new_resource.domain_name
+        admin_port new_resource.admin_port
+        username new_resource.username
+        password_file new_resource.password_file
+        secure new_resource.secure
+        key variable
+        value value.to_s
+        notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
+      end
     end
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-threadpool'
-  command << asadmin_target_flag
-  command << new_resource.threadpool_id
+  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  may_need_delete =
+    cache_present ?
+      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}.") :
+      true
 
-  bash "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
-    only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  if may_need_delete
+    command = []
+    command << 'delete-threadpool'
+    command << asadmin_target_flag
+    command << new_resource.threadpool_id
+
+    bash "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
+      unless cache_present
+        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
+      end
+      timeout 150
+      user new_resource.system_user
+      group new_resource.system_group
+      code asadmin_command(command.join(' '))
+    end
   end
 end
