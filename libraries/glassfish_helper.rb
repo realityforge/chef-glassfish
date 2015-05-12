@@ -48,7 +48,8 @@ class RealityForge #nodoc
       end
 
       def any_cached_property_start_with?(node, domain_key, property_key)
-        get_property_cache(node, domain_key).keys.any?{|k| k =~/^#{property_key}/ }
+        regex = /^#{Regexp.escape(property_key)}/
+        get_property_cache(node, domain_key).keys.any?{|k| k =~ regex }
       end
 
       def is_property_cache_present?(node, domain_key)
