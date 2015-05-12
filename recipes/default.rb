@@ -41,12 +41,6 @@ raise "glassfish.package_url not specified and unable to be derived. Please spec
 
 include_recipe 'java'
 
-directory node['glassfish']['base_dir'] do
-  mode '0755'
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-end
-
 group node['glassfish']['group'] do
 end
 
@@ -56,6 +50,12 @@ user node['glassfish']['user'] do
   home node['glassfish']['base_dir']
   shell '/bin/bash'
   system true
+end
+
+directory node['glassfish']['base_dir'] do
+  mode '0755'
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
 end
 
 a = archive 'glassfish' do
