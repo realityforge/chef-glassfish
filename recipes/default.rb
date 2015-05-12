@@ -25,7 +25,10 @@ or <code>glassfish::attribute_driven_mq</code>.
 =end
 
 if node['glassfish']['package_url'].nil?
-  if node['glassfish']['version'] == '4.1.151'
+  if node['glassfish']['version'] == '4.1.152'
+    raise "The version 4.1.152 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
+    node.override['glassfish']['package_url'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.152.zip'
+  elsif node['glassfish']['version'] == '4.1.151'
     raise "The version 4.1.151 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
     node.override['glassfish']['package_url'] = 'http://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.151.zip'
   elsif ['3.1.2.2', '4.0', '4.1'].include?(node['glassfish']['version'])
