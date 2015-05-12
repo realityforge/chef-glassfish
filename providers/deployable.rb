@@ -41,7 +41,12 @@ end
 action :deploy do
   raise 'Must specify url' unless new_resource.url
 
-  is_deployed = 0 != `#{asadmin_command('list-applications')} #{new_resource.target} | grep -- '#{new_resource.component_name} '`.strip.split("\n").size
+  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  is_deployed =
+    cache_present ?
+      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.") :
+      0 != `#{asadmin_command('list-applications')} #{new_resource.target} | grep -- '#{new_resource.component_name} '`.strip.split("\n").size
+
   plan_version = new_resource.descriptors.empty? ? nil : Asadmin.generate_component_plan_digest(new_resource.descriptors)
 
   expected_version = "#{new_resource.version_value}#{plan_version ? ":#{plan_version}" : ''}"
@@ -142,32 +147,43 @@ action :deploy do
 end
 
 action :undeploy do
-  command = []
-  command << 'undeploy'
-  command << '--cascade=true'
-  command << asadmin_target_flag
-  command << new_resource.component_name
+  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  maybe_deployed =
+    cache_present ?
+      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.") :
+      true
 
-  bash "asadmin_undeploy #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
-  end
+  if maybe_deployed
 
-  file version_file do
-    action :delete
-  end
+    command = []
+    command << 'undeploy'
+    command << '--cascade=true'
+    command << asadmin_target_flag
+    command << new_resource.component_name
 
-  directory "#{archives_dir}/#{new_resource.component_name}" do
-    recursive true
-    action :delete
-  end
+    bash "asadmin_undeploy #{new_resource.component_name}" do
+      unless cache_present
+        only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => 150
+      end
+      timeout 150
+      user new_resource.system_user
+      group new_resource.system_group
+      code asadmin_command(command.join(' '))
+    end
 
-  directory deployment_plan_dir do
-    recursive true
-    action :delete
+    file version_file do
+      action :delete
+    end
+
+    directory "#{archives_dir}/#{new_resource.component_name}" do
+      recursive true
+      action :delete
+    end
+
+    directory deployment_plan_dir do
+      recursive true
+      action :delete
+    end
   end
 end
 
