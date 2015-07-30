@@ -273,7 +273,12 @@ action :create do
   end
 
   template "/etc/init.d/#{service_name}" do
+case node["platform_family"]
+when "debian"
+    source 'init.d.ubuntu.erb'
+when "rhel"
     source 'init.d.erb'
+end
     mode '0744'
     cookbook 'glassfish'
 
@@ -288,6 +293,7 @@ action :create do
               :listen_ports => [new_resource.admin_port, new_resource.port])
     notifies :restart, "service[#{service_name}]", :delayed
   end
+
 
   service service_name do
     supports :start => true, :restart => true, :stop => true, :status => true
