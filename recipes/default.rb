@@ -50,6 +50,7 @@ user node['glassfish']['user'] do
   home node['glassfish']['base_dir']
   shell '/bin/bash'
   system true
+  not_if "getent passwd #{node['glassfish']['user']}"
 end
 
 directory node['glassfish']['base_dir'] do
