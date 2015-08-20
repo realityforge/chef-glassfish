@@ -1,3 +1,5 @@
+## v0.7.4 (Pending):
+
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to
             problems getting GlassFish to in Payara releases simultaneously with
