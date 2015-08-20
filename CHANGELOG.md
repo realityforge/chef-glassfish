@@ -6,7 +6,7 @@
 * Enhance : Guess the type of `custom_resource` values based on the ruby value.
 
 ## v0.6.4:
-* Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle 
+* Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle
             branded GlassFish.
 * Enhance : Set the default `node['glassfish']['package_url']` to nil and attempt
             to derive the package url in the default.rb recipe. The url is derived
