@@ -1,4 +1,4 @@
-## v0.7.1:
+## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to
             problems getting GlassFish to in Payara releases simultaneously with
             GlassFish releases is difficult when the cookbook reaches into the
