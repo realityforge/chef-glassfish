@@ -4,6 +4,10 @@
             GlassFish releases is difficult when the cookbook reaches into the
             innards of glassfish.
 * Enhance : Guess the type of `custom_resource` values based on the ruby value.
+* Enhance : Add support for Payara 4.1.151 and 4.1.152.
+* Bug     : Correct the mechanisms for setting JVM properties.
+* Enhance : Speed up several resources by caching properties and checking properties
+            prior to performing actions.
 
 ## v0.6.4:
 * Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle
