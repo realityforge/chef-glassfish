@@ -1,12 +1,18 @@
-## v0.7.1:
+## v0.7.4 (Pending):
+
+## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to
             problems getting GlassFish to in Payara releases simultaneously with
             GlassFish releases is difficult when the cookbook reaches into the
             innards of glassfish.
 * Enhance : Guess the type of `custom_resource` values based on the ruby value.
+* Enhance : Add support for Payara 4.1.151 and 4.1.152.
+* Bug     : Correct the mechanisms for setting JVM properties.
+* Enhance : Speed up several resources by caching properties and checking properties
+            prior to performing actions.
 
 ## v0.6.4:
-* Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle 
+* Enhance : Initial support for deploying Payara 4.1.144 rather than the Oracle
             branded GlassFish.
 * Enhance : Set the default `node['glassfish']['package_url']` to nil and attempt
             to derive the package url in the default.rb recipe. The url is derived
