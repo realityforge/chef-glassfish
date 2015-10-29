@@ -53,6 +53,7 @@ user node['glassfish']['user'] do
 end
 
 directory node['glassfish']['base_dir'] do
+  recursive true
   mode '0755'
   owner node['glassfish']['user']
   group node['glassfish']['group']
