@@ -192,8 +192,9 @@ action :create do
     create_args = []
     create_args << '--checkports=false'
     create_args << '--savemasterpassword=true'
-    create_args << "--instanceport #{new_resource.port}"
-    create_args << "--adminport #{new_resource.admin_port}"
+    create_args << "--portbase #{new_resource.portbase}" if new_resource.portbase
+    create_args << "--instanceport #{new_resource.port}" if not new_resource.portbase
+    create_args << "--adminport #{new_resource.admin_port}" if not new_resource.portbase
     create_args << '--nopassword=false' if new_resource.username
     create_args << domain_dir_arg
 

@@ -262,6 +262,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     include_recipe 'authbind'
   end
 
+  if definition['config']['portbase']
+    if definition['config']['portbase'] < 1000
+      raise 'Please use portbase of 1000 or above'
+    end
+    portbase = definition['config']['portbase']
+    admin_port = portbase + 48
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - domain"
 
   domain = glassfish_domain domain_key do
@@ -271,6 +279,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     max_stack_size definition['config']['max_stack_size'] if definition['config']['max_stack_size']
     port definition['config']['port'] if definition['config']['port']
     admin_port admin_port if admin_port
+    portbase portbase if portbase
     username username if username
     password_file password_file if password_file
     secure secure if secure
