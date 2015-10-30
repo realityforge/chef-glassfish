@@ -266,6 +266,9 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     if definition['config']['portbase'] < 1000
       raise 'Please use portbase of 1000 or above'
     end
+    if definition['config']['admin_port']
+      raise 'Glassfish admin port is automatically calculated from portbase. Do not set both.'
+    end
     portbase = definition['config']['portbase']
     admin_port = portbase + 48
   end

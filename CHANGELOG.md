@@ -1,4 +1,5 @@
 ## v0.7.4 (Pending):
+* Change  : Added support for portbase in the domain creation command
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to
