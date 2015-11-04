@@ -535,6 +535,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - max_stack_size: The amount of stack memory to allocate to the domain in KiB. Defaults to <code>350</code>.
 - port: The port on which the HTTP service will bind. Defaults to <code>8080</code>.
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- portbase: Portbase from which port and admin_port are automatically calculated. Defaults to <code>nil</code>.
+ - Warning: This can't be used together with admin_port
 - extra_jvm_options: An array of extra arguments to pass the JVM. Defaults to <code>[]</code>.
 - java_agents: An array of javaagent arguments to pass the JVM. Defaults to <code>[]</code>.
 - env_variables: A hash of environment variables set when running the domain. Defaults to <code>{}</code>.
