@@ -60,7 +60,8 @@ attribute :extra_jvm_options, :kind_of => Array, :default => []
 attribute :java_agents, :kind_of => Array, :default => []
 #<> @attribute env_variables A hash of environment variables set when running the domain.
 attribute :env_variables, :kind_of => Hash, :default => {}
-
+#<> @attribute systemd_enabled is a boolean value to use systemd or not.
+attribute :systemd_enabled, :kind_of => [TrueClass, FalseClass], :default => false
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :name_attribute => true
 #<> @attribute terse Use terse output from the underlying asadmin.

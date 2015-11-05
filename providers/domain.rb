@@ -271,9 +271,28 @@ action :create do
 #{Asadmin.asadmin_command(node, '"$@"', :remote_command => true, :terse => false, :echo => true, :username => new_resource.username, :password_file => new_resource.password_file, :secure => new_resource.secure, :admin_port => new_resource.admin_port)}
     SH
   end
-
+  
   template "/etc/init.d/#{service_name}" do
+    only_if { new_resource.systemd_enabled == false}
     source 'init.d.erb'
+    mode '0744'
+    cookbook 'glassfish'
+
+    asadmin = Asadmin.asadmin_script(node)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
+
+    variables(:new_resource => new_resource,
+              :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
+              :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :authbind => requires_authbind,
+              :listen_ports => [new_resource.admin_port, new_resource.port])
+    notifies :restart, "service[#{service_name}]", :delayed
+  end
+
+  template "/etc/systemd/system/#{service_name}.service" do
+    only_if { new_resource.systemd_enabled == true }
+    source 'systemd.service.erb'
     mode '0744'
     cookbook 'glassfish'
 
