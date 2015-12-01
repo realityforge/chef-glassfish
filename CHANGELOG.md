@@ -5,6 +5,7 @@
             under 6 characters that will no work with later versions of Payara/GlassFish.
 * Enhance : Support rmi_port attribute on `mq` resource so jmx rmi port can be a fixed
             number and thus possible to pass through firewall rules.
+* Enhance : Support arrays of users for access control rules of `mq` resource.
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to
