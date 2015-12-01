@@ -6,6 +6,7 @@
 * Enhance : Support rmi_port attribute on `mq` resource so jmx rmi port can be a fixed
             number and thus possible to pass through firewall rules.
 * Enhance : Support arrays of users for access control rules of `mq` resource.
+* Enhance : Add support for Payara 4.1.1.154.
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to
