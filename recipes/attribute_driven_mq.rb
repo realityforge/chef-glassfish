@@ -66,6 +66,7 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
   requires_authbind ||= (definition['admin_port'] && definition['admin_port'] < 1024)
   requires_authbind ||= (definition['jms_port'] && definition['jms_port'] < 1024)
   requires_authbind ||= (definition['jmx_port'] && definition['jmx_port'] < 1024)
+  requires_authbind ||= (definition['rmi_port'] && definition['rmi_port'] < 1024)
   requires_authbind ||= (definition['stomp_port'] && definition['stomp_port'] < 1024)
 
   if requires_authbind
@@ -83,6 +84,7 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
     admin_port definition['admin_port'] if definition['admin_port']
     jms_port definition['jms_port'] if definition['jms_port']
     jmx_port definition['jmx']['port'] if definition['jmx'] && definition['jmx']['port']
+    rmi_port definition['jmx']['rmi_port'] if definition['jmx'] && definition['jmx']['rmi_port']
     jmx_admins definition['jmx']['admins'].to_hash if definition['jmx'] && definition['jmx']['admins']
     jmx_monitors definition['jmx']['monitors'].to_hash if definition['jmx'] && definition['jmx']['monitors']
     stomp_port definition['stomp_port'] if definition['stomp_port']
