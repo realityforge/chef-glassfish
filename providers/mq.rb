@@ -158,6 +158,8 @@ action :create do
   if new_resource.jmx_port
     vm_args << '-Dcom.sun.management.jmxremote'
     vm_args << "-Dcom.sun.management.jmxremote.port=#{new_resource.jmx_port}"
+    vm_args << "-Dcom.sun.management.jmxremote.rmi.port=#{new_resource.rmi_port}" if new_resource.rmi_port
+    vm_args << "-Djava.rmi.server.hostname=#{node['fqdn']}"
     vm_args << "-Dcom.sun.management.jmxremote.access.file=#{instance_dir}/etc/jmxremote.access"
     vm_args << "-Dcom.sun.management.jmxremote.password.file=#{instance_dir}/etc/jmxremote.password"
     vm_args << '-Dcom.sun.management.jmxremote.ssl=false'
@@ -173,6 +175,13 @@ action :create do
   if new_resource.jmx_port && new_resource.jmx_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ JMX Port #{new_resource.jmx_port}" do
       port new_resource.jmx_port
+      user new_resource.system_user
+    end
+  end
+
+  if new_resource.rmi_port && new_resource.rmi_port < 1024
+    authbind_port "AuthBind GlassFish OpenMQ RMI Port #{new_resource.rmi_port}" do
+      port new_resource.rmi_port
       user new_resource.system_user
     end
   end
