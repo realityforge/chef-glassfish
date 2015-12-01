@@ -9,6 +9,8 @@
 * Enhance : Add support for Payara 4.1.1.154.
 * Enhance : Support deploying glassfish with zero deployables.
 * Bug:    : Work around bugs in GlassFish 3.1.2.2 with `jvm_options` LWRP.
+* Change  : Move the broker configuraiton of destinations, users, and access control
+            rules below the instance key rather than at top level of mq configuration.
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to

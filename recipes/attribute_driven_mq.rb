@@ -92,10 +92,10 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
     config definition['config'] if definition['config']
     init_style definition['init_style'] if definition['init_style']
     logging_properties definition['logging_properties'] if definition['logging_properties']
-    users node['openmq']['users'].to_hash
-    access_control_rules node['openmq']['access_control_rules'].to_hash
-    queues node['openmq']['destinations']['queues'].to_hash
-    topics node['openmq']['destinations']['topics'].to_hash
+    users definition['users'].to_hash
+    access_control_rules definition['access_control_rules'].to_hash
+    queues definition['destinations']['queues'].to_hash
+    topics definition['destinations']['topics'].to_hash
   end
   RealityForge::GlassFish.set_current_broker_instance(node, nil)
 end
