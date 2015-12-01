@@ -1,6 +1,8 @@
 ## v0.7.4 (Pending):
 * Change  : Added support for portbase in the domain creation command.
 * Bug:    : Fix handling of description attribute in `connector_connection_pool` lwrp.
+* Bug:    : Fix bug where defaulting value for master_password could allow a password
+            under 6 characters that will no work with later versions of Payara/GlassFish.
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to

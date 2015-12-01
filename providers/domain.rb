@@ -142,7 +142,7 @@ action :create do
 
   master_password = new_resource.master_password || new_resource.password
 
-  if master_password.length <= 6
+  if master_password.nil? || master_password.length <= 6
     if new_resource.master_password.nil?
       raise 'The master_password parameter is unspecified and defaulting to the domain password. The user must specify a master_password greater than 6 characters or increase the size of the domain password to be greater than 6 characters.'
     else
