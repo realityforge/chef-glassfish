@@ -7,6 +7,7 @@
             number and thus possible to pass through firewall rules.
 * Enhance : Support arrays of users for access control rules of `mq` resource.
 * Enhance : Add support for Payara 4.1.1.154.
+* Enhance : Support deploying glassfish with zero deployables.
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to

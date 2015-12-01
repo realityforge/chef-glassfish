@@ -823,7 +823,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
                              secure,
                              'list-applications') do |application_name|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - scanning existing application #{application_name}"
-    unless definition['deployables'].keys.include?(application_name)
+    unless (definition['deployables'] || {}).keys.include?(application_name)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - undeploying existing resource #{application_name}"
       glassfish_deployable application_name do
         domain_name domain_key
