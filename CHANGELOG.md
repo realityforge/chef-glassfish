@@ -1,4 +1,4 @@
-## v0.7.4 (Pending):
+## v0.7.4:
 * Change  : Added support for portbase in the domain creation command.
 * Bug:    : Fix handling of description attribute in `connector_connection_pool` lwrp.
 * Bug:    : Fix bug where defaulting value for master_password could allow a password
