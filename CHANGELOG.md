@@ -1,3 +1,5 @@
+## v0.7.6 (Pending):
+
 ## v0.7.4:
 * Change  : Added support for portbase in the domain creation command.
 * Bug:    : Fix handling of description attribute in `connector_connection_pool` lwrp.
