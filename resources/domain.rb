@@ -60,7 +60,7 @@ attribute :extra_jvm_options, :kind_of => Array, :default => []
 attribute :java_agents, :kind_of => Array, :default => []
 #<> @attribute env_variables A hash of environment variables set when running the domain.
 attribute :env_variables, :kind_of => Hash, :default => {}
-#<> @attribute portbase The portbase from which other service ports are calculated. 
+#<> @attribute portbase Portbase from which port and admin_port are automatically calculated. Warning: This can't be used together with admin_port.
 attribute :portbase, :kind_of => Integer
 
 #<> @attribute domain_name The name of the domain.
