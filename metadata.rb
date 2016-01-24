@@ -8,6 +8,9 @@ version          '0.7.5'
 
 supports 'ubuntu'
 
+# Compat resource is required for 12.5+ as resource API changed between 12.4 and 12.5
+supports 'compat_resource'
+
 depends 'java'
 depends 'authbind'
 depends 'archive'
