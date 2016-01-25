@@ -1,4 +1,4 @@
-<% prefix = "#{@authbind ? '/usr/bin/authbind --deep ' : ''}" %>
+<% prefix = @authbind ? '/usr/bin/authbind --deep ' : '' %>
 [Unit]
 Description = GlassFish Server for <%= @new_resource.domain_name %>
 After = syslog.target network.target remote-fs.target
