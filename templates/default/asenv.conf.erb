@@ -19,7 +19,7 @@
 # directory.
 #
 
-AS_JAVA="<%= "#{node['java']['java_home']}" %>"
+AS_JAVA="<%= node['java']['java_home'] %>"
 AS_IMQ_LIB="<%= "#{node['glassfish']['install_dir']}/mq/lib" %>"
 AS_IMQ_BIN="<%= "#{node['glassfish']['install_dir']}/mq/bin" %>"
 AS_CONFIG="<%= "#{node['glassfish']['install_dir']}/glassfish/config" %>"
