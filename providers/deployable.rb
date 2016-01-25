@@ -130,6 +130,7 @@ action :deploy do
       command << '--properties' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
       command << "--virtualservers=#{new_resource.virtual_servers.join(',')}" unless new_resource.virtual_servers.empty?
       command << '--deploymentplan' << deployment_plan if deployment_plan
+      command << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
       command << a.target_artifact
 
       timeout 150

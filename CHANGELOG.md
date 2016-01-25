@@ -1,6 +1,8 @@
 ## v0.7.6 (Pending):
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
             directly and not from the init scripts or using the generated script.
+* Enhance : Makes application library usage available for deployables stored in
+            ${com.sun.aas.instanceRootURI}/lib/applibs
 * Change  : Depend upon the `compat_resource` cookbook if present. This is required for
             Chef 12.5+ as chef client changed the resource API between 12.4 and 12.5.
             Change was inspired by Tero Pihlaja.
