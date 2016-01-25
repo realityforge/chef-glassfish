@@ -75,6 +75,14 @@ exists_at_run_start = ::File.exist?(a.target_directory)
 
 node.override['glassfish']['install_dir'] = a.target_directory
 
+template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
+  source 'asenv.conf.erb'
+  mode '0600'
+  cookbook 'glassfish'
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+end
+
 directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
   recursive true
   action :delete
