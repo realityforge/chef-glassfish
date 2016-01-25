@@ -63,6 +63,8 @@ attribute :env_variables, :kind_of => Hash, :default => {}
 #<> @attribute portbase Portbase from which port and admin_port are automatically calculated. Warning: This can't be used together with admin_port.
 attribute :portbase, :kind_of => Integer
 
+#<> @attribute systemd_enabled is a boolean value to use systemd or not.
+attribute :systemd_enabled, :kind_of => [TrueClass, FalseClass], :default => false
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :name_attribute => true
 #<> @attribute terse Use terse output from the underlying asadmin.

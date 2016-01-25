@@ -12,7 +12,7 @@
 # description
 umask 0077
 <% @new_resource.env_variables.sort.each do |key, value| -%>
-export <% key %>=<% value %>
+export <%= key %>=<%= value %>
 <% end %>
 
 <%
