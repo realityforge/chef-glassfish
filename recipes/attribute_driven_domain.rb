@@ -590,7 +590,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   ##
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'].nil? || configuration['type'].to_s == 'rar'
+    if configuration['type'] && configuration['type'].to_s == 'rar'
       if configuration['recipes'] && configuration['recipes']['before']
         gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
           include_recipe recipe
