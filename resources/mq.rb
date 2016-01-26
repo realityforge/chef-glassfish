@@ -90,6 +90,8 @@ attribute :admin_port, :kind_of => Integer, :default => 7677
 attribute :jms_port, :kind_of => Integer, :default => 7678
 #<> @attribute jmx_port The port on which jmx service will bind. If not specified, no jmx service will be exported.
 attribute :jmx_port, :kind_of => Integer, :default => nil
+#<> @attribute rmi_port The port on which rmi service will bind. If not specified, a random port will be used. Typically used to lock down port for jmx access through firewalls.
+attribute :rmi_port, :kind_of => Integer, :default => nil
 #<> @attribute stomp_port The port on which the stomp service will bind. If not specified, no stomp service will execute.
 attribute :stomp_port, :kind_of => Integer, :default => nil
 

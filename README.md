@@ -6,13 +6,16 @@ The glassfish cookbook installs and configures the GlassFish application server 
 with the GlassFish application server. The cookbook also defines resources to create and configure GlassFish
 application domains and OpenMQ broker instances.
 
+**NOTE**: If using chef client 12.5 or later then you will need to include the `compat_resource` cookbook as the chef client changed the resource API between versions 12.4 and 12.5.
+
 A sample project with a Vagrantfile that launches a glassfish instance is available in [chef-glassfish-example](https://github.com/realityforge/chef-glassfish-example) project.
 
 # Requirements
 
 ## Platform:
 
-* Ubuntu
+* ubuntu
+* compat_resource
 
 ## Cookbooks:
 
@@ -20,7 +23,6 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 * authbind
 * archive
 * cutlery
-* runit (Recommended but not required)
 
 # Attributes
 
@@ -263,6 +265,7 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_jdbc_connection_pool](#glassfish_jdbc_connection_pool)
 * [glassfish_jdbc_resource](#glassfish_jdbc_resource)
 * [glassfish_jms_resource](#glassfish_jms_resource)
+* [glassfish_jvm_options](#glassfish_jvm_options)
 * [glassfish_library](#glassfish_library)
 * [glassfish_managed_executor_service](#glassfish_managed_executor_service)
 * [glassfish_managed_scheduled_executor_service](#glassfish_managed_scheduled_executor_service)
@@ -271,6 +274,7 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_mq_destination](#glassfish_mq_destination) - Creates or deletes a queue or a topic in an OpenMQ message broker instance.
 * [glassfish_mq_ensure_running](#glassfish_mq_ensure_running) - Ensures that a OpenMQ message broker instance has had a chance to finish starting before proceeding.
 * [glassfish_property](#glassfish_property)
+* [glassfish_property_cache](#glassfish_property_cache)
 * [glassfish_resource_adapter](#glassfish_resource_adapter)
 * [glassfish_secure_admin](#glassfish_secure_admin) - Enable or disable secure admin flag on the GlassFish server which enables/disables remote administration.
 * [glassfish_thread_pool](#glassfish_thread_pool)
@@ -538,6 +542,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - extra_jvm_options: An array of extra arguments to pass the JVM. Defaults to <code>[]</code>.
 - java_agents: An array of javaagent arguments to pass the JVM. Defaults to <code>[]</code>.
 - env_variables: A hash of environment variables set when running the domain. Defaults to <code>{}</code>.
+- portbase: Portbase from which port and admin_port are automatically calculated. Warning: This can't be used together with admin_port.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -550,7 +555,6 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - realm_types: A map of names to realm implementation classes that is merged into the default realm types. Defaults to <code>{}</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
-- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ### Examples
 
@@ -637,39 +641,39 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 ### Attribute Parameters
 
 - pool_name:
-- datasourceclassname:  Defaults to <code>nil</code>.
-- initsql:  Defaults to <code>nil</code>.
-- sqltracelisteners:  Defaults to <code>nil</code>.
-- driverclassname:  Defaults to <code>nil</code>.
-- validationclassname:  Defaults to <code>nil</code>.
-- validationtable:  Defaults to <code>nil</code>.
-- steadypoolsize:  Defaults to <code>nil</code>.
-- maxpoolsize:  Defaults to <code>nil</code>.
-- maxwait:  Defaults to <code>nil</code>.
-- poolresize:  Defaults to <code>nil</code>.
-- idletimeout:  Defaults to <code>nil</code>.
-- validateatmostonceperiod:  Defaults to <code>nil</code>.
-- leaktimeout:  Defaults to <code>nil</code>.
-- statementleaktimeout:  Defaults to <code>nil</code>.
-- creationretryattempts:  Defaults to <code>nil</code>.
-- creationretryinterval:  Defaults to <code>nil</code>.
-- statementtimeout:  Defaults to <code>nil</code>.
-- maxconnectionusagecount:  Defaults to <code>nil</code>.
-- statementcachesize:  Defaults to <code>nil</code>.
-- isisolationguaranteed:  Defaults to <code>nil</code>.
-- isconnectvalidatereq:  Defaults to <code>nil</code>.
-- failconnection:  Defaults to <code>nil</code>.
-- allownoncomponentcallers:  Defaults to <code>nil</code>.
-- nontransactionalconnections:  Defaults to <code>nil</code>.
-- statmentleakreclaim:  Defaults to <code>nil</code>.
-- leakreclaim:  Defaults to <code>nil</code>.
-- lazyconnectionenlistment:  Defaults to <code>nil</code>.
-- lazyconnectionassociation:  Defaults to <code>nil</code>.
-- associatewiththread:  Defaults to <code>nil</code>.
-- matchconnections:  Defaults to <code>nil</code>.
-- ping:  Defaults to <code>nil</code>.
-- pooling:  Defaults to <code>nil</code>.
-- wrapjdbcobjects:  Defaults to <code>nil</code>.
+- datasourceclassname:  Defaults to <code>""</code>.
+- initsql:  Defaults to <code>""</code>.
+- sqltracelisteners:  Defaults to <code>""</code>.
+- driverclassname:  Defaults to <code>""</code>.
+- validationclassname:  Defaults to <code>""</code>.
+- validationtable:  Defaults to <code>""</code>.
+- steadypoolsize:  Defaults to <code>8</code>.
+- maxpoolsize:  Defaults to <code>32</code>.
+- maxwait:  Defaults to <code>60000</code>.
+- poolresize:  Defaults to <code>2</code>.
+- idletimeout:  Defaults to <code>300</code>.
+- validateatmostonceperiod:  Defaults to <code>0</code>.
+- leaktimeout:  Defaults to <code>0</code>.
+- statementleaktimeout:  Defaults to <code>0</code>.
+- creationretryattempts:  Defaults to <code>0</code>.
+- creationretryinterval:  Defaults to <code>10</code>.
+- statementtimeout:  Defaults to <code>-1</code>.
+- maxconnectionusagecount:  Defaults to <code>0</code>.
+- statementcachesize:  Defaults to <code>0</code>.
+- isisolationguaranteed:  Defaults to <code>true</code>.
+- isconnectvalidatereq:  Defaults to <code>true</code>.
+- failconnection:  Defaults to <code>false</code>.
+- allownoncomponentcallers:  Defaults to <code>false</code>.
+- nontransactionalconnections:  Defaults to <code>false</code>.
+- statmentleakreclaim:  Defaults to <code>false</code>.
+- leakreclaim:  Defaults to <code>false</code>.
+- lazyconnectionenlistment:  Defaults to <code>false</code>.
+- lazyconnectionassociation:  Defaults to <code>false</code>.
+- associatewiththread:  Defaults to <code>false</code>.
+- matchconnections:  Defaults to <code>false</code>.
+- ping:  Defaults to <code>true</code>.
+- pooling:  Defaults to <code>true</code>.
+- wrapjdbcobjects:  Defaults to <code>true</code>.
 - description:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
 - restype:  Defaults to <code>nil</code>.
@@ -735,6 +739,26 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
+## glassfish_jvm_options
+
+### Actions
+
+- set:  Default action.
+
+### Attribute Parameters
+
+- target:  Defaults to <code>"server"</code>.
+- options:  Defaults to <code>[]</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
 ## glassfish_library
 
 ### Actions
@@ -757,7 +781,6 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
-- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ## glassfish_managed_executor_service
 
@@ -876,6 +899,7 @@ Creates an OpenMQ message broker instance, creates an OS-level service and start
 - admin_port: The port on which admin service will bind. Defaults to <code>7677</code>.
 - jms_port: The port on which jms service will bind. Defaults to <code>7678</code>.
 - jmx_port: The port on which jmx service will bind. If not specified, no jmx service will be exported. Defaults to <code>nil</code>.
+- rmi_port: The port on which rmi service will bind. If not specified, a random port will be used. Typically used to lock down port for jmx access through firewalls. Defaults to <code>nil</code>.
 - stomp_port: The port on which the stomp service will bind. If not specified, no stomp service will execute. Defaults to <code>nil</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
@@ -980,6 +1004,25 @@ Ensures that a OpenMQ message broker instance has had a chance to finish startin
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
 
+## glassfish_property_cache
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
 ## glassfish_resource_adapter
 
 ### Actions
@@ -1023,7 +1066,6 @@ Enable or disable secure admin flag on the GlassFish server which enables/disabl
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
-- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ### Examples
 
@@ -1055,7 +1097,6 @@ Enable or disable secure admin flag on the GlassFish server which enables/disabl
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
-- init_style: The init system used to run the service. Defaults to <code>"upstart"</code>.
 
 ## glassfish_web_env_entry
 

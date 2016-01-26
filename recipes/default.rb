@@ -28,6 +28,9 @@ if node['glassfish']['package_url'].nil?
   if node['glassfish']['version'] == '4.1.152'
     raise "The version 4.1.152 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
     node.override['glassfish']['package_url'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.152.zip'
+  elsif node['glassfish']['version'] == '4.1.1.154'
+    raise "The version 4.1.1.154 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
+    node.override['glassfish']['package_url'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.154/payara-4.1.1.154.zip'
   elsif node['glassfish']['version'] == '4.1.151'
     raise "The version 4.1.151 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
     node.override['glassfish']['package_url'] = 'http://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.151.zip'
@@ -54,12 +57,14 @@ user node['glassfish']['user'] do
 end
 
 directory node['glassfish']['base_dir'] do
+  recursive true
   mode '0755'
   owner node['glassfish']['user']
   group node['glassfish']['group']
 end
 
 a = archive 'glassfish' do
+  prefix node['glassfish']['install_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
   owner node['glassfish']['user']
@@ -70,6 +75,14 @@ end
 exists_at_run_start = ::File.exist?(a.target_directory)
 
 node.override['glassfish']['install_dir'] = a.target_directory
+
+template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
+  source 'asenv.conf.erb'
+  mode '0600'
+  cookbook 'glassfish'
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+end
 
 directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
   recursive true

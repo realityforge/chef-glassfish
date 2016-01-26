@@ -66,6 +66,7 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
   requires_authbind ||= (definition['admin_port'] && definition['admin_port'] < 1024)
   requires_authbind ||= (definition['jms_port'] && definition['jms_port'] < 1024)
   requires_authbind ||= (definition['jmx_port'] && definition['jmx_port'] < 1024)
+  requires_authbind ||= (definition['rmi_port'] && definition['rmi_port'] < 1024)
   requires_authbind ||= (definition['stomp_port'] && definition['stomp_port'] < 1024)
 
   if requires_authbind
@@ -83,6 +84,7 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
     admin_port definition['admin_port'] if definition['admin_port']
     jms_port definition['jms_port'] if definition['jms_port']
     jmx_port definition['jmx']['port'] if definition['jmx'] && definition['jmx']['port']
+    rmi_port definition['jmx']['rmi_port'] if definition['jmx'] && definition['jmx']['rmi_port']
     jmx_admins definition['jmx']['admins'].to_hash if definition['jmx'] && definition['jmx']['admins']
     jmx_monitors definition['jmx']['monitors'].to_hash if definition['jmx'] && definition['jmx']['monitors']
     stomp_port definition['stomp_port'] if definition['stomp_port']
@@ -90,10 +92,10 @@ node['openmq']['instances'].each_pair do |instance_key, definition|
     config definition['config'] if definition['config']
     init_style definition['init_style'] if definition['init_style']
     logging_properties definition['logging_properties'] if definition['logging_properties']
-    users node['openmq']['users'].to_hash
-    access_control_rules node['openmq']['access_control_rules'].to_hash
-    queues node['openmq']['destinations']['queues'].to_hash
-    topics node['openmq']['destinations']['topics'].to_hash
+    users definition['users'].to_hash
+    access_control_rules definition['access_control_rules'].to_hash
+    queues definition['destinations']['queues'].to_hash
+    topics definition['destinations']['topics'].to_hash
   end
   RealityForge::GlassFish.set_current_broker_instance(node, nil)
 end

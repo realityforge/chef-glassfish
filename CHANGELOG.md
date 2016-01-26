@@ -1,4 +1,25 @@
-## v0.7.4 (Pending):
+## v0.7.6 (Pending):
+* Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
+            directly and not from the init scripts or using the generated script.
+* Change  : Depend upon the `compat_resource` cookbook if present. This is required for
+            Chef 12.5+ as chef client changed the resource API between 12.4 and 12.5.
+            Change was inspired by Tero Pihlaja.
+* Bug     : Connector archive deployment was preceded by its configuration. Fix by reordering
+            rar deployables prior to resource adapter definition. Fixed by David Lakatos.
+
+## v0.7.4:
+* Change  : Added support for portbase in the domain creation command.
+* Bug:    : Fix handling of description attribute in `connector_connection_pool` lwrp.
+* Bug:    : Fix bug where defaulting value for master_password could allow a password
+            under 6 characters that will no work with later versions of Payara/GlassFish.
+* Enhance : Support rmi_port attribute on `mq` resource so jmx rmi port can be a fixed
+            number and thus possible to pass through firewall rules.
+* Enhance : Support arrays of users for access control rules of `mq` resource.
+* Enhance : Add support for Payara 4.1.1.154.
+* Enhance : Support deploying glassfish with zero deployables.
+* Bug:    : Work around bugs in GlassFish 3.1.2.2 with `jvm_options` LWRP.
+* Change  : Move the broker configuraiton of destinations, users, and access control
+            rules below the instance key rather than at top level of mq configuration.
 
 ## v0.7.2:
 * Enhance : Remove runit and and upstart as supported init styles. Largely due to

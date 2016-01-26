@@ -3,6 +3,6 @@
 #
 version=JMQFileAccessControlModel/100
 
-<% @rules.sort.each do |pattern,user| %>
-<%= pattern %>=<%= user %>
-<% end %>
+<% @rules.sort.each do |pattern,users| -%>
+<%= pattern %>=<%= (users.is_a?(Array) ? users : [users]).join(',') %>
+<% end -%>

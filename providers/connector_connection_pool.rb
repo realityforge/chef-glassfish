@@ -20,7 +20,7 @@ use_inline_resources
 
 action :create do
 
-  parameters = [:connectiondefinition, :raname, :transactionsupport, :description] +
+  parameters = [:connectiondefinition, :raname, :transactionsupport] +
     ::Chef::Resource::GlassfishConnectorConnectionPool::NUMERIC_ATTRIBUTES +
     ::Chef::Resource::GlassfishConnectorConnectionPool::BOOLEAN_ATTRIBUTES
 
@@ -31,7 +31,7 @@ action :create do
   end
 
   command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << '--description' << "'#{new_resource.description}'" if new_resource.description
+  command << "--description='#{new_resource.description}'" if new_resource.description
   command << new_resource.pool_name
 
 

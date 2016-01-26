@@ -1,0 +1,19 @@
+<% prefix = @authbind ? '/usr/bin/authbind --deep ' : '' %>
+[Unit]
+Description = GlassFish Server for <%= @new_resource.domain_name %>
+After = syslog.target network.target remote-fs.target
+
+[Service]
+User=<%= node['glassfish']['user'] %>
+ExecStart = <%= "#{prefix} #{@start_domain_command}" %>
+ExecStop = <%= "#{prefix} #{@stop_domain_command}" %>
+ExecReload = <%= "#{prefix} #{@restart_domain_command}" %>
+Type = forking
+<%- if @new_resource.env_variables
+  @new_resource.env_variables.sort.each do |key, value| %>
+Environment="<%= key %>=<%= value %>"
+<% end -%>
+<% end -%>
+
+[Install]
+WantedBy = multi-user.target

@@ -142,7 +142,7 @@ action :create do
 
   master_password = new_resource.master_password || new_resource.password
 
-  if master_password.length <= 6
+  if master_password.nil? || master_password.length <= 6
     if new_resource.master_password.nil?
       raise 'The master_password parameter is unspecified and defaulting to the domain password. The user must specify a master_password greater than 6 characters or increase the size of the domain password to be greater than 6 characters.'
     else
@@ -192,8 +192,9 @@ action :create do
     create_args = []
     create_args << '--checkports=false'
     create_args << '--savemasterpassword=true'
-    create_args << "--instanceport #{new_resource.port}"
-    create_args << "--adminport #{new_resource.admin_port}"
+    create_args << "--portbase #{new_resource.portbase}" if new_resource.portbase
+    create_args << "--instanceport #{new_resource.port}" if not new_resource.portbase
+    create_args << "--adminport #{new_resource.admin_port}" if not new_resource.portbase
     create_args << '--nopassword=false' if new_resource.username
     create_args << domain_dir_arg
 
@@ -273,6 +274,7 @@ action :create do
   end
 
   template "/etc/init.d/#{service_name}" do
+    only_if { !new_resource.systemd_enabled }
 case node["platform_family"]
 when "debian"
     source 'init.d.ubuntu.erb'
@@ -294,6 +296,26 @@ end
     notifies :restart, "service[#{service_name}]", :delayed
   end
 
+<<<<<<< HEAD
+=======
+  template "/etc/systemd/system/#{service_name}.service" do
+    only_if { new_resource.systemd_enabled }
+    source 'systemd.service.erb'
+    mode '0744'
+    cookbook 'glassfish'
+
+    asadmin = Asadmin.asadmin_script(node)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
+
+    variables(:new_resource => new_resource,
+              :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
+              :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :authbind => requires_authbind,
+              :listen_ports => [new_resource.admin_port, new_resource.port])
+    notifies :restart, "service[#{service_name}]", :delayed
+  end
+>>>>>>> f015a321013f060db8c6e749ad630852a4ab9a69
 
   service service_name do
     supports :start => true, :restart => true, :stop => true, :status => true
