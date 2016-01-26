@@ -4,7 +4,8 @@
 * Change  : Depend upon the `compat_resource` cookbook if present. This is required for
             Chef 12.5+ as chef client changed the resource API between 12.4 and 12.5.
             Change was inspired by Tero Pihlaja.
-* Bug     : Connector archive deployment was preceded by its configuration
+* Bug     : Connector archive deployment was preceded by its configuration. Fix by reordering
+            rar deployables prior to resource adapter definition. Fixed by David Lakatos.
 
 ## v0.7.4:
 * Change  : Added support for portbase in the domain creation command.
