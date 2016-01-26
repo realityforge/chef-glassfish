@@ -585,6 +585,66 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  ##
+  ## Deploy all resource archives prior to attempting to setup resources
+  ##
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
+  gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
+    if configuration['type'].nil? || configuration['type'].to_s == 'rar'
+      if configuration['recipes'] && configuration['recipes']['before']
+        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+          include_recipe recipe
+        end
+      end
+      glassfish_deployable component_name.to_s do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        version configuration['version']
+        url configuration['url']
+        context_root configuration['context_root'] if configuration['context_root']
+        target configuration['target'] if configuration['target']
+        enabled configuration['enabled'] if configuration['enabled']
+        generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+        virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+        availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+        keep_state configuration['keep_state'] if configuration['keep_state']
+        verify configuration['verify'] if configuration['verify']
+        precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+        async_replication configuration['async_replication'] if configuration['async_replication']
+        properties configuration['properties'] if configuration['properties']
+        descriptors configuration['descriptors'] if configuration['descriptors']
+        lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+      end
+      gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
+        hash = value.is_a?(Hash) ? value : {'value' => value}
+        glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
+          domain_name domain_key
+          admin_port admin_port if admin_port
+          username username if username
+          password_file password_file if password_file
+          secure secure if secure
+          system_user system_username if system_username
+          system_group system_group if system_group
+          webapp component_name
+          name key
+          type hash['type'] if hash['type']
+          value hash['value'].to_s unless hash['value'].nil?
+          description hash['description'] if hash['description']
+        end
+      end
+      if configuration['recipes'] && configuration['recipes']['after']
+        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+          include_recipe recipe
+        end
+      end
+    end
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - realms"
   gf_sort(definition['realms'] || {}).each_pair do |key, configuration|
     glassfish_auth_realm key.to_s do
@@ -631,6 +691,70 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         connectionpoolid pool_name
         resource_configuration.each_pair do |config_key, value|
+          self.send(config_key, value) unless config_key == 'priority'
+        end
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - resource_adapters"
+  gf_sort(definition['resource_adapters'] || {}).each_pair do |resource_adapter_key, resource_configuration|
+    resource_adapter_key = resource_adapter_key.to_s
+    glassfish_resource_adapter resource_adapter_key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      resource_configuration['config'].each_pair do |config_key, value|
+        self.send(config_key, value)
+      end if resource_configuration['config']
+    end
+    gf_sort(resource_configuration['connection_pools'] || {}).each_pair do |pool_key, pool_configuration|
+      pool_key = pool_key.to_s
+      glassfish_connector_connection_pool pool_key do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        raname resource_adapter_key
+        pool_configuration['config'].each_pair do |config_key, value|
+          self.send(config_key, value)
+        end if pool_configuration['config']
+      end
+      gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
+        glassfish_connector_resource resource_name.to_s do
+          domain_name domain_key
+          admin_port admin_port if admin_port
+          username username if username
+          password_file password_file if password_file
+          secure secure if secure
+          system_user system_username if system_username
+          system_group system_group if system_group
+          poolname pool_key.to_s
+          resource_configuration.each_pair do |config_key, value|
+            self.send(config_key, value) unless config_key == 'priority'
+          end
+        end
+      end
+    end
+    gf_sort(resource_configuration['admin_objects'] || {}).each_pair do |admin_object_key, admin_object_configuration|
+      admin_object_key = admin_object_key.to_s
+      glassfish_admin_object admin_object_key do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        raname resource_adapter_key
+        admin_object_configuration.each_pair do |config_key, value|
           self.send(config_key, value) unless config_key == 'priority'
         end
       end
@@ -698,7 +822,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'].nil? || configuration['type'].to_s != 'osgi'
+    if configuration['type'].nil? || (configuration['type'].to_s != 'osgi' && configuration['type'].to_s != 'rar')
       if configuration['recipes'] && configuration['recipes']['before']
         gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
           include_recipe recipe
@@ -749,70 +873,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       if configuration['recipes'] && configuration['recipes']['after']
         gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
           include_recipe recipe
-        end
-      end
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - resource_adapters"
-  gf_sort(definition['resource_adapters'] || {}).each_pair do |resource_adapter_key, resource_configuration|
-    resource_adapter_key = resource_adapter_key.to_s
-    glassfish_resource_adapter resource_adapter_key do
-      domain_name domain_key
-      admin_port admin_port if admin_port
-      username username if username
-      password_file password_file if password_file
-      secure secure if secure
-      system_user system_username if system_username
-      system_group system_group if system_group
-      resource_configuration['config'].each_pair do |config_key, value|
-        self.send(config_key, value)
-      end if resource_configuration['config']
-    end
-    gf_sort(resource_configuration['connection_pools'] || {}).each_pair do |pool_key, pool_configuration|
-      pool_key = pool_key.to_s
-      glassfish_connector_connection_pool pool_key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        raname resource_adapter_key
-        pool_configuration['config'].each_pair do |config_key, value|
-          self.send(config_key, value)
-        end if pool_configuration['config']
-      end
-      gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
-        glassfish_connector_resource resource_name.to_s do
-          domain_name domain_key
-          admin_port admin_port if admin_port
-          username username if username
-          password_file password_file if password_file
-          secure secure if secure
-          system_user system_username if system_username
-          system_group system_group if system_group
-          poolname pool_key.to_s
-          resource_configuration.each_pair do |config_key, value|
-            self.send(config_key, value) unless config_key == 'priority'
-          end
-        end
-      end
-    end
-    gf_sort(resource_configuration['admin_objects'] || {}).each_pair do |admin_object_key, admin_object_configuration|
-      admin_object_key = admin_object_key.to_s
-      glassfish_admin_object admin_object_key do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        raname resource_adapter_key
-        admin_object_configuration.each_pair do |config_key, value|
-          self.send(config_key, value) unless config_key == 'priority'
         end
       end
     end
