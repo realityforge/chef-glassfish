@@ -296,8 +296,6 @@ end
     notifies :restart, "service[#{service_name}]", :delayed
   end
 
-<<<<<<< HEAD
-=======
   template "/etc/systemd/system/#{service_name}.service" do
     only_if { new_resource.systemd_enabled }
     source 'systemd.service.erb'
@@ -315,7 +313,6 @@ end
               :listen_ports => [new_resource.admin_port, new_resource.port])
     notifies :restart, "service[#{service_name}]", :delayed
   end
->>>>>>> f015a321013f060db8c6e749ad630852a4ab9a69
 
   service service_name do
     supports :start => true, :restart => true, :stop => true, :status => true
