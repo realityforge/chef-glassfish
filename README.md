@@ -524,6 +524,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- libraries: Array of JAR file names deployed as applibs which are used by this deployable. Defaults to <code>[]</code>
 
 ## glassfish_domain
 
