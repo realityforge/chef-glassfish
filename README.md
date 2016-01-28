@@ -6,7 +6,10 @@ The glassfish cookbook installs and configures the GlassFish application server 
 with the GlassFish application server. The cookbook also defines resources to create and configure GlassFish
 application domains and OpenMQ broker instances.
 
-**NOTE**: If using chef client 12.5 or later then you will need to include the `compat_resource` cookbook as the chef client changed the resource API between versions 12.4 and 12.5.
+**NOTE**: If using chef client 12.5 or later then you will need to include the `compat_resource` cookbook as the
+chef client changed the resource API between versions 12.4 and 12.5. If you are using chef-server then it is necessary
+that the cookbook is uploaded to the server. A simpler solution may be to create a wrapper cookbook that depends on
+both the `glassfish` and `compat_resource` cookbooks.
 
 A sample project with a Vagrantfile that launches a glassfish instance is available in [chef-glassfish-example](https://github.com/realityforge/chef-glassfish-example) project.
 
@@ -521,6 +524,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- libraries: Array of JAR file names deployed as applibs which are used by this deployable. Defaults to <code>[]</code>
 
 ## glassfish_domain
 
@@ -562,7 +566,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
     glassfish_domain "my_domain" do
       port 80
       admin_port 8103
-      extra_libraries ['https://github.com/downloads/realityforge/gelf4j/gelf4j-0.9-all.jar']
+      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10.jar']
       logging_properties {
         "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
         ".level" => "INFO",

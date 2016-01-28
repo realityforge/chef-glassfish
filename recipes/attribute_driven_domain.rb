@@ -851,6 +851,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         properties configuration['properties'] if configuration['properties']
         descriptors configuration['descriptors'] if configuration['descriptors']
         lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+        libraries configuration['libraries'] if configuration['libraries']
       end
       gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
         hash = value.is_a?(Hash) ? value : {'value' => value}

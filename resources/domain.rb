@@ -27,7 +27,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
     glassfish_domain "my_domain" do
       port 80
       admin_port 8103
-      extra_libraries ['https://github.com/downloads/realityforge/gelf4j/gelf4j-0.9-all.jar']
+      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10.jar']
       logging_properties {
         "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
         ".level" => "INFO",
@@ -135,8 +135,10 @@ end
 
 def installation_jvm_options
   [
+    # TODO: All jvm options that have expanded node['glassfish']['install_dir'] should be replaced by ${com.sun.aas.installRoot} in modern glassfish versions and should also use${path.separator}
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
     '-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory',
+    # TODO: Next line is not needed as of modern glassfish
     "-Dcom.sun.aas.installRoot=#{node['glassfish']['install_dir']}/glassfish",
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
     "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
