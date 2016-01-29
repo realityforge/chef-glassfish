@@ -27,7 +27,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
     glassfish_domain "my_domain" do
       port 80
       admin_port 8103
-      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10.jar']
+      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10-all.jar']
       logging_properties {
         "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
         ".level" => "INFO",
