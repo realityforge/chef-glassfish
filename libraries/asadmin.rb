@@ -87,7 +87,7 @@ class Chef
     end
 
     def self.asadmin_script(node)
-      "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
+      "#{node['glassfish']['install_dir']}/glassfish/versions/current/bin/asadmin"
     end
   end
 end
