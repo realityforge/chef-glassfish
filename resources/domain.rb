@@ -143,7 +143,7 @@ def installation_jvm_options
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
     "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
-    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
+    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['install_dir']}/glassfish/lib/endorsed",
   ]
 end
 
