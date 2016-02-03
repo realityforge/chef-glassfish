@@ -8,7 +8,7 @@
             Change was inspired by Tero Pihlaja.
 * Bug     : Connector archive deployment was preceded by its configuration. Fix by reordering
             rar deployables prior to resource adapter definition. Fixed by David Lakatos.
-* Bug     : java.endorsed.dirs variable corrected in domain.rb resource
+* Bug     : java.endorsed.dirs variable corrected in domain.rb resource: realityforge/chef-glassfish#65
 
 ## v0.7.4:
 * Change  : Added support for portbase in the domain creation command.
