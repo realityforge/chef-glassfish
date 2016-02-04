@@ -26,10 +26,14 @@ or <code>glassfish::attribute_driven_mq</code>.
 
 # Scans Glassfish's binary for endorsed JARs and returns a list of filenames
 def gf_scan_existing_binary_endorsed_jars(install_dir)
-  jar_extensions = [".jar"]
+  jar_extensions = ['.jar']
   gf_binary_endorsed_dir = install_dir + '/glassfish/lib/endorsed'
-  existing_binary_endorsed_jars = Dir.entries(gf_binary_endorsed_dir).reject {|f| File.directory?(f) || !jar_extensions.include?(File.extname(f))}
-  return existing_binary_endorsed_jars
+  if Dir.exist?(gf_binary_endorsed_dir)
+    existing_binary_endorsed_jars = Dir.entries(gf_binary_endorsed_dir).reject { |f| File.directory?(f) || !jar_extensions.include?(File.extname(f)) }
+  else
+    existing_binary_endorsed_jars = []
+  end
+  existing_binary_endorsed_jars
 end
 
 if node['glassfish']['package_url'].nil?
@@ -109,15 +113,14 @@ end
 
 # Install/delete endorsed JAR files into Glassfish's binary to be used thourgh the Java Endorsed mechanism.
 # see: https://docs.oracle.com/javase/7/docs/technotes/guides/standards/
-gf_binary_endorsed_dir = node['glassfish']['install_dir'] + File::Separator + 'glassfish'+ File::Separator + 'lib' + File::Separator + 'endorsed'
+gf_binary_endorsed_dir = node['glassfish']['install_dir'] + File::Separator + 'glassfish' + File::Separator + 'lib' + File::Separator + 'endorsed'
 
 # Delete unnecessary binary endorsed jar files
 gf_scan_existing_binary_endorsed_jars(node['glassfish']['install_dir']).each do |file_name|
-  unless node['glassfish']['endorsed'] && node['glassfish']['endorsed'][file_name]
-    Chef::Log.info "Deleting binary endorsed jar file - #{file_name}"
-    file gf_binary_endorsed_dir + File::Separator + file_name do
-      action :delete
-    end
+  next if node['glassfish']['endorsed'] && node['glassfish']['endorsed'][file_name]
+  Chef::Log.info "Deleting binary endorsed jar file - #{file_name}"
+  file gf_binary_endorsed_dir + File::Separator + file_name do
+    action :delete
   end
 end
 
@@ -132,7 +135,7 @@ if node['glassfish']['endorsed']
       owner node['glassfish']['user']
       group node['glassfish']['group']
       action :create
-      not_if do ::File.exists?(gf_binary_endorsed_dir + File::Separator + file_name) end
+      not_if { ::File.exist?(gf_binary_endorsed_dir + File::Separator + file_name) }
     end
   end
 end
