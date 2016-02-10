@@ -5,6 +5,7 @@
             ${com.sun.aas.instanceRootURI}/lib/applibs
 * Enhance : Enables the installation of binary endorsed library jar files. For more details, see
             https://docs.oracle.com/cd/E26576_01/doc.312/e24930/class-loaders.htm#GSDVG00097
+* Enhance : Enables setting asadmin timeout
             Submitted by David Lakatos.
 * Change  : Depend upon the `compat_resource` cookbook if present. This is required for
             Chef 12.5+ as chef client changed the resource API between 12.4 and 12.5.
