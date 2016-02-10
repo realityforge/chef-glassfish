@@ -35,6 +35,8 @@ default['glassfish']['remove_domains_dir_on_install'] = true
 default['glassfish']['domains_dir'] = '/srv/glassfish'
 #<> GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain.
 default['glassfish']['domains'] = Mash.new
+#<> Asadmin Timeout: The timeout in seconds set for asadmin calls
+default['glassfish']['asadmin']['timeout'] = 150
 
 #<> Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath.
 default['openmq']['extra_libraries'] = Mash.new
