@@ -87,7 +87,7 @@ class Chef
     end
 
     def self.asadmin_script(node)
-      ENV['AS_ADMIN_READTIMEOUT'] = node['glassfish']['asadmin']['timeout']
+      ENV['AS_ADMIN_READTIMEOUT'] = "#{node['glassfish']['asadmin']['timeout']}"
       "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
     end
   end
