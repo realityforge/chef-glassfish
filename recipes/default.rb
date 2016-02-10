@@ -129,13 +129,14 @@ if node['glassfish']['endorsed']
   node['glassfish']['endorsed'].each_pair do |file_name, value|
     url = value['url']
     Chef::Log.info "Installing binary endorsed jar file - #{file_name}"
-    remote_file gf_binary_endorsed_dir + File::Separator + file_name do
+    target_file = gf_binary_endorsed_dir + File::Separator + file_name
+    remote_file target_file do
       source url
       mode '0600'
       owner node['glassfish']['user']
       group node['glassfish']['group']
       action :create
-      not_if { ::File.exist?(gf_binary_endorsed_dir + File::Separator + file_name) }
+      not_if { ::File.exist?(target_file) }
     end
   end
 end
