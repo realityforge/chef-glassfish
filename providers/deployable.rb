@@ -165,7 +165,7 @@ action :undeploy do
 
     bash "asadmin_undeploy #{new_resource.component_name}" do
       unless cache_present
-        only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => node['glassfish']['asadmin']['timeout']
+        only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => node['glassfish']['asadmin']['timeout'] * 1000
       end
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
@@ -197,7 +197,7 @@ action :disable do
   command << new_resource.component_name
 
   bash "asadmin_disable #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout']
+    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] * 1000
     # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
@@ -213,7 +213,7 @@ action :enable do
   command << new_resource.component_name
 
   bash "asadmin_enable #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout']
+    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] * 1000
     # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
