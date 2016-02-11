@@ -88,7 +88,7 @@ class Chef
 
     def self.asadmin_script(node)
       # converting seconds to miliseconds
-      ENV['AS_ADMIN_READTIMEOUT'] = "#{node['glassfish']['asadmin']['timeout'] * 1000}"
+      ENV['AS_ADMIN_READTIMEOUT'] = (node['glassfish']['asadmin']['timeout'] * 1000).to_s
       "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
     end
   end
