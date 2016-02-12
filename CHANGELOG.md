@@ -9,7 +9,8 @@
 * Enhance : Enables setting asadmin timeout Submitted by David Lakatos.
 * Change  : Depend upon the `compat_resource` cookbook if present. This is required for
             Chef 12.5+ as chef client changed the resource API between 12.4 and 12.5.
-            Change was inspired by Tero Pihlaja.
+            Change was inspired by Tero Pihlaja. This stops the cookbook working in
+            Chef 11 and earlier.
 * Bug     : Connector archive deployment was preceded by its configuration. Fix by reordering
             rar deployables prior to resource adapter definition. Fixed by David Lakatos.
 * Bug     : java.endorsed.dirs variable corrected in domain.rb resource: Fixes #65.
