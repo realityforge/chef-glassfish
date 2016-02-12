@@ -1,3 +1,5 @@
+## v0.7.8 (Pending):
+
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
             directly and not from the init scripts or using the generated script.
