@@ -365,6 +365,22 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - server instances"
+  gf_sort(definition['instances'] || {}).each_pair do |key, config|
+    glassfish_instance key do
+      node_name config['node_name'] unless config['node_name'].nil?
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+
+      action :create
+    end
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - caching properties"
   glassfish_property_cache "#{domain_key} Cache" do
     domain_name domain_key
@@ -923,6 +939,28 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           name existing
           action :unset
         end
+      end
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing instances"
+  gf_scan_existing_resources(admin_port,
+                             username,
+                             password_file,
+                             secure,
+                             'list-instances') do |existing|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking instances for #{existing}"
+    unless definition['instances'] && definition['instances'][existing]
+      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing instance #{existing}"
+      glassfish_instance existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        action :delete
       end
     end
   end
