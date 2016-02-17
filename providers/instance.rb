@@ -32,7 +32,7 @@ action :create do
       command << "--portbase=#{new_resource.portbase}" if new_resource.portbase
       command << "--checkports=#{new_resource.checkports}" if new_resource.checkports
       command << '--systemproperties' << encode_parameters(new_resource.systemproperties) unless new_resource.systemproperties.empty?
-      command << "#{new_resource.instance_name}"
+      command << new_resource.instance_name
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
@@ -51,7 +51,7 @@ action :delete do
     bash "delete instance #{new_resource.instance_name}" do
       command = []
       command << 'delete-instance'
-      command << "#{new_resource.instance_name}"
+      command << new_resource.instance_name
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
@@ -70,7 +70,7 @@ action :start do
     bash "stop instance #{new_resource.instance_name}" do
       command = []
       command << 'start-local-instance'
-      command << "#{new_resource.instance_name}"
+      command << new_resource.instance_name
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
@@ -89,7 +89,7 @@ action :stop do
     bash "delete instance #{new_resource.instance_name}" do
       command = []
       command << 'stop-local-instance'
-      command << "#{new_resource.instance_name}"
+      command << new_resource.instance_name
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
