@@ -1,4 +1,6 @@
 ## v0.7.8 (Pending):
+* Enhance : Enables Glassfish instances defined in the domain attributes. Fixes #77.
+            Submitted by David Lakatos.
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
