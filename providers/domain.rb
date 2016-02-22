@@ -86,6 +86,7 @@ def default_logging_properties
     'javax.enterprise.system.ssl.security.level' => 'INFO',
     'ShoalLogger.level' => 'CONFIG',
     'org.eclipse.persistence.session.level' => 'INFO',
+    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING'
   }
 end
 
