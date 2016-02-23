@@ -269,6 +269,7 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_javamail_resource](#glassfish_javamail_resource)
 * [glassfish_jdbc_connection_pool](#glassfish_jdbc_connection_pool)
 * [glassfish_jdbc_resource](#glassfish_jdbc_resource)
+* [glassfish_jms_destination](#glassfish_jms_destination)
 * [glassfish_jms_resource](#glassfish_jms_resource)
 * [glassfish_jvm_options](#glassfish_jvm_options)
 * [glassfish_library](#glassfish_library)
@@ -747,6 +748,27 @@ Creates a GlassFish server instance in the domain configuration.
 - target:  Defaults to <code>"server"</code>.
 - description:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+## glassfish_jms_destination
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- name:
+- desttype:  Defaults to <code>"queue"</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
