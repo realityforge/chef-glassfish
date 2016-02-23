@@ -239,7 +239,7 @@ action :create do
 
   template "#{new_resource.domain_dir_path}/config/login.conf" do
     source 'login.conf.erb'
-    mode '0400'
+    mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
