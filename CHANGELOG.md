@@ -3,6 +3,8 @@
             Submitted by David Lakatos.
 * Enhance : Add support for defining JMS Destinations.
 * Enhance : Add support for Payara 4.1.1.161.
+* Enhance : Gives ability to define network listeners in domains. Adds necessary
+            LWRP for network listener management. Fixes #84
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
