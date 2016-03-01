@@ -17,7 +17,7 @@
 actions :create, :delete
 
 #<> @attribute transport_name The name of the transport.
-attribute :transport_name, :kind_of => , :name_attribute => true
+attribute :transport_name, :kind_of => String, :name_attribute => true
 #<> @attribute acceptorthreads The number of acceptor threads for the transport. The recommended value is the number of processors in the machine.
 attribute :acceptorthreads, :kind_of => Integer, :default => 1
 #<> @attribute buffersizebytes The size, in bytes, of the buffer to be provided for input streams created by the network listener that references this transport.
@@ -43,9 +43,9 @@ attribute :selectionkeyhandler, :kind_of => String
 #<> @attribute selectorpolltimeoutmillis The number of milliseconds a NIO Selector blocks waiting for events (user requests).
 attribute :selectorpolltimeoutmillis, :kind_of => Integer, :default => 1_000
 #<> @attribute tcpnodelay If `true`, enables `TCP_NODELAY` (also called Nagle's algorithm).
-attribute :, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :tcpnodelay, :kind_of => [TrueClass, FalseClass], :default => false
 #<> @attribute target Creates the transport only on the specified target. Valid values are as follows: `server`, configuration-name, cluster-name, standalone-instance-name
-attribute :, :kind_of => String, :default => 'server'
+attribute :target, :kind_of => String, :default => 'server'
 
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :required => true

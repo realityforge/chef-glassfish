@@ -97,7 +97,8 @@ Another approach using a vagrant file is to set the json attribute such as;
                       'jk-listener' => {
                         'listenerport' => 8009,
                         'jkenabled' => true,
-                        'protocol' => 'http-listener-1'
+                        'protocol' => 'http-listener-1',
+                        'transport' => 'tcp'
                     },
                     'transports' => {
                       'tcp' => {
@@ -253,6 +254,23 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
   RealityForge::GlassFish.set_current_domain(node, nil)
+end
+
+# loading Glassfish domain defaults
+gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
+  domain_key = domain_key.to_s
+
+  # we still want the basic transports defined even it is not included in the domain's definition
+  unless definition['transports']
+    Chef::Log.debug "Using default transport configuration for #{domain_key}"
+    node.default['glassfish']['domains'][domain_key]['transports'] = node['glassfish']['transports']
+  end
+
+  # we still want the basic network listeners defined even it is not included in the domain's definition
+  unless definition['network_listeners']
+    Chef::Log.debug "Using default network listener configuration for #{domain_key}"
+    node.default['glassfish']['domains'][domain_key]['network_listeners'] = node['glassfish']['network_listeners']
+  end
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
@@ -475,9 +493,68 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       properties config['properties'] if config['properties']
     end
   end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components"
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - deleting all network listeners"
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-network-listeners') do |existing|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - deleting existing network listener #{existing}"
+    glassfish_network_listener existing do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      action :delete
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - deleting all transports"
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-transports server') do |existing|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - deleting existing transport #{existing}"
+    glassfish_transport existing do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      action :delete
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - transports"
+  gf_sort(definition['transports']).each_pair do |key, config|
+    glassfish_transport key do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+
+      acceptorthreads config['acceptorthreads'] if config['acceptorthreads']
+      buffersizebytes config['buffersizebytes'] if config['buffersizebytes']
+      bytebuffertype config['bytebuffertype'] if config['bytebuffertype']
+      classname config['classname'] if config['classname']
+      displayconfiguration config['displayconfiguration'] if config['displayconfiguration']
+      enablesnoop config['enablesnoop'] if config['enablesnoop']
+      idlekeytimeoutseconds config['idlekeytimeoutseconds'] if config['idlekeytimeoutseconds']
+      maxconnectionscount config['maxconnectionscount'] if config['maxconnectionscount']
+      readtimeoutmillis config['readtimeoutmillis'] if config['readtimeoutmillis']
+      writetimeoutmillis config['writetimeoutmillis'] if config['writetimeoutmillis']
+      selectionkeyhandler config['selectionkeyhandler'] if config['selectionkeyhandler']
+      selectorpolltimeoutmillis config['selectorpolltimeoutmillis'] if config['selectorpolltimeoutmillis']
+      tcpnodelay config['tcpnodelay'] if config['tcpnodelay']
+      target config['target'] if config['target']
+    end
+  end
  
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network listeners"
-  gf_sort(definition['network_listeners'] || {}).each_pair do |key, config|
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - network listeners"
+  gf_sort(definition['network_listeners']).each_pair do |key, config|
     glassfish_network_listener key do
       domain_name domain_key
       admin_port admin_port if admin_port
@@ -1295,24 +1372,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     unless definition['iiop_listeners'] && definition['iiop_listeners'][existing]
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing iiop-listener #{existing}"
       glassfish_iiop_listener existing do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        action :delete
-      end
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing network_listeners"
-  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-network-listeners') do |existing|
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing network_listeners #{existing}"
-    unless definition['network_listeners'] && definition['network_listeners'][existing]
-      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing network-listener #{existing}"
-      glassfish_network_listener existing do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
