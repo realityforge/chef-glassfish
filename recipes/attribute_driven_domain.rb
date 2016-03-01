@@ -98,6 +98,10 @@ Another approach using a vagrant file is to set the json attribute such as;
                         'listenerport' => 8009,
                         'jkenabled' => true,
                         'protocol' => 'http-listener-1'
+                    },
+                    'transports' => {
+                      'tcp' => {
+                        'acceptorthreads' => 4
                       }
                     },
                     'context_services' => {
