@@ -29,14 +29,14 @@ action :create do
   command << '--buffersizebytes' << new_resource.buffersizebytes
   command << '--bytebuffertype' << new_resource.bytebuffertype
   command << '--classname' << new_resource.classname
-  command << '--displayconfiguration' << new_resource.displayconfiguration
-  command << '--enablesnoop' << new_resource.enablesnoop
+  command << "--displayconfiguration=#{new_resource.displayconfiguration}"
+  command << "--enablesnoop=#{new_resource.enablesnoop}"
   command << '--idlekeytimeoutseconds' << new_resource.idlekeytimeoutseconds
   command << '--maxconnectionscount' << new_resource.maxconnectionscount
   command << '--readtimeoutmillis' << new_resource.readtimeoutmillis
   command << '--writetimeoutmillis' << new_resource.writetimeoutmillis
   command << '--selectorpolltimeoutmillis' << new_resource.selectorpolltimeoutmillis
-  command << '--tcpnodelay' << new_resource.tcpnodelay
+  command << "--tcpnodelay=#{new_resource.tcpnodelay}"
 
   command << new_resource.transport_name
 

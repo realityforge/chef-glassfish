@@ -93,6 +93,11 @@ Another approach using a vagrant file is to set the json attribute such as;
                         'securityenabled' => false
                       }
                     },
+                    'transports' => {
+                      'tcp' => {
+                        'acceptorthreads' => 4
+                      }
+                    },
                     'context_services' => {
                       'concurrent/MyAppContextService' => {
                         'description' => 'My Apps ContextService'
