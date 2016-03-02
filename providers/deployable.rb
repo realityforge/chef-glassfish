@@ -51,9 +51,11 @@ action :deploy do
 
   expected_version = "#{new_resource.version_value}#{plan_version ? ":#{plan_version}" : ''}"
 
-  directory version_dir do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+  [archives_dir, version_dir].each do |d|
+    directory d do
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+    end
   end
 
   actual_version = nil
