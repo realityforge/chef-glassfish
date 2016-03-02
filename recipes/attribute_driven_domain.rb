@@ -256,23 +256,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   RealityForge::GlassFish.set_current_domain(node, nil)
 end
 
-# loading Glassfish domain defaults
-gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
-  domain_key = domain_key.to_s
-
-  # we still want the basic transports defined even it is not included in the domain's definition
-  unless definition['transports']
-    Chef::Log.debug "Using default transport configuration for #{domain_key}"
-    node.default['glassfish']['domains'][domain_key]['transports'] = node['glassfish']['transports']
-  end
-
-  # we still want the basic network listeners defined even it is not included in the domain's definition
-  unless definition['network_listeners']
-    Chef::Log.debug "Using default network listener configuration for #{domain_key}"
-    node.default['glassfish']['domains'][domain_key]['network_listeners'] = node['glassfish']['network_listeners']
-  end
-end
-
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   domain_key = domain_key.to_s
 
@@ -494,38 +477,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components"
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - deleting all network listeners"
-  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-network-listeners') do |existing|
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - deleting existing network listener #{existing}"
-    glassfish_network_listener existing do
-      domain_name domain_key
-      admin_port admin_port if admin_port
-      username username if username
-      password_file password_file if password_file
-      secure secure if secure
-      system_user system_username if system_username
-      system_group system_group if system_group
-      action :delete
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - deleting all transports"
-  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-transports server') do |existing|
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - deleting existing transport #{existing}"
-    glassfish_transport existing do
-      domain_name domain_key
-      admin_port admin_port if admin_port
-      username username if username
-      password_file password_file if password_file
-      secure secure if secure
-      system_user system_username if system_username
-      system_group system_group if system_group
-      action :delete
-    end
-  end
-
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - transports"
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - transports"
   gf_sort(definition['transports']).each_pair do |key, config|
     glassfish_transport key do
       domain_name domain_key
@@ -553,7 +505,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
  
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network components - network listeners"
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - network listeners"
   gf_sort(definition['network_listeners']).each_pair do |key, config|
     glassfish_network_listener key do
       domain_name domain_key
