@@ -1351,7 +1351,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing thread pools"
-  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-thread-pools') do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-threadpools') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing thread-pools #{existing}"
     unless definition['thread-pools'] && definition['thread-pools'][existing]
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing thread-pool #{existing}"
