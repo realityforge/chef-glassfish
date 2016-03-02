@@ -1,9 +1,10 @@
 ## v0.7.8 (Pending):
 * Enhance : Enables Glassfish instances defined in the domain attributes. Fixes #77.
             Submitted by David Lakatos.
-* Enhance : Add support for defining JMS Destinations.
-* Enhance : Add support for Payara 4.1.1.161.
-* Bug     : Make sure thread pools that are not configured are correctly deleted. Fixes #88.
+* Enhance : Add support for defining JMS Destinations. Submitted by James Walker.
+* Enhance : Add support for Payara 4.1.1.161. Submitted by James Walker.
+* Bug     : Make sure thread pools that are not configured are correctly deleted. 
+            Fixes #88. Reported by David Lakatos.
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
