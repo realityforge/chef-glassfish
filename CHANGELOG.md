@@ -3,17 +3,17 @@
             Submitted by David Lakatos.
 * Enhance : Add support for defining JMS Destinations. Submitted by James Walker.
 * Enhance : Add support for Payara 4.1.1.161. Submitted by James Walker.
-* Bug     : Make sure thread pools that are not configured are correctly deleted. 
+* Bug     : Make sure thread pools that are not configured are correctly deleted.
             Fixes #88. Reported by David Lakatos.
-* Bug     : Fix directory permissions on archives directory. Fixes #80. 
+* Bug     : Fix directory permissions on archives directory. Fixes #80.
             Reported by David Lakatos.
-* Bug     : Support -1 as value for numeric attributes in jdbc_connection_pool. Fixes #74. 
+* Bug     : Support -1 as value for numeric attributes in jdbc_connection_pool. Fixes #74.
             Reported by David Lakatos.
 * Enhance : Add the ability to disable deletion/undeploying/unsetting of elements in
-            `attribute_driven_domain` receipe by adding an attribute 'managed' set to 
+            `attribute_driven_domain` receipe by adding an attribute 'managed' set to
             false in the top level of the element. i.e. To disable undeploying of
-            applications then add configuration such as: 
-            
+            applications then add configuration such as:
+
                 'deployables' => {
                         'managed' => false
                     },
