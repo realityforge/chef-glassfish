@@ -478,7 +478,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - transports"
-  gf_sort(definition['transports']).each_pair do |key, config|
+  gf_sort(definition['transports'] || {}).each_pair do |key, config|
     glassfish_transport key do
       domain_name domain_key
       admin_port admin_port if admin_port
@@ -506,7 +506,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
  
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - network listeners"
-  gf_sort(definition['network_listeners']).each_pair do |key, config|
+  gf_sort(definition['network_listeners'] || {}).each_pair do |key, config|
     glassfish_network_listener key do
       domain_name domain_key
       admin_port admin_port if admin_port
