@@ -105,6 +105,7 @@ action :create do
   listen_ports << new_resource.stomp_port if new_resource.stomp_port
 
   instance_dir = "#{node['openmq']['var_home']}/instances/#{new_resource.instance}"
+  passfile = "#{instance_dir}/props/config.properties"
 
   directory node['openmq']['var_home'] do
     recursive true
@@ -136,10 +137,15 @@ action :create do
     action :touch
   end
 
-  directory "#{instance_dir}/props" do
+  file "#{instance_dir}/bin/#{new_resource.instance}_imqcmd" do
+    mode '0700'
     owner new_resource.system_user
     group new_resource.system_group
-    mode '0700'
+    content <<-SH
+#!/bin/sh
+
+#{Imqcmd.imqcmd_command(node, '"$@"', :host => '127.0.0.1', :port => new_resource.port, :username => new_resource.admin_user, :passfile => passfile)}
+    SH
   end
 
   vm_args = []
@@ -254,10 +260,10 @@ action :create do
     end
   end
 
-  template "#{instance_dir}/props/config.properties" do
+  template passfile do
     not_if do
       properties = {}
-      filename = "#{instance_dir}/props/config.properties"
+      filename = passfile
       keep_existing = false
       if ::File.exist?(filename)
         IO.foreach(filename) do |line|
@@ -330,10 +336,10 @@ action :create do
     glassfish_mq_destination key do
       queue new_resource.queues.keys.include?(key)
       config config
-      host 'localhost'
+      host '127.0.0.1'
       port new_resource.port
       username new_resource.admin_user
-      passfile "#{instance_dir}/props/config.properties"
+      passfile passfile
     end
   end
 end

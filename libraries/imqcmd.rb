@@ -16,14 +16,29 @@
 
 class Chef
   module Imqcmd
-    def imqcmd_command(command)
+    def imqcmd_command(command, params = {})
+      options = {}
+      options[:host] = new_resource.host
+      options[:port] = new_resource.port
+      options[:username] = new_resource.username
+      options[:passfile] = new_resource.passfile
+      options.merge!(params)
+      Imqcmd.imqcmd_command(node, command, options)
+    end
+
+    def self.imqcmd_command(node, command, options = {})
       args = []
       args << '-f'
       args << "-javahome #{node['java']['java_home']}"
-      args << "-b #{new_resource.host}:#{new_resource.port}"
-      args << "-u #{new_resource.username}"
-      args << "-passfile #{new_resource.passfile}"
-      "#{node['glassfish']['install_dir']}/mq/bin/imqcmd #{args.join(' ')} #{command}"
+      args << "-b #{options[:host]}:#{options[:port]}"
+      args << "-u #{options[:username]}"
+      args << "-passfile #{options[:passfile]}"
+
+      "#{imqcmd_script(node)} #{args.join(" ")} #{command}"
+    end
+
+    def self.imqcmd_script(node)
+      "#{node['glassfish']['install_dir']}/mq/bin/imqcmd"
     end
   end
 end
