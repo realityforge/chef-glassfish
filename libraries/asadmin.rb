@@ -45,7 +45,6 @@ class Chef
       Asadmin.asadmin_command(node, command, options)
     end
 
-
     def self.generate_component_plan_digest(descriptors)
       require 'digest/md5'
 
