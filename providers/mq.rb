@@ -119,22 +119,12 @@ action :create do
     mode '0700'
   end
 
-  directory instance_dir do
-    owner new_resource.system_user
-    group new_resource.system_group
-    mode '0700'
-  end
-
-  directory "#{instance_dir}/etc" do
-    owner new_resource.system_user
-    group new_resource.system_group
-    mode '0700'
-  end
-
-  directory "#{instance_dir}/log" do
-    owner new_resource.system_user
-    group new_resource.system_group
-    mode '0700'
+  %W(#{instance_dir} #{instance_dir}/etc #{instance_dir}/log #{instance_dir}/props #{instance_dir}/bin).each do |dir|
+    directory dir do
+      owner new_resource.system_user
+      group new_resource.system_group
+      mode '0700'
+    end
   end
 
   # Not sure why this is required... but something runs service as root which created this file as root owned
