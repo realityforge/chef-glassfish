@@ -9,6 +9,14 @@
             Reported by David Lakatos.
 * Bug     : Support -1 as value for numeric attributes in jdbc_connection_pool. Fixes #74. 
             Reported by David Lakatos.
+* Enhance : Add the ability to disable deletion/undeploying/unsetting of elements in
+            `attribute_driven_domain` receipe by adding an attribute 'managed' set to 
+            false in the top level of the element. i.e. To disable undeploying of
+            applications then add configuration such as: 
+            
+                'deployables' => {
+                        'managed' => false
+                    },
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
