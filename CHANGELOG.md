@@ -1,4 +1,5 @@
 ## v0.7.8 (Pending):
+* Enhance : Avoid re-touching OpenMQ log each chef converge.
 * Enhance : Enables Glassfish instances defined in the domain attributes. Fixes #77.
             Submitted by David Lakatos.
 * Enhance : Add support for defining JMS Destinations. Submitted by James Walker.

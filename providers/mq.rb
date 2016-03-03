@@ -139,6 +139,7 @@ action :create do
 
   # Not sure why this is required... but something runs service as root which created this file as root owned
   file "#{instance_dir}/log/log.txt" do
+    not_if { ::File.exist?("#{instance_dir}/log/log.txt") }
     owner new_resource.system_user
     group new_resource.system_group
     mode '0700'
