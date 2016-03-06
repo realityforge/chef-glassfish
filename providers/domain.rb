@@ -95,9 +95,9 @@ def default_realm_confs
     'fileRealm' => 'com.sun.enterprise.security.auth.login.FileLoginModule',
     'ldapRealm' => 'com.sun.enterprise.security.auth.login.LDAPLoginModule',
     'solarisRealm' => 'com.sun.enterprise.security.auth.login.SolarisLoginModule',
-    'jdbcRealm' => 'com.sun.enterprise.security.auth.login.JDBCLoginModule',
-    'jdbcDigestRealm' => 'com.sun.enterprise.security.auth.login.JDBCDigestLoginModule',
-    'pamRealm' => 'com.sun.enterprise.security.auth.login.PamLoginModule',
+    'jdbcRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCLoginModule',
+    'jdbcDigestRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCDigestLoginModule',
+    'pamRealm' => 'com.sun.enterprise.security.ee.auth.login.PamLoginModule',
   }
 end
 
