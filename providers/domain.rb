@@ -91,14 +91,25 @@ def default_logging_properties
 end
 
 def default_realm_confs
-  {
+  common_confs = {
     'fileRealm' => 'com.sun.enterprise.security.auth.login.FileLoginModule',
     'ldapRealm' => 'com.sun.enterprise.security.auth.login.LDAPLoginModule',
     'solarisRealm' => 'com.sun.enterprise.security.auth.login.SolarisLoginModule',
-    'jdbcRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCLoginModule',
-    'jdbcDigestRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCDigestLoginModule',
-    'pamRealm' => 'com.sun.enterprise.security.ee.auth.login.PamLoginModule',
   }
+
+  if node['glassfish']['version'][0] == '4'
+    {
+      'jdbcRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCLoginModule',
+      'jdbcDigestRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCDigestLoginModule',
+      'pamRealm' => 'com.sun.enterprise.security.ee.auth.login.PamLoginModule',
+    }.merge common_confs
+  else
+    {
+      'jdbcRealm' => 'com.sun.enterprise.security.auth.login.JDBCLoginModule',
+      'jdbcDigestRealm' => 'com.sun.enterprise.security.auth.login.JDBCDigestLoginModule',
+      'pamRealm' => 'com.sun.enterprise.security.auth.login.PamLoginModule',
+    }.merge common_confs
+  end
 end
 
 def domain_dir_arg
