@@ -326,6 +326,10 @@ action :destroy do
     action :delete
   end
 
+  file "/etc/systemd/system/#{service_name}.service" do
+    action :delete
+  end
+
   directory new_resource.domain_dir_path do
     recursive true
     action :delete
