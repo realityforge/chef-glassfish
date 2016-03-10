@@ -295,7 +295,7 @@ action :create do
   template "/etc/systemd/system/#{service_name}.service" do
     only_if { new_resource.systemd_enabled }
     source 'systemd.service.erb'
-    mode '0744'
+    mode '0644'
     cookbook 'glassfish'
 
     asadmin = Asadmin.asadmin_script(node)
