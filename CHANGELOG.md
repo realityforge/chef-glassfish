@@ -20,7 +20,7 @@
                 'deployables' => {
                         'managed' => false
                     },
-* Enhance : Let the cookbook define systemd start/stop/restart timeouts. Fixes #93.
+* Enhance : Let the cookbook define systemd start/stop timeouts. Fixes #93.
             Submitted by David Lakatos.
 
 ## v0.7.6:
