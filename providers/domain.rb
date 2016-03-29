@@ -303,8 +303,10 @@ action :create do
 
     variables(:new_resource => new_resource,
               :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
+              :start_domain_timeout => new_resource.systemd_start_timeout,
               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :stop_domain_timeout => new_resource.systemd_stop_timeout,
               :authbind => requires_authbind,
               :listen_ports => [new_resource.admin_port, new_resource.port])
     notifies :restart, "service[#{service_name}]", :delayed

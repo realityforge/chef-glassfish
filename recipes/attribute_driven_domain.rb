@@ -297,6 +297,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
     systemd_enabled definition['config']['systemd_enabled'] if definition['config']['systemd_enabled']
+    systemd_start_timeout definition['config']['systemd_start_timeout'] if definition['config']['systemd_start_timeout']
+    systemd_stop_timeout definition['config']['systemd_stop_timeout'] if definition['config']['systemd_stop_timeout']
     java_agents definition['config']['java_agents'] if definition['config']['java_agents']
     system_user system_username if system_username
     system_group system_group if system_group

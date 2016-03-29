@@ -65,6 +65,10 @@ attribute :portbase, :kind_of => Integer
 
 #<> @attribute systemd_enabled is a boolean value to use systemd or not.
 attribute :systemd_enabled, :kind_of => [TrueClass, FalseClass], :default => false
+#<> @attribute systemd_start_timeout is an integer value which sets the service start timeout in seconds.
+attribute :systemd_start_timeout, :kind_of => Integer, :default => 90
+#<> @attribute systemd_stop_timeout is an integer value which sets the service stop timeout in seconds.
+attribute :systemd_stop_timeout, :kind_of => Integer, :default => 90
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :name_attribute => true
 #<> @attribute terse Use terse output from the underlying asadmin.

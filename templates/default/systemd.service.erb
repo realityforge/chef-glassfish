@@ -14,6 +14,8 @@ Type = forking
 Environment="<%= key %>=<%= value %>"
 <% end -%>
 <% end -%>
+TimeoutStartSec = <%= "#{@start_domain_timeout}" %>
+TimeoutStopSec = <%= "#{@stop_domain_timeout}" %>
 
 [Install]
 WantedBy = multi-user.target
