@@ -20,6 +20,8 @@
                 'deployables' => {
                         'managed' => false
                     },
+* Enhance : Let the cookbook define systemd start/stop timeouts. Fixes #93.
+            Submitted by David Lakatos.
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
