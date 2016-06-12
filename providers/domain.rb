@@ -86,6 +86,7 @@ def default_logging_properties
     'javax.enterprise.system.ssl.security.level' => 'INFO',
     'ShoalLogger.level' => 'CONFIG',
     'org.eclipse.persistence.session.level' => 'INFO',
+    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING'
   }
 end
 
@@ -193,8 +194,8 @@ action :create do
     create_args << '--checkports=false'
     create_args << '--savemasterpassword=true'
     create_args << "--portbase #{new_resource.portbase}" if new_resource.portbase
-    create_args << "--instanceport #{new_resource.port}" if not new_resource.portbase
-    create_args << "--adminport #{new_resource.admin_port}" if not new_resource.portbase
+    create_args << "--instanceport #{new_resource.port}" unless new_resource.portbase
+    create_args << "--adminport #{new_resource.admin_port}" unless new_resource.portbase
     create_args << '--nopassword=false' if new_resource.username
     create_args << domain_dir_arg
 
@@ -238,7 +239,7 @@ action :create do
 
   template "#{new_resource.domain_dir_path}/config/login.conf" do
     source 'login.conf.erb'
-    mode '0400'
+    mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group
@@ -299,7 +300,7 @@ end
   template "/etc/systemd/system/#{service_name}.service" do
     only_if { new_resource.systemd_enabled }
     source 'systemd.service.erb'
-    mode '0744'
+    mode '0644'
     cookbook 'glassfish'
 
     asadmin = Asadmin.asadmin_script(node)
@@ -307,8 +308,10 @@ end
 
     variables(:new_resource => new_resource,
               :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
+              :start_domain_timeout => new_resource.systemd_start_timeout,
               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :stop_domain_timeout => new_resource.systemd_stop_timeout,
               :authbind => requires_authbind,
               :listen_ports => [new_resource.admin_port, new_resource.port])
     notifies :restart, "service[#{service_name}]", :delayed
@@ -327,6 +330,10 @@ action :destroy do
   end
 
   file "/etc/init.d/#{service_name}" do
+    action :delete
+  end
+
+  file "/etc/systemd/system/#{service_name}.service" do
     action :delete
   end
 

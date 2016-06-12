@@ -34,6 +34,8 @@ attribute :precompile_jsp, :equal_to => [true, false, 'true', 'false'], :default
 attribute :async_replication, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :properties, :kind_of => Hash, :default => {}
 attribute :descriptors, :kind_of => Hash, :default => {}
+
+#<> @attribute libraries Array of JAR file names deployed as applibs which are used by this deployable.
 attribute :libraries, :kind_of => Array, :default => []
 
 #<> @attribute domain_name The name of the domain.

@@ -79,7 +79,7 @@ ATTRIBUTES.each do |attr|
   if attr.type == :string
     attribute attr.key, :kind_of => String, :default => attr.default_value
   elsif attr.type == :numeric
-    attribute attr.key, :kind_of => [Fixnum, String], :regex => /^[0-9]+$/, :default => attr.default_value
+    attribute attr.key, :kind_of => [Fixnum, String], :regex => /^-?[0-9]+$/, :default => attr.default_value
   else
     attribute attr.key, :equal_to => [true, false, 'true', 'false'], :default => attr.default_value
   end

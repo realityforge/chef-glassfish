@@ -230,7 +230,14 @@ def gf_priority(value)
 end
 
 def gf_sort(hash)
-  Hash[hash.sort_by { |key, value| "#{"%04d" % gf_priority(value)}#{key}" }]
+  return {} if hash.nil?
+  hash = hash.dup
+  hash.delete_if { |k, v| k =~ /^_.*/ || k == 'managed' }
+  Hash[hash.sort_by { |key, value| "#{'%04d' % gf_priority(value)}#{key}" }]
+end
+
+def gf_managed?(data)
+  (data.nil? || data['managed'].nil?) ? true : !!data['managed']
 end
 
 gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
@@ -290,6 +297,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     extra_jvm_options definition['config']['jvm_options'] if definition['config']['jvm_options']
     env_variables definition['config']['environment'] if definition['config']['environment']
     systemd_enabled definition['config']['systemd_enabled'] if definition['config']['systemd_enabled']
+    systemd_start_timeout definition['config']['systemd_start_timeout'] if definition['config']['systemd_start_timeout']
+    systemd_stop_timeout definition['config']['systemd_stop_timeout'] if definition['config']['systemd_stop_timeout']
     java_agents definition['config']['java_agents'] if definition['config']['java_agents']
     system_user system_username if system_username
     system_group system_group if system_group
@@ -361,6 +370,22 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           sleep 1
         end
       end
+      action :create
+    end
+  end
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - server instances"
+  gf_sort(definition['instances'] || {}).each_pair do |key, config|
+    glassfish_instance key do
+      node_name config['node_name'] unless config['node_name'].nil?
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+
       action :create
     end
   end
@@ -761,6 +786,20 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - jms_destinations"
+  gf_sort(definition['jms_destinations'] || {}).each_pair do |key, resource_config|
+    glassfish_jms_destination key.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      desttype (resource_config['desttype'] || 'Queue')
+    end
+  end
+
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - jms_resources"
   gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
     glassfish_jms_resource key.to_s do
@@ -898,7 +937,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :undeploy
       end
     end
-  end
+  end if gf_managed?(definition['deployables'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking web-env entry for existing resources"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
@@ -925,7 +964,29 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         end
       end
     end
-  end
+  end if gf_managed?(definition['deployables'])
+
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing instances"
+  gf_scan_existing_resources(admin_port,
+                             username,
+                             password_file,
+                             secure,
+                             'list-instances') do |existing|
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking instances for #{existing}"
+    unless definition['instances'] && definition['instances'][existing]
+      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing instance #{existing}"
+      glassfish_instance existing do
+        domain_name domain_key
+        admin_port admin_port if admin_port
+        username username if username
+        password_file password_file if password_file
+        secure secure if secure
+        system_user system_username if system_username
+        system_group system_group if system_group
+        action :delete
+      end
+    end
+  end if gf_managed?(definition['instances'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking resource adapter configs for existing resources"
   gf_scan_existing_resources(admin_port,
@@ -947,7 +1008,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['resource_adapters'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing connector pools"
   gf_scan_existing_resources(admin_port,
@@ -984,7 +1045,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['resource_adapters'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing resource connectors"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-resources') do |existing|
@@ -1017,7 +1078,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['resource_adapters'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing admin objects"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-admin-objects') do |existing|
@@ -1048,7 +1109,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['resource_adapters'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing jdbc pools"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-connection-pools') do |existing|
@@ -1071,7 +1132,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['jdbc_connection_pools'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing jdbc resources"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-resources') do |existing|
@@ -1098,7 +1159,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['jdbc_connection_pools'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing mail resources"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-javamail-resources') do |existing|
@@ -1116,7 +1177,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['javamail_resources'])
 
   jmsra_defined_resources = []
   if definition['resource_adapters'] &&
@@ -1147,7 +1208,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['jms_resources'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing custom resources"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-custom-resources') do |existing|
@@ -1165,7 +1226,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['custom_resources'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing resource adapters"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-resource-adapter-configs') do |existing|
@@ -1183,7 +1244,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['resource_adapters'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing auth realms"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-auth-realms') do |existing|
@@ -1202,7 +1263,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['realms'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing iiop_listeners"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-iiop-listeners') do |existing|
@@ -1220,7 +1281,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['iiop_listeners'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing managed_scheduled_executor_services"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-managed-scheduled-executor-services') do |existing|
@@ -1239,7 +1300,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['managed_scheduled_executor_services'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing managed_executor_services"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-managed-executor-services') do |existing|
@@ -1258,7 +1319,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['managed_executor_services'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing managed_thread_factories"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-managed-thread-factories') do |existing|
@@ -1277,7 +1338,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['managed_thread_factories'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing context_services"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-context-services') do |existing|
@@ -1296,10 +1357,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['context_services'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing thread pools"
-  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-thread-pools') do |existing|
+  gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-threadpools') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing thread-pools #{existing}"
     unless definition['thread-pools'] && definition['thread-pools'][existing]
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing thread-pool #{existing}"
@@ -1314,7 +1375,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end
+  end if gf_managed?(definition['thread-pools'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing cached properties"
   glassfish_property_cache "#{domain_key} Cache" do

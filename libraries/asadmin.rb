@@ -45,7 +45,6 @@ class Chef
       Asadmin.asadmin_command(node, command, options)
     end
 
-
     def self.generate_component_plan_digest(descriptors)
       require 'digest/md5'
 
@@ -87,7 +86,8 @@ class Chef
     end
 
     def self.asadmin_script(node)
-#      "#{node['glassfish']['install_dir']}/glassfish/versions/current/bin/asadmin"
+      # converting seconds to miliseconds
+      ENV['AS_ADMIN_READTIMEOUT'] = (node['glassfish']['asadmin']['timeout'] * 1000).to_s
       "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
     end
   end

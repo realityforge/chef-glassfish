@@ -1,13 +1,45 @@
-## v0.7.6 (Pending):
+## v0.7.8 (Pending):
+* Enhance : Generate `bin/<instance>_imqcmd` script to ease interacting from the
+            command line with the installed broker.
+* Enhance : Avoid re-touching OpenMQ log each chef converge.
+* Enhance : Enables Glassfish instances defined in the domain attributes. Fixes #77.
+            Submitted by David Lakatos.
+* Enhance : Add support for defining JMS Destinations. Submitted by James Walker.
+* Enhance : Add support for Payara 4.1.1.161. Submitted by James Walker.
+* Bug     : Make sure thread pools that are not configured are correctly deleted.
+            Fixes #88. Reported by David Lakatos.
+* Bug     : Fix directory permissions on archives directory. Fixes #80.
+            Reported by David Lakatos.
+* Bug     : Support -1 as value for numeric attributes in jdbc_connection_pool. Fixes #74.
+            Reported by David Lakatos.
+* Enhance : Add the ability to disable deletion/undeploying/unsetting of elements in
+            `attribute_driven_domain` receipe by adding an attribute 'managed' set to
+            false in the top level of the element. i.e. To disable undeploying of
+            applications then add configuration such as:
+
+                'deployables' => {
+                        'managed' => false
+                    },
+* Enhance : Let the cookbook define systemd start/stop timeouts. Fixes #93.
+            Submitted by David Lakatos.
+
+## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
             directly and not from the init scripts or using the generated script.
 * Enhance : Makes application library usage available for deployables stored in
             ${com.sun.aas.instanceRootURI}/lib/applibs
+* Enhance : Enables the installation of binary endorsed library jar files. For more details, see
+            https://docs.oracle.com/cd/E26576_01/doc.312/e24930/class-loaders.htm#GSDVG00097
+            Submitted by David Lakatos.
+* Enhance : Enables setting asadmin timeout Submitted by David Lakatos.
 * Change  : Depend upon the `compat_resource` cookbook if present. This is required for
             Chef 12.5+ as chef client changed the resource API between 12.4 and 12.5.
-            Change was inspired by Tero Pihlaja.
+            Change was inspired by Tero Pihlaja. This stops the cookbook working in
+            Chef 11 and earlier.
 * Bug     : Connector archive deployment was preceded by its configuration. Fix by reordering
             rar deployables prior to resource adapter definition. Fixed by David Lakatos.
+* Bug     : java.endorsed.dirs variable corrected in domain.rb resource: Fixes #65.
+            Submitted by David Lakatos.
 
 ## v0.7.4:
 * Change  : Added support for portbase in the domain creation command.

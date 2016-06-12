@@ -18,10 +18,10 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 ## Platform:
 
 * ubuntu
-* compat_resource
 
 ## Cookbooks:
 
+* compat_resource
 * java
 * authbind
 * archive
@@ -39,6 +39,7 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 * `node['glassfish']['remove_domains_dir_on_install']` - A flag determining whether we should remove the domains directory. Defaults to `true`.
 * `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
 * `node['glassfish']['domains']` - GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain. Defaults to `Mash.new`.
+* `node['glassfish']['asadmin']['timeout']` - Asadmin Timeout: The timeout in seconds set for asadmin calls. Defaults to `150`.
 * `node['openmq']['extra_libraries']` - Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath. Defaults to `Mash.new`.
 * `node['openmq']['instances']` - GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker. Defaults to `Mash.new`.
 * `node['openmq']['var_home']` - GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration. Defaults to `/var/omq`.
@@ -264,9 +265,11 @@ Configures 0 or more GlassFish domains using search to generate the configuratio
 * [glassfish_deployable](#glassfish_deployable)
 * [glassfish_domain](#glassfish_domain) - Creates a GlassFish application domain, creates an OS-level service and starts the service.
 * [glassfish_iiop_listener](#glassfish_iiop_listener)
+* [glassfish_instance](#glassfish_instance) - Creates a GlassFish server instance in the domain configuration.
 * [glassfish_javamail_resource](#glassfish_javamail_resource)
 * [glassfish_jdbc_connection_pool](#glassfish_jdbc_connection_pool)
 * [glassfish_jdbc_resource](#glassfish_jdbc_resource)
+* [glassfish_jms_destination](#glassfish_jms_destination)
 * [glassfish_jms_resource](#glassfish_jms_resource)
 * [glassfish_jvm_options](#glassfish_jvm_options)
 * [glassfish_library](#glassfish_library)
@@ -515,6 +518,7 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - async_replication:  Defaults to <code>true</code>.
 - properties:  Defaults to <code>{}</code>.
 - descriptors:  Defaults to <code>{}</code>.
+- libraries: Array of JAR file names deployed as applibs which are used by this deployable. Defaults to <code>[]</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -524,7 +528,6 @@ used when there is not yet a resource defined in this cookbook for executing an 
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
-- libraries: Array of JAR file names deployed as applibs which are used by this deployable. Defaults to <code>[]</code>
 
 ## glassfish_domain
 
@@ -547,6 +550,9 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - java_agents: An array of javaagent arguments to pass the JVM. Defaults to <code>[]</code>.
 - env_variables: A hash of environment variables set when running the domain. Defaults to <code>{}</code>.
 - portbase: Portbase from which port and admin_port are automatically calculated. Warning: This can't be used together with admin_port.
+- systemd_enabled: is a boolean value to use systemd or not. Defaults to <code>false</code>.
+- systemd_start_timeout: is an integer value which sets the service start timeout in seconds. Defaults to <code>90</code>.
+- systemd_stop_timeout: is an integer value which sets the service stop timeout in seconds. Defaults to <code>90</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
@@ -566,7 +572,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
     glassfish_domain "my_domain" do
       port 80
       admin_port 8103
-      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10.jar']
+      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10-all.jar']
       logging_properties {
         "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
         ".level" => "INFO",
@@ -602,6 +608,42 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+## glassfish_instance
+
+Creates a GlassFish server instance in the domain configuration.
+
+### Actions
+
+- create: Create the instance and start it.. Default action.
+- delete: Stop the instance if running and remove it from the config.
+
+### Attribute Parameters
+
+- instance_name:
+- node_name:
+- config_name:
+- lbenabled:
+- portbase:
+- checkports:
+- systemproperties:  Defaults to <code>{}</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+### Examples
+
+    # Create a standalone Glassfish instance
+    glassfish_instance "Myserver" do
+      node_name 'localhost-domain1'
+      lbenabled false
+    end
 
 ## glassfish_javamail_resource
 
@@ -708,6 +750,27 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - target:  Defaults to <code>"server"</code>.
 - description:  Defaults to <code>nil</code>.
 - properties:  Defaults to <code>{}</code>.
+- domain_name: The name of the domain.
+- terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
+- echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.
+- username: The username to use when communicating with the domain. Defaults to <code>nil</code>.
+- password_file: The file in which the password must be stored assigned to appropriate key. Defaults to <code>nil</code>.
+- secure: If true use SSL when communicating with the domain for administration. Defaults to <code>false</code>.
+- admin_port: The port on which the web management console is bound. Defaults to <code>4848</code>.
+- system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
+- system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+
+## glassfish_jms_destination
+
+### Actions
+
+- create:  Default action.
+- delete:
+
+### Attribute Parameters
+
+- name:
+- desttype:  Defaults to <code>"queue"</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.

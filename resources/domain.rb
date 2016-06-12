@@ -27,7 +27,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
     glassfish_domain "my_domain" do
       port 80
       admin_port 8103
-      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10.jar']
+      extra_libraries ['http://central.maven.org/maven2/org/realityforge/gelf4j/gelf4j/1.10/gelf4j-1.10-all.jar']
       logging_properties {
         "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
         ".level" => "INFO",
@@ -65,6 +65,10 @@ attribute :portbase, :kind_of => Integer
 
 #<> @attribute systemd_enabled is a boolean value to use systemd or not.
 attribute :systemd_enabled, :kind_of => [TrueClass, FalseClass], :default => false
+#<> @attribute systemd_start_timeout is an integer value which sets the service start timeout in seconds.
+attribute :systemd_start_timeout, :kind_of => Integer, :default => 90
+#<> @attribute systemd_stop_timeout is an integer value which sets the service stop timeout in seconds.
+attribute :systemd_stop_timeout, :kind_of => Integer, :default => 90
 #<> @attribute domain_name The name of the domain.
 attribute :domain_name, :kind_of => String, :name_attribute => true
 #<> @attribute terse Use terse output from the underlying asadmin.
@@ -143,7 +147,7 @@ def installation_jvm_options
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
     "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
-    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['domains_dir']}/glassfish/lib/endorsed",
+    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['install_dir']}/glassfish/lib/endorsed",
   ]
 end
 

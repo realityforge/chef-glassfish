@@ -1,4 +1,4 @@
-script: "gem install foodcritic -v 2.0.0 && foodcritic -f any -t ~FC023 -t ~FC017 -t ~FC007 -t ~FC034 ."
+script: "gem install foodcritic -v 2.0.0 && foodcritic -f any -t ~FC023 -t ~FC017 -t ~FC007 -t ~FC034 -t ~FC022 ."
 rvm:
   - 1.9.3
 
