@@ -37,7 +37,10 @@ def gf_scan_existing_binary_endorsed_jars(install_dir)
 end
 
 if node['glassfish']['package_url'].nil?
-  if node['glassfish']['version'] == '4.1.1.161'
+  if node['glassfish']['version'] == '4.1.1.162'
+    raise "The version 4.1.1.162 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
+    node.override['glassfish']['package_url'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.162/payara-4.1.1.162.zip'
+  elsif node['glassfish']['version'] == '4.1.1.161'
     raise "The version 4.1.1.161 requires that node['glassfish']['variant'] be set to 'payara'" unless node['glassfish']['variant'] == 'payara'
     node.override['glassfish']['package_url'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.161/payara-4.1.1.161.zip'
   elsif node['glassfish']['version'] == '4.1.1.154'
