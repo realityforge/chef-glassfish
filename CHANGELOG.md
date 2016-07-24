@@ -23,6 +23,8 @@
 * Change   : Updated login.conf for Glassfish 4. Submitted by Ian Caughley.
 * Enhance  : Let the cookbook define systemd start/stop timeouts. Fixes #93.
              Submitted by David Lakatos.
+* Change   : Update the url to download GlassFish packages from from dlc.sun.com.edgesuite.net
+             to download.java.net
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
