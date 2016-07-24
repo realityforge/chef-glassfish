@@ -306,7 +306,7 @@ action :create do
   template "/etc/systemd/system/#{service_name}.service" do
     only_if { new_resource.systemd_enabled }
     source 'systemd.service.erb'
-    mode '0744'
+    mode '0644'
     cookbook 'glassfish'
 
     asadmin = Asadmin.asadmin_script(node)
@@ -314,8 +314,10 @@ action :create do
 
     variables(:new_resource => new_resource,
               :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
+              :start_domain_timeout => new_resource.systemd_start_timeout,
               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
+              :stop_domain_timeout => new_resource.systemd_stop_timeout,
               :authbind => requires_authbind,
               :listen_ports => [new_resource.admin_port, new_resource.port])
     notifies :restart, "service[#{service_name}]", :delayed
@@ -334,6 +336,10 @@ action :destroy do
   end
 
   file "/etc/init.d/#{service_name}" do
+    action :delete
+  end
+
+  file "/etc/systemd/system/#{service_name}.service" do
     action :delete
   end
 

@@ -551,6 +551,8 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - env_variables: A hash of environment variables set when running the domain. Defaults to <code>{}</code>.
 - portbase: Portbase from which port and admin_port are automatically calculated. Warning: This can't be used together with admin_port.
 - systemd_enabled: is a boolean value to use systemd or not. Defaults to <code>false</code>.
+- systemd_start_timeout: is an integer value which sets the service start timeout in seconds. Defaults to <code>90</code>.
+- systemd_stop_timeout: is an integer value which sets the service stop timeout in seconds. Defaults to <code>90</code>.
 - domain_name: The name of the domain.
 - terse: Use terse output from the underlying asadmin. Defaults to <code>false</code>.
 - echo: If true, echo commands supplied to asadmin. Defaults to <code>true</code>.

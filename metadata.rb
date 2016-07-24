@@ -7,6 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.7.7'
 
 supports 'ubuntu'
+supports 'debian'
 
 # Compat resource is required for 12.5+ as resource API changed between 12.4 and 12.5
 depends 'compat_resource'
