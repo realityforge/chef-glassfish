@@ -287,7 +287,12 @@ action :create do
 
   template "/etc/init.d/#{service_name}" do
     only_if { !new_resource.systemd_enabled }
+case node["platform_family"]
+when "debian"
+    source 'init.d.ubuntu.erb'
+when "rhel"
     source 'init.d.erb'
+end
     mode '0744'
     cookbook 'glassfish'
 
