@@ -228,7 +228,6 @@ action :create do
       run_template_name 'omq'
       check_script_template_name 'omq'
       options(:instance_dir => instance_dir,
-              :listen_ports => listen_ports,
               :instance_name => new_resource.instance,
               :authbind => requires_authbind,
               :vmargs => vm_args.join(' '),
