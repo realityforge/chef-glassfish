@@ -63,6 +63,7 @@ raise "glassfish.package_url not specified and unable to be derived. Please spec
 include_recipe 'java'
 
 group node['glassfish']['group'] do
+  not_if "getent group #{node['glassfish']['group']}"
 end
 
 user node['glassfish']['user'] do
