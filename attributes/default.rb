@@ -44,3 +44,14 @@ default['openmq']['extra_libraries'] = Mash.new
 default['openmq']['instances'] = Mash.new
 #<> GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration.
 default['openmq']['var_home'] = '/var/omq'
+
+default['glassfish']['package_urls']['glassfish']['3.1.2.2'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
+default['glassfish']['package_urls']['glassfish']['4.0'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
+default['glassfish']['package_urls']['glassfish']['4.1'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
+default['glassfish']['package_urls']['glassfish']['4.1.1'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
+
+default['glassfish']['package_urls']['payara']['4.1.1.151'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.1.151.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.152'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.1.152.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.154'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.154/payara-4.1.1.154.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.161'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.161/payara-4.1.1.161.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.162'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.162/payara-4.1.1.162.zip'
