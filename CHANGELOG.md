@@ -1,4 +1,6 @@
 ## v0.7.8 (Pending):
+* Fix     : Restore support for multiple instances of GlassFish under ubuntu.
+            Fix submitted by Tero Pihlaja.
 * Enhance : Generate `bin/<instance>_imqcmd` script to ease interacting from the
             command line with the installed broker.
 * Enhance : Avoid re-touching OpenMQ log each chef converge.
