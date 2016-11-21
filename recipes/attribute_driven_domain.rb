@@ -539,7 +539,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - managed_scheduled_executor_services"
   gf_sort(definition['managed_scheduled_executor_services'] || {}).each_pair do |key, config|
-    glassfish_managed_executor_service key do
+    glassfish_managed_scheduled_executor_service key do
       domain_name domain_key
       admin_port admin_port if admin_port
       username username if username
@@ -1289,7 +1289,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     default_context = 'concurrent/__defaultManagedScheduledExecutorService'
     unless definition['managed_scheduled_executor_services'] && definition['managed_scheduled_executor_services'][existing] || default_context == existing
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing managed_scheduled_executor_services #{existing}"
-      glassfish_managed_executor_service existing do
+      glassfish_managed_scheduled_executor_service existing do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
