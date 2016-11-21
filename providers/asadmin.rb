@@ -20,7 +20,7 @@ use_inline_resources
 
 action :run do
   bash "asadmin #{new_resource.command}" do
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     user new_resource.system_user unless node[:os] == 'windows'

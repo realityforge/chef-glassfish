@@ -23,7 +23,7 @@ action :create do
 
   bash "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
     not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'
@@ -42,7 +42,7 @@ action :create do
 
   bash "imqcmd_update_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
     only_if { processed_config.size > 0 }
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'
@@ -54,7 +54,7 @@ end
 action :destroy do
   bash "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
     only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'

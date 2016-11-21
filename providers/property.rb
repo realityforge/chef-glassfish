@@ -33,7 +33,7 @@ action :set do
 
         not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
 
       user new_resource.system_user unless node[:os] == 'windows'

@@ -41,7 +41,7 @@ action :set do
         args << encode_options([line])
 
         execute "asadmin_create-jvm-option #{line}" do
-          # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+          # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
           timeout node['glassfish']['asadmin']['timeout'] + 5
 
           user new_resource.system_user unless node[:os] == 'windows'
@@ -60,7 +60,7 @@ action :set do
         args << encode_options([line])
 
         execute "asadmin_delete-jvm-option #{line}" do
-          # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+          # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
           timeout node['glassfish']['asadmin']['timeout'] + 5
 
           user new_resource.system_user unless node[:os] == 'windows'
@@ -84,7 +84,7 @@ action :set do
         delete_command << existing_option_string
         delete_command << asadmin_target_flag
 
-        # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+        # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
         timeout node['glassfish']['asadmin']['timeout'] + 5
 
         user new_resource.system_user unless node[:os] == 'windows'
@@ -100,7 +100,7 @@ action :set do
         create_command << new_option_string
         create_command << asadmin_target_flag
 
-        # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+        # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
         timeout node['glassfish']['asadmin']['timeout'] + 5
 
         user new_resource.system_user unless node[:os] == 'windows'

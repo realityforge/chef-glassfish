@@ -25,7 +25,7 @@ action :create do
   args << new_resource.name
 
   execute "asadmin_create-jmsdest #{new_resource.name}" do
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'
@@ -43,7 +43,7 @@ action :delete do
   args << new_resource.name
 
   execute "asadmin_delete-jmsdest #{new_resource.name}" do
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'

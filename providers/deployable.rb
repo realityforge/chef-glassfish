@@ -89,7 +89,7 @@ action :deploy do
       end
 
       bash "Create #{deployment_plan}" do
-        # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+        # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
         timeout node['glassfish']['asadmin']['timeout'] + 5
 
         command = <<-CMD
@@ -139,7 +139,7 @@ action :deploy do
       command << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
       command << a.target_artifact
 
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node[:os] == 'windows'
       group new_resource.system_group unless node[:os] == 'windows'
@@ -173,7 +173,7 @@ action :undeploy do
       unless cache_present
         only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => node['glassfish']['asadmin']['timeout']
       end
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node[:os] == 'windows'
       group new_resource.system_group unless node[:os] == 'windows'
@@ -204,7 +204,7 @@ action :disable do
 
   bash "asadmin_disable #{new_resource.component_name}" do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout']
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'
@@ -220,7 +220,7 @@ action :enable do
 
   bash "asadmin_enable #{new_resource.component_name}" do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout']
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'

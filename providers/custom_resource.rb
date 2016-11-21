@@ -41,7 +41,7 @@ action :create do
     args << new_resource.jndi_name
 
     execute "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
 
       user new_resource.system_user unless node[:os] == 'windows'
@@ -89,7 +89,7 @@ action :delete do
     args << new_resource.jndi_name
 
     execute "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
 
       user new_resource.system_user unless node[:os] == 'windows'

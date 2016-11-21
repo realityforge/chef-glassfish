@@ -48,7 +48,7 @@ action :create do
         filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
         not_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node[:os] == 'windows'
       group new_resource.system_group unless node[:os] == 'windows'
@@ -95,7 +95,7 @@ action :delete do
     args << new_resource.name
 
     execute "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node[:os] == 'windows'
       group new_resource.system_group unless node[:os] == 'windows'
