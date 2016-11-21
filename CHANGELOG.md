@@ -1,4 +1,6 @@
 ## v0.7.8 (Pending):
+* Fix     : Restore support for multiple instances of GlassFish under ubuntu.
+            Fix submitted by Tero Pihlaja.
 * Enhance : Generate `bin/<instance>_imqcmd` script to ease interacting from the
             command line with the installed broker.
 * Enhance : Avoid re-touching OpenMQ log each chef converge.
@@ -25,6 +27,7 @@
              Submitted by David Lakatos.
 * Change   : Update the url to download GlassFish packages from from dlc.sun.com.edgesuite.net
              to download.java.net
+* Fix      : Fixed creation of Managed Schedule Exector Services. Submitted by Ian Caughley.
 
 ## v0.7.6:
 * Enhance : Generate `asenv.conf` with correct values in case the asadmin command is used
