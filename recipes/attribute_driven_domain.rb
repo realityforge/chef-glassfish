@@ -527,19 +527,19 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       contextinfo config['contextinfo'] if config['contextinfo']
       description config['description'] if config['description']
       threadpriority config['threadpriority'] if config['threadpriority']
-      threadpriority config['corepoolsize'] if config['corepoolsize']
-      threadpriority config['hungafterseconds'] if config['hungafterseconds']
-      threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
-      threadpriority config['longrunningtasks'] if config['longrunningtasks']
-      threadpriority config['maximumpoolsize'] if config['maximumpoolsize']
-      threadpriority config['taskqueuecapacity'] if config['taskqueuecapacity']
-      threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
+      corepoolsize config['corepoolsize'] if config['corepoolsize']
+      hungafterseconds config['hungafterseconds'] if config['hungafterseconds']
+      keepaliveseconds config['keepaliveseconds'] if config['keepaliveseconds']
+      longrunningtasks config['longrunningtasks'] if config['longrunningtasks']
+      maximumpoolsize config['maximumpoolsize'] if config['maximumpoolsize']
+      taskqueuecapacity config['taskqueuecapacity'] if config['taskqueuecapacity']
+      threadlifetimeseconds config['threadlifetimeseconds'] if config['threadlifetimeseconds']
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - managed_scheduled_executor_services"
   gf_sort(definition['managed_scheduled_executor_services'] || {}).each_pair do |key, config|
-    glassfish_managed_executor_service key do
+    glassfish_managed_scheduled_executor_service key do
       domain_name domain_key
       admin_port admin_port if admin_port
       username username if username
@@ -553,11 +553,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       contextinfo config['contextinfo'] if config['contextinfo']
       description config['description'] if config['description']
       threadpriority config['threadpriority'] if config['threadpriority']
-      threadpriority config['corepoolsize'] if config['corepoolsize']
-      threadpriority config['hungafterseconds'] if config['hungafterseconds']
-      threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
-      threadpriority config['longrunningtasks'] if config['longrunningtasks']
-      threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
+      corepoolsize config['corepoolsize'] if config['corepoolsize']
+      hungafterseconds config['hungafterseconds'] if config['hungafterseconds']
+      keepaliveseconds config['keepaliveseconds'] if config['keepaliveseconds']
+      longrunningtasks config['longrunningtasks'] if config['longrunningtasks']
+      threadlifetimeseconds config['threadlifetimeseconds'] if config['threadlifetimeseconds']
     end
   end
 
@@ -1289,7 +1289,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     default_context = 'concurrent/__defaultManagedScheduledExecutorService'
     unless definition['managed_scheduled_executor_services'] && definition['managed_scheduled_executor_services'][existing] || default_context == existing
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing managed_scheduled_executor_services #{existing}"
-      glassfish_managed_executor_service existing do
+      glassfish_managed_scheduled_executor_service existing do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
