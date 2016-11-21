@@ -75,7 +75,7 @@ action :delete do
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
     group new_resource.system_group unless node[:os] == 'windows'
-    code asadmin_command(args.join(' '))
+    command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
     only_if "#{asadmin_command('list-managed-thread-factories')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
