@@ -37,7 +37,7 @@ action :create do
     group new_resource.system_group unless node[:os] == 'windows'
     command asadmin_command(args.join(' '))
 
-    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{pipe_filter(new_resource.name, regexp: false, line: true)}", :timeout => 150
+    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{pipe_filter(new_resource.name, regexp: false, line: true)}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 
   properties.each_pair do |key, value|
@@ -69,6 +69,6 @@ action :delete do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.name, regexp: false, line: true)
-    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{filter}", :timeout => 150
+    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end

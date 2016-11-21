@@ -31,7 +31,7 @@ action :set do
         filter = "grep -F -x -- '#{new_resource.key}=#{new_resource.value}'" if node[:os] == 'linux'
         filter = "findstr /L /X \"#{new_resource.key}=#{new_resource.value}\"" if node[:os] == 'windows'
 
-        not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", :timeout => 150
+        not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5

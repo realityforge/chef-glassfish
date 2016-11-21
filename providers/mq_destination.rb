@@ -22,7 +22,7 @@ action :create do
   Chef::Log.info "Creating MQ Destination #{new_resource.destination_name}"
 
   bash "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => 150
+    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'
@@ -53,7 +53,7 @@ end
 
 action :destroy do
   bash "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => 150
+    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node[:os] == 'windows'

@@ -40,7 +40,7 @@ action :create do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.iioplistener_id, regexp: false, line: true)
-    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | #{filter}", :timeout => 150
+    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 
   properties = new_resource.properties.dup.merge(
@@ -78,6 +78,6 @@ action :delete do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.iioplistener_id, regexp: false, line: true)
-    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | #{filter}", :timeout => 150
+    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end

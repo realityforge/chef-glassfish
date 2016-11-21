@@ -46,7 +46,7 @@ action :create do
     execute "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
         filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
-        not_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => 150
+        not_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
@@ -103,7 +103,7 @@ action :delete do
 
       unless cache_present
         filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
-        only_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => 150
+        only_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
     end
   end

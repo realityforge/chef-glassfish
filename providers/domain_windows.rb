@@ -187,7 +187,7 @@ action :create do
   end
 
   execute "create domain #{new_resource.domain_name}" do
-    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", :timeout => 150
+    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", :timeout => node['glassfish']['asadmin']['timeout'] + 5
 
     create_args = []
     create_args << '--checkports=false'

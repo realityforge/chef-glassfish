@@ -43,7 +43,7 @@ action :create do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.pool_name, regexp: false, line: true)
-    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => 150
+    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
@@ -62,6 +62,6 @@ action :delete do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.pool_name, regexp: false, line: true)
-    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => 150
+    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end

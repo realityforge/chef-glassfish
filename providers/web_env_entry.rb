@@ -39,7 +39,7 @@ action :set do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter("#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})", regexp: false, line: true)
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => 150
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
@@ -58,6 +58,6 @@ action :unset do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.name, regexp: false, line: true)
-    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => 150
+    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end

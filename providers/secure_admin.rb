@@ -33,7 +33,7 @@ action :enable do
     command asadmin_command('enable-secure-admin', true, :secure => false)
 
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
-    not_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", :timeout => 150
+    not_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
 
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
@@ -53,7 +53,7 @@ action :disable do
     command asadmin_command('disable-secure-admin')
 
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
-    only_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", :timeout => 150
+    only_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
 
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
