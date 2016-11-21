@@ -20,34 +20,42 @@ use_inline_resources
 
 action :create do
 
-  command = []
-  command << 'create-resource-adapter-config'
+  args = []
+  args << 'create-resource-adapter-config'
 
-  command << '--threadpoolid' << new_resource.threadpoolid if new_resource.threadpoolid
-  command << '--objecttype' << new_resource.objecttype if new_resource.objecttype
+  args << '--threadpoolid' << new_resource.threadpoolid if new_resource.threadpoolid
+  args << '--objecttype' << new_resource.objecttype if new_resource.objecttype
 
-  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << new_resource.resource_adapter_name
+  args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  args << new_resource.resource_adapter_name
 
-  bash "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.resource_adapter_name, regexp: false, line: true)
+    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => 150
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-resource-adapter-config'
-  command << new_resource.resource_adapter_name
+  args = []
+  args << 'delete-resource-adapter-config'
+  args << new_resource.resource_adapter_name
 
-  bash "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.resource_adapter_name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => 150
   end
 end

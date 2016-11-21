@@ -19,30 +19,33 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  command = []
-  command << 'create-managed-executor-service'
-  command << asadmin_target_flag
+  args = []
+  args << 'create-managed-executor-service'
+  args << asadmin_target_flag
 
-  command << '--enabled' << new_resource.enabled
-  command << '--contextinfoenabled' << new_resource.contextinfoenabled
-  command << '--threadpriority' << new_resource.threadpriority
-  command << '--contextinfo' << new_resource.contextinfo
-  command << '--corepoolsize' << new_resource.corepoolsize
-  command << '--hungafterseconds' << new_resource.hungafterseconds
-  command << '--keepaliveseconds' << new_resource.keepaliveseconds
-  command << '--longrunningtasks' << new_resource.longrunningtasks
-  command << '--maximumpoolsize' << new_resource.maximumpoolsize
-  command << '--taskqueuecapacity' << new_resource.taskqueuecapacity
-  command << '--threadlifetimeseconds' << new_resource.threadlifetimeseconds
-  command << '--description' << "\"#{new_resource.description}\""
-  command << new_resource.jndi_name
+  args << '--enabled' << new_resource.enabled
+  args << '--contextinfoenabled' << new_resource.contextinfoenabled
+  args << '--threadpriority' << new_resource.threadpriority
+  args << '--contextinfo' << new_resource.contextinfo
+  args << '--corepoolsize' << new_resource.corepoolsize
+  args << '--hungafterseconds' << new_resource.hungafterseconds
+  args << '--keepaliveseconds' << new_resource.keepaliveseconds
+  args << '--longrunningtasks' << new_resource.longrunningtasks
+  args << '--maximumpoolsize' << new_resource.maximumpoolsize
+  args << '--taskqueuecapacity' << new_resource.taskqueuecapacity
+  args << '--threadlifetimeseconds' << new_resource.threadlifetimeseconds
+  args << '--description' << "\"#{new_resource.description}\""
+  args << new_resource.jndi_name
 
-  bash "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
-    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
+    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | #{fiter}", :timeout => 150
   end
 
   properties = {
@@ -75,16 +78,20 @@ action :create do
 end
 
 action :delete do
-  command = []
-  command << 'delete-managed-executor-service'
-  command << asadmin_target_flag
-  command << new_resource.jndi_name
+  args = []
+  args << 'delete-managed-executor-service'
+  args << asadmin_target_flag
+  args << new_resource.jndi_name
 
-  bash "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
-    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | #{filter}", :timeout => 150
   end
 end

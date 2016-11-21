@@ -19,7 +19,7 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  output = `#{asadmin_command("get '*'", true, :terse => true, :echo => false)}`
+  output = `#{asadmin_command("get \"*\"", true, :terse => true, :echo => false)}`
   raise "Error caching properties" unless $?.exitstatus.to_i == 0
 
   values = {}

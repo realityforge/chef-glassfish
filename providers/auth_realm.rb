@@ -19,22 +19,25 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  command = []
-  command << 'create-auth-realm'
-  command << asadmin_target_flag
-  command << '--classname' << new_resource.classname
+  args = []
+  args << 'create-auth-realm'
+  args << asadmin_target_flag
+  args << '--classname' << new_resource.classname
   properties = new_resource.properties.dup
   properties['jaas-context'] = new_resource.jaas_context if new_resource.jaas_context
   properties['assign-groups'] = new_resource.assign_groups if new_resource.assign_groups
-  command << '--property' << encode_parameters(properties)
-  command << new_resource.name
+  args << '--property' << encode_parameters(properties)
+  args << new_resource.name
 
-  bash "asadmin_create_auth_realm #{new_resource.name}" do
-    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_create_auth_realm #{new_resource.name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{pipe_filter(new_resource.name, regexp: false, line: true)}", :timeout => 150
   end
 
   properties.each_pair do |key, value|
@@ -52,16 +55,20 @@ action :create do
 end
 
 action :delete do
-  command = []
-  command << 'delete-auth-realm'
-  command << asadmin_target_flag
-  command << new_resource.name
+  args = []
+  args << 'delete-auth-realm'
+  args << asadmin_target_flag
+  args << new_resource.name
 
-  bash "asadmin_delete_auth_realm #{new_resource.name}" do
-    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_delete_auth_realm #{new_resource.name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{filter}", :timeout => 150
   end
 end

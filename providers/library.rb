@@ -16,8 +16,14 @@
 
 include Chef::Asadmin
 
+provides :glassfish_library, os: 'linux'
+
 def type_flag
   "--type #{new_resource.library_type}"
+end
+
+def service_name
+  "#{new_resource.domain_name}"
 end
 
 use_inline_resources
@@ -34,7 +40,7 @@ action :add do
   directory ::File.dirname(cached_package_filename) do
     not_if check_command
     owner new_resource.system_user
-    group new_resource.system_group
+    group new_resource.system_group unless node[:os] == 'windows'
     mode '0770'
     recursive true
   end
@@ -43,7 +49,7 @@ action :add do
     not_if check_command
     source new_resource.url
     owner new_resource.system_user
-    group new_resource.system_group
+    group new_resource.system_group unless node[:os] == 'windows'
     mode '0640'
     action :create_if_missing
   end
@@ -56,9 +62,10 @@ action :add do
 
   bash "asadmin_add-library #{new_resource.url}" do
     not_if check_command, :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     code asadmin_command(command.join(' '))
     if new_resource.requires_restart
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
@@ -74,9 +81,10 @@ action :remove do
 
   bash "asadmin_remove-library #{new_resource.url}" do
     only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     code asadmin_command(command.join(' '))
   end
 end

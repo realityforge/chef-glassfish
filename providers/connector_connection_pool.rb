@@ -24,37 +24,44 @@ action :create do
     ::Chef::Resource::GlassfishConnectorConnectionPool::NUMERIC_ATTRIBUTES +
     ::Chef::Resource::GlassfishConnectorConnectionPool::BOOLEAN_ATTRIBUTES
 
-  command = []
-  command << 'create-connector-connection-pool'
-  parameters.each do |key|
-    command << "--#{key}=#{new_resource.send(key)}" if new_resource.send(key)
+  args = []
+  args << 'create-connector-connection-pool'
+  args += parameters.select { |key| new_resource.send(key)}.map do |key|
+    "--#{key}=#{new_resource.send(key)}"
   end
+  args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  args << "--description='#{new_resource.description}'" if new_resource.description
+  args << new_resource.pool_name
 
-  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << "--description='#{new_resource.description}'" if new_resource.description
-  command << new_resource.pool_name
 
+  execute "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
 
-  bash "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
-    not_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.pool_name, regexp: false, line: true)
+    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => 150
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-connector-connection-pool'
-  command << '--cascade=true'
-  command << new_resource.pool_name
+  args = []
+  args << 'delete-connector-connection-pool'
+  args << '--cascade=true'
+  args << new_resource.pool_name
 
-  bash "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
-    only_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.pool_name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => 150
   end
 end

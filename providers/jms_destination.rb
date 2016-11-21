@@ -19,31 +19,37 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  command = []
-  command << 'create-jmsdest'
-  command << '--desttype' << new_resource.desttype
-  command << new_resource.name
+  args = []
+  args << 'create-jmsdest'
+  args << '--desttype' << new_resource.desttype
+  args << new_resource.name
 
-  bash "asadmin_create-jmsdest #{new_resource.name}" do
-    not_if "#{asadmin_command('list-jmsdest')} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_create-jmsdest #{new_resource.name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    not_if "#{asadmin_command('list-jmsdest')} | #{filter}", :timeout => 150
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-jmsdest'
-  command << asadmin_target_flag
-  command << new_resource.name
+  args = []
+  args << 'delete-jmsdest'
+  args << asadmin_target_flag
+  args << new_resource.name
 
-  bash "asadmin_delete-jmsdest #{new_resource.name}" do
-    only_if "#{asadmin_command('list-jmsdest')} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_delete-jmsdest #{new_resource.name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-jmsdest')} | #{filter}", :timeout => 150
   end
 end

@@ -19,38 +19,45 @@ include Chef::Asadmin
 use_inline_resources
 
 action :set do
-  command = []
-  command << 'set-web-env-entry'
-  command << '--name' << new_resource.name
-  command << '--type' << new_resource.type
-  command << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args = []
+  args << 'set-web-env-entry'
+  args << '--name' << new_resource.name
+  args << '--type' << new_resource.type
+  args << '--description' << "'#{new_resource.description}'" if new_resource.description
   if new_resource.value.nil?
-    command << '--ignoreDescriptorItem'
+    args << '--ignoreDescriptorItem'
   else
-    command << "'--value=#{new_resource.value}'"
+    args << "'--value=#{new_resource.value}'"
   end
-  command << new_resource.webapp
+  args << new_resource.webapp
 
-  bash "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter("#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})", regexp: false, line: true)
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => 150
   end
 end
 
 action :unset do
-  command = []
-  command << 'unset-web-env-entry'
-  command << '--name' << new_resource.name
-  command << new_resource.webapp
+  args = []
+  args << 'unset-web-env-entry'
+  args << '--name' << new_resource.name
+  args << new_resource.webapp
 
-  bash "asadmin_unset-web-env-entry #{new_resource.name}" do
-    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
-    timeout 150
-    user new_resource.system_user
-    group new_resource.system_group
-    code asadmin_command(command.join(' '))
+  execute "asadmin_unset-web-env-entry #{new_resource.name}" do
+    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
+
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => 150
   end
 end

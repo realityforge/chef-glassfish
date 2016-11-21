@@ -32,23 +32,28 @@ action :create do
 
   if may_need_create
 
-    command = []
-    command << 'create-threadpool'
-    command << asadmin_target_flag
-    command << '--maxthreadpoolsize' << new_resource.maxthreadpoolsize
-    command << '--minthreadpoolsize' << new_resource.minthreadpoolsize
-    command << '--idletimeout' << new_resource.idletimeout
-    command << '--maxqueuesize' << new_resource.maxqueuesize
-    command << new_resource.threadpool_id
+    args = []
+    args << 'create-threadpool'
+    args << asadmin_target_flag
+    args << '--maxthreadpoolsize' << new_resource.maxthreadpoolsize
+    args << '--minthreadpoolsize' << new_resource.minthreadpoolsize
+    args << '--idletimeout' << new_resource.idletimeout
+    args << '--maxqueuesize' << new_resource.maxqueuesize
+    args << new_resource.threadpool_id
 
-    bash "asadmin_threadpool #{new_resource.threadpool_id}" do
+    execute "asadmin_threadpool #{new_resource.threadpool_id}" do
+      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      timeout node['glassfish']['asadmin']['timeout'] + 5
+
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
+      command asadmin_command(args.join(' '))
+
       unless cache_present
-        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
+        filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
+        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", :timeout => 150
       end
-      timeout 150
-      user new_resource.system_user
-      group new_resource.system_group
-      code asadmin_command(command.join(' '))
+
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
     end
   end
@@ -85,19 +90,23 @@ action :delete do
       true
 
   if may_need_delete
-    command = []
-    command << 'delete-threadpool'
-    command << asadmin_target_flag
-    command << new_resource.threadpool_id
+    args = []
+    args << 'delete-threadpool'
+    args << asadmin_target_flag
+    args << new_resource.threadpool_id
 
-    bash "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
+    execute "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
+      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      timeout node['glassfish']['asadmin']['timeout'] + 5
+
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
+      command asadmin_command(args.join(' '))
+
       unless cache_present
-        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
+        filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
+        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", :timeout => 150
       end
-      timeout 150
-      user new_resource.system_user
-      group new_resource.system_group
-      code asadmin_command(command.join(' '))
     end
   end
 end

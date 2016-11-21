@@ -26,14 +26,20 @@ action :set do
       true
 
   if may_need_update
-    bash "asadmin_set #{new_resource.key}=#{new_resource.value}" do
+    execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
       unless cache_present
-        not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", :timeout => 150
+        filter = "grep -F -x -- '#{new_resource.key}=#{new_resource.value}'" if node[:os] == 'linux'
+        filter = "findstr /L /X \"#{new_resource.key}=#{new_resource.value}\"" if node[:os] == 'windows'
+
+        not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", :timeout => 150
       end
-      timeout 150
-      user new_resource.system_user
-      group new_resource.system_group
-      code asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
+      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      timeout node['glassfish']['asadmin']['timeout'] + 5
+
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
+
+      command asadmin_command("set \"#{new_resource.key}=#{new_resource.value}\"")
     end
 
     if cache_present

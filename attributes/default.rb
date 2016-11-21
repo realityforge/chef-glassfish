@@ -26,13 +26,13 @@ default['glassfish']['variant'] = 'glassfish'
 #<> Package URL: The url to the GlassFish install package.
 default['glassfish']['package_url'] = nil
 #<> GlassFish Base Directory: The base directory of the GlassFish install.
-default['glassfish']['base_dir'] = '/usr/local/glassfish'
+default['glassfish']['base_dir'] = nil # See platform specific defaults
 #<> GlassFish Install Directory: The directory into which glassfish is actually installed.
-default['glassfish']['install_dir'] = nil
+default['glassfish']['install_dir'] = nil # DO NOT OVERRIDE, set during installation.
 #<> A flag determining whether we should remove the domains directory.
 default['glassfish']['remove_domains_dir_on_install'] = true
 #<> GlassFish Domain Directory: The directory containing all the domain instance data and configuration.
-default['glassfish']['domains_dir'] = '/srv/glassfish'
+default['glassfish']['domains_dir'] = nil # See platform specific defaults
 #<> GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain.
 default['glassfish']['domains'] = Mash.new
 #<> Asadmin Timeout: The timeout in seconds set for asadmin calls
@@ -43,7 +43,7 @@ default['openmq']['extra_libraries'] = Mash.new
 #<> GlassFish OpenMQ Broker Definitions: A map of broker definitions that drive the instantiation of a OpenMQ broker.
 default['openmq']['instances'] = Mash.new
 #<> GlassFish OpenMQ Broker Directory: The directory containing all the broker instance data and configuration.
-default['openmq']['var_home'] = '/var/omq'
+default['openmq']['var_home'] = nil # See platform specific defaults
 
 default['glassfish']['package_urls']['glassfish']['3.1.2.2'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 default['glassfish']['package_urls']['glassfish']['4.0'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
@@ -55,3 +55,4 @@ default['glassfish']['package_urls']['payara']['4.1.1.152'] = 'https://s3-eu-wes
 default['glassfish']['package_urls']['payara']['4.1.1.154'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.154/payara-4.1.1.154.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.161'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.161/payara-4.1.1.161.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.162'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.162/payara-4.1.1.162.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.163'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.163/payara-4.1.1.163.zip'
