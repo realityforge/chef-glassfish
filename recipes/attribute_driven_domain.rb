@@ -527,13 +527,13 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       contextinfo config['contextinfo'] if config['contextinfo']
       description config['description'] if config['description']
       threadpriority config['threadpriority'] if config['threadpriority']
-      threadpriority config['corepoolsize'] if config['corepoolsize']
-      threadpriority config['hungafterseconds'] if config['hungafterseconds']
-      threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
-      threadpriority config['longrunningtasks'] if config['longrunningtasks']
-      threadpriority config['maximumpoolsize'] if config['maximumpoolsize']
-      threadpriority config['taskqueuecapacity'] if config['taskqueuecapacity']
-      threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
+      corepoolsize config['corepoolsize'] if config['corepoolsize']
+      hungafterseconds config['hungafterseconds'] if config['hungafterseconds']
+      keepaliveseconds config['keepaliveseconds'] if config['keepaliveseconds']
+      longrunningtasks config['longrunningtasks'] if config['longrunningtasks']
+      maximumpoolsize config['maximumpoolsize'] if config['maximumpoolsize']
+      taskqueuecapacity config['taskqueuecapacity'] if config['taskqueuecapacity']
+      threadlifetimeseconds config['threadlifetimeseconds'] if config['threadlifetimeseconds']
     end
   end
 
@@ -553,11 +553,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       contextinfo config['contextinfo'] if config['contextinfo']
       description config['description'] if config['description']
       threadpriority config['threadpriority'] if config['threadpriority']
-      threadpriority config['corepoolsize'] if config['corepoolsize']
-      threadpriority config['hungafterseconds'] if config['hungafterseconds']
-      threadpriority config['keepaliveseconds'] if config['keepaliveseconds']
-      threadpriority config['longrunningtasks'] if config['longrunningtasks']
-      threadpriority config['threadlifetimeseconds'] if config['threadlifetimeseconds']
+      corepoolsize config['corepoolsize'] if config['corepoolsize']
+      hungafterseconds config['hungafterseconds'] if config['hungafterseconds']
+      keepaliveseconds config['keepaliveseconds'] if config['keepaliveseconds']
+      longrunningtasks config['longrunningtasks'] if config['longrunningtasks']
+      threadlifetimeseconds config['threadlifetimeseconds'] if config['threadlifetimeseconds']
     end
   end
 
