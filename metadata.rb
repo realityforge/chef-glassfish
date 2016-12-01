@@ -16,3 +16,5 @@ depends 'java'
 depends 'authbind'
 depends 'archive'
 depends 'cutlery'
+
+suggests 'nssm' #Needed for windows only
