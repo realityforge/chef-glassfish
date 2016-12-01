@@ -122,9 +122,16 @@ def service_name
   "#{new_resource.domain_name}"
 end
 
+def jdk_path
+  ::File.join(node[:java][:java_home], 'bin', 'java.exe')
+end
+
+
 use_inline_resources
 
 action :create do
+  include_recipe 'nssm'
+
   if new_resource.system_group != node['glassfish']['group']
     group new_resource.system_group do
       action :create
@@ -212,7 +219,6 @@ action :create do
     end
 
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
-    notifies :run, "execute[create windows service #{new_resource.domain_name}]", :immediate
   end
 
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
@@ -230,13 +236,15 @@ action :create do
     end
   end
 
+  logging_properties = default_logging_properties.merge(new_resource.logging_properties)
+
   template "#{new_resource.domain_dir_path}/config/logging.properties" do
     source 'logging.properties.erb'
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group unless node[:os] == 'windows'
-    variables(:logging_properties => default_logging_properties.merge(new_resource.logging_properties))
+    variables(:logging_properties => logging_properties)
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
@@ -275,29 +283,76 @@ action :create do
     BAT
   end
 
-  execute "create windows service #{new_resource.domain_name}" do
-    action :nothing
-
-    args = []
-    args << domain_dir_arg
-
-    command asadmin_command("--user #{new_resource.system_user} create-service #{args.join(' ')} #{new_resource.domain_name}", false)
-  end
 
   windows_service service_name do
     asadmin = Asadmin.asadmin_script(node)
     password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
+    status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
 
-    #Stopping the service with the native command is not working for some reason...
-    restart_command            "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command               "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
-    #start_command              "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}"
+    #Stopping the service should be made with asadmin to ensure
+    restart_command            "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command               "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
 
     startup_type               :automatic
     supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
     timeout                    120
 
-    action [:enable, :start]
+    action [:nothing]
+  end
+
+  nssm service_name do
+    program jdk_path.gsub('/', '\\')
+    args %(-jar """#{::File.join(node['glassfish']['install_dir'], 'glassfish', 'modules', 'admin-cli.jar')}""" start-domain --watchdog --user ui --passwordfile """#{new_resource.password_file}""" --domaindir """#{node['glassfish']['domains_dir']}""" """#{new_resource.domain_name}""")
+    action :install
+
+    params({
+      'AppDirectory' => ::File.join(node['glassfish']['domains_dir'], new_resource.domain_name).gsub('/', '\\')
+    })
+
+    notifies :enable, "windows_service[#{service_name}]"
+    notifies :restart, "windows_service[#{service_name}]"
+  end
+
+  execute "start domain" do
+    command "echo start"
+
+    notifies :start, "windows_service[#{service_name}]"
+  end
+
+  execute 'wait for payara domain to be up and running' do
+    command 'curl -f http://localhost:4848'
+
+    retry_delay 60
+    retries 15
+
+    timeout 30
+  end
+end
+
+action :restart do
+  windows_service service_name do
+    asadmin = Asadmin.asadmin_script(node)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
+    status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
+
+    #Stopping the service should be made with asadmin to ensure
+    restart_command            "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command               "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
+
+    startup_type               :automatic
+    supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
+    timeout                    120
+
+    action [:restart]
+  end
+
+  execute 'wait for payara domain to be up and running' do
+    command 'curl -f http://localhost:4848'
+
+    retry_delay 60
+    retries 15
+
+    timeout 30
   end
 end
 
@@ -312,3 +367,4 @@ action :destroy do
     action :delete
   end
 end
+

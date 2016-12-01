@@ -49,7 +49,7 @@ action :create do
       command asadmin_command(args.join(' '))
 
       unless cache_present
-        filter = pipe_filter(new_resource.name, regexp: false, line: true)
+        filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
         not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
     end
