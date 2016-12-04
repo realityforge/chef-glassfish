@@ -19,30 +19,30 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  command = []
-  command << 'create-managed-executor-service'
-  command << asadmin_target_flag
+  args = []
+  args << 'create-managed-executor-service'
+  args << asadmin_target_flag
 
-  command << '--enabled' << new_resource.enabled
-  command << '--contextinfoenabled' << new_resource.contextinfoenabled
-  command << '--threadpriority' << new_resource.threadpriority
-  command << '--contextinfo' << new_resource.contextinfo
-  command << '--corepoolsize' << new_resource.corepoolsize
-  command << '--hungafterseconds' << new_resource.hungafterseconds
-  command << '--keepaliveseconds' << new_resource.keepaliveseconds
-  command << '--longrunningtasks' << new_resource.longrunningtasks
-  command << '--maximumpoolsize' << new_resource.maximumpoolsize
-  command << '--taskqueuecapacity' << new_resource.taskqueuecapacity
-  command << '--threadlifetimeseconds' << new_resource.threadlifetimeseconds
-  command << '--description' << "\"#{new_resource.description}\""
-  command << new_resource.jndi_name
+  args << '--enabled' << new_resource.enabled
+  args << '--contextinfoenabled' << new_resource.contextinfoenabled
+  args << '--threadpriority' << new_resource.threadpriority
+  args << '--contextinfo' << new_resource.contextinfo
+  args << '--corepoolsize' << new_resource.corepoolsize
+  args << '--hungafterseconds' << new_resource.hungafterseconds
+  args << '--keepaliveseconds' << new_resource.keepaliveseconds
+  args << '--longrunningtasks' << new_resource.longrunningtasks
+  args << '--maximumpoolsize' << new_resource.maximumpoolsize
+  args << '--taskqueuecapacity' << new_resource.taskqueuecapacity
+  args << '--threadlifetimeseconds' << new_resource.threadlifetimeseconds
+  args << '--description' << "\"#{new_resource.description}\""
+  args << new_resource.jndi_name
 
-  bash "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
+  execute "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
     not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 
   properties = {
@@ -80,11 +80,11 @@ action :delete do
   command << asadmin_target_flag
   command << new_resource.jndi_name
 
-  bash "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
+  execute "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
     only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(command.join(' '))
   end
 end

@@ -48,18 +48,18 @@ action :add do
     action :create_if_missing
   end
 
-  command = []
-  command << 'add-library'
-  command << type_flag
-  command << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.151'
-  command << cached_package_filename
+  args = []
+  args << 'add-library'
+  args << type_flag
+  args << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.151'
+  args << cached_package_filename
 
-  bash "asadmin_add-library #{new_resource.url}" do
+  execute "asadmin_add-library #{new_resource.url}" do
     not_if check_command, :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
     if new_resource.requires_restart
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
     end
@@ -67,16 +67,16 @@ action :add do
 end
 
 action :remove do
-  command = []
-  command << 'remove-library'
-  command << type_flag
-  command << ::File.basename(new_resource.url)
+  args = []
+  args << 'remove-library'
+  args << type_flag
+  args << ::File.basename(new_resource.url)
 
-  bash "asadmin_remove-library #{new_resource.url}" do
+  execute "asadmin_remove-library #{new_resource.url}" do
     only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end

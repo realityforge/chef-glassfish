@@ -19,22 +19,22 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-  command = []
-  command << 'create-context-service'
-  command << asadmin_target_flag
+  args = []
+  args << 'create-context-service'
+  args << asadmin_target_flag
 
-  command << '--enabled' << new_resource.enabled
-  command << '--contextinfoenabled' << new_resource.contextinfoenabled
-  command << '--contextinfo' << new_resource.contextinfo
-  command << '--description' << "\"#{new_resource.description}\""
-  command << new_resource.jndi_name
+  args << '--enabled' << new_resource.enabled
+  args << '--contextinfoenabled' << new_resource.contextinfoenabled
+  args << '--contextinfo' << new_resource.contextinfo
+  args << '--description' << "\"#{new_resource.description}\""
+  args << new_resource.jndi_name
 
-  bash "asadmin_create-context-service #{new_resource.jndi_name}" do
+  execute "asadmin_create-context-service #{new_resource.jndi_name}" do
     not_if "#{asadmin_command('list-context-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 
   properties = {
@@ -60,16 +60,16 @@ action :create do
 end
 
 action :delete do
-  command = []
-  command << 'delete-context-service'
-  command << asadmin_target_flag
-  command << new_resource.jndi_name
+  args = []
+  args << 'delete-context-service'
+  args << asadmin_target_flag
+  args << new_resource.jndi_name
 
-  bash "asadmin_delete-context-service #{new_resource.jndi_name}" do
+  execute "asadmin_delete-context-service #{new_resource.jndi_name}" do
     only_if "#{asadmin_command('list-context-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end

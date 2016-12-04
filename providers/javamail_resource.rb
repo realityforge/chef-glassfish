@@ -20,42 +20,42 @@ use_inline_resources
 
 action :create do
 
-  command = []
-  command << 'create-javamail-resource'
-  command << '--mailhost' << new_resource.mailhost
-  command << '--mailuser' << new_resource.mailuser
-  command << '--fromaddress' << new_resource.fromaddress
-  command << '--storeprotocol' << new_resource.storeprotocol if new_resource.storeprotocol
-  command << '--storeprotocolclass' << new_resource.storeprotocolclass if new_resource.storeprotocolclass
-  command << '--transprotocol' << new_resource.transprotocol if new_resource.transprotocol
-  command << '--transprotocolclass' << new_resource.transprotocolclass if new_resource.transprotocolclass
-  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << '--description' << "'#{new_resource.description}'" if new_resource.description
-  command << "--debug=#{new_resource.debug}" if new_resource.debug
-  command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-  command << asadmin_target_flag
-  command << new_resource.jndi_name
+  args = []
+  args << 'create-javamail-resource'
+  args << '--mailhost' << new_resource.mailhost
+  args << '--mailuser' << new_resource.mailuser
+  args << '--fromaddress' << new_resource.fromaddress
+  args << '--storeprotocol' << new_resource.storeprotocol if new_resource.storeprotocol
+  args << '--storeprotocolclass' << new_resource.storeprotocolclass if new_resource.storeprotocolclass
+  args << '--transprotocol' << new_resource.transprotocol if new_resource.transprotocol
+  args << '--transprotocolclass' << new_resource.transprotocolclass if new_resource.transprotocolclass
+  args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << "--debug=#{new_resource.debug}" if new_resource.debug
+  args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
+  args << asadmin_target_flag
+  args << new_resource.jndi_name
 
-  bash "asadmin_create-javamail-resource #{new_resource.jndi_name}" do
+  execute "asadmin_create-javamail-resource #{new_resource.jndi_name}" do
     not_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-javamail-resource'
-  command << asadmin_target_flag
-  command << new_resource.jndi_name
+  args = []
+  args << 'delete-javamail-resource'
+  args << asadmin_target_flag
+  args << new_resource.jndi_name
 
-  bash "asadmin_delete-javamail-resource #{new_resource.jndi_name}" do
+  execute "asadmin_delete-javamail-resource #{new_resource.jndi_name}" do
     only_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end

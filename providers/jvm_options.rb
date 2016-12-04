@@ -31,16 +31,16 @@ action :set do
     existing = output.gsub(' ', '+').split("\n")
     new_resource.options.each do |line|
       unless existing.include?(line)
-        command = []
-        command << 'create-jvm-options'
-        command << asadmin_target_flag
-        command << encode_options([line])
+        args = []
+        args << 'create-jvm-options'
+        args << asadmin_target_flag
+        args << encode_options([line])
 
-        bash "asadmin_create-jvm-option #{line}" do
+        execute "asadmin_create-jvm-option #{line}" do
           timeout node['glassfish']['asadmin']['timeout']
           user new_resource.system_user
           group new_resource.system_group
-          code asadmin_command(command.join(' '))
+          command asadmin_command(args.join(' '))
 
           notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
         end
@@ -48,16 +48,16 @@ action :set do
     end
     existing.each do |line|
       unless new_resource.options.include?(line)
-        command = []
-        command << 'delete-jvm-options'
-        command << asadmin_target_flag
-        command << encode_options([line])
+        args = []
+        args << 'delete-jvm-options'
+        args << asadmin_target_flag
+        args << encode_options([line])
 
-        bash "asadmin_delete-jvm-option #{line}" do
+        execute "asadmin_delete-jvm-option #{line}" do
           timeout node['glassfish']['asadmin']['timeout']
           user new_resource.system_user
           group new_resource.system_group
-          code asadmin_command(command.join(' '))
+          command asadmin_command(args.join(' '))
 
           notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
         end
@@ -80,11 +80,11 @@ action :set do
       create_command << new_option_string
       create_command << asadmin_target_flag
 
-      bash "asadmin_set-jvm-options #{new_resource.name}" do
+      execute "asadmin_set-jvm-options #{new_resource.name}" do
         timeout node['glassfish']['asadmin']['timeout']
         user new_resource.system_user
         group new_resource.system_group
-        code "#{asadmin_command(delete_command.join(' '))} && #{asadmin_command(create_command.join(' '))}"
+        command "#{asadmin_command(delete_command.join(' '))} && #{asadmin_command(create_command.join(' '))}"
 
         notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
       end

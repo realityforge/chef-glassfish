@@ -33,24 +33,24 @@ action :create do
   end
 
   if may_need_create
-    command = []
-    command << 'create-jdbc-connection-pool'
+    args = []
+    args << 'create-jdbc-connection-pool'
     parameters.each_key do |key|
-      command << "--#{key}=#{new_resource.send(key)}" if new_resource.send(key)
+      args << "--#{key}=#{new_resource.send(key)}" if new_resource.send(key)
     end
 
-    command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-    command << '--description' << "'#{new_resource.description}'" if new_resource.description
-    command << new_resource.name
+    args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+    args << '--description' << "'#{new_resource.description}'" if new_resource.description
+    args << new_resource.name
 
-    bash "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
+    execute "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
         not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
       timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
 
@@ -87,19 +87,19 @@ action :delete do
       true
 
   if may_need_delete
-    command = []
-    command << 'delete-jdbc-connection-pool'
-    command << '--cascade=true'
-    command << new_resource.name
+    args = []
+    args << 'delete-jdbc-connection-pool'
+    args << '--cascade=true'
+    args << new_resource.name
 
-    bash "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do
+    execute "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
         only_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
       timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
 end

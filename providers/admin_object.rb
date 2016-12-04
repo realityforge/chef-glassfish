@@ -20,37 +20,37 @@ use_inline_resources
 
 action :create do
 
-  command = []
-  command << 'create-admin-object'
-  command << '--raname' << new_resource.raname
-  command << '--restype' << new_resource.restype
-  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << '--description' << "'#{new_resource.description}'" if new_resource.description
-  command << '--classname' << new_resource.classname if new_resource.classname
-  command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-  command << asadmin_target_flag
-  command << new_resource.name
+  args = []
+  args << 'create-admin-object'
+  args << '--raname' << new_resource.raname
+  args << '--restype' << new_resource.restype
+  args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--classname' << new_resource.classname if new_resource.classname
+  args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
+  args << asadmin_target_flag
+  args << new_resource.name
 
-  bash "asadmin_create-admin-object #{new_resource.name}" do
+  execute "asadmin_create-admin-object #{new_resource.name}" do
     not_if "#{asadmin_command('list-admin-objects')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-admin-object'
-  command << asadmin_target_flag
-  command << new_resource.name
+  args = []
+  args << 'delete-admin-object'
+  args << asadmin_target_flag
+  args << new_resource.name
 
-  bash "asadmin_delete-admin-object #{new_resource.name}" do
+  execute "asadmin_delete-admin-object #{new_resource.name}" do
     only_if "#{asadmin_command('list-admin-objects')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end

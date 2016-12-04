@@ -198,7 +198,7 @@ action :create do
     action :nothing
   end
 
-  bash "create domain #{new_resource.domain_name}" do
+  execute "create domain #{new_resource.domain_name}" do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '", :timeout => node['glassfish']['asadmin']['timeout']
 
     create_args = []
@@ -213,7 +213,7 @@ action :create do
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
     if node['glassfish']['variant'] != 'payara'
       notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate

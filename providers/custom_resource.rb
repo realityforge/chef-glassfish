@@ -30,24 +30,24 @@ action :create do
   properties['value'] = new_resource.value unless new_resource.value.nil?
 
   if may_need_create
-    command = []
-    command << 'create-custom-resource'
-    command << '--restype' << new_resource.restype
-    command << '--factoryclass' << factoryclass
-    command << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-    command << '--description' << "'#{new_resource.description}'" if new_resource.description
-    command << '--property' << encode_parameters(properties) unless properties.empty?
-    command << asadmin_target_flag
-    command << new_resource.jndi_name
+    args = []
+    args << 'create-custom-resource'
+    args << '--restype' << new_resource.restype
+    args << '--factoryclass' << factoryclass
+    args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
+    args << '--description' << "'#{new_resource.description}'" if new_resource.description
+    args << '--property' << encode_parameters(properties) unless properties.empty?
+    args << asadmin_target_flag
+    args << new_resource.jndi_name
 
-    bash "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
+    execute "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
       unless cache_present
         not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
       timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
   if !cache_present || !may_need_create
@@ -84,14 +84,14 @@ action :delete do
     command << asadmin_target_flag
     command << new_resource.jndi_name
 
-    bash "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
+    execute "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
       unless cache_present
         only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
       timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(command.join(' '))
     end
   end
 end

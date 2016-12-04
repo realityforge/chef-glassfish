@@ -24,20 +24,20 @@ action :create do
   unless instance_exists
     Chef::Log.info "Creating instance #{new_resource.instance_name} in #{new_resource.domain_name}"
 
-    bash "create instance #{new_resource.instance_name}" do
-      command = []
-      command << 'create-instance'
-      command << "--node #{new_resource.node_name}"
-      command << "--lbenabled=#{new_resource.lbenabled}" if new_resource.lbenabled
-      command << "--portbase=#{new_resource.portbase}" if new_resource.portbase
-      command << "--checkports=#{new_resource.checkports}" if new_resource.checkports
-      command << '--systemproperties' << encode_parameters(new_resource.systemproperties) unless new_resource.systemproperties.empty?
-      command << new_resource.instance_name
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    execute "create instance #{new_resource.instance_name}" do
+      args = []
+      args << 'create-instance'
+      args << "--node #{new_resource.node_name}"
+      args << "--lbenabled=#{new_resource.lbenabled}" if new_resource.lbenabled
+      args << "--portbase=#{new_resource.portbase}" if new_resource.portbase
+      args << "--checkports=#{new_resource.checkports}" if new_resource.checkports
+      args << '--systemproperties' << encode_parameters(new_resource.systemproperties) unless new_resource.systemproperties.empty?
+      args << new_resource.instance_name
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
 end
@@ -48,15 +48,15 @@ action :delete do
   if instance_exists
     Chef::Log.info "Deleting instance #{new_resource.instance_name} in #{new_resource.domain_name}"
 
-    bash "delete instance #{new_resource.instance_name}" do
-      command = []
-      command << 'delete-instance'
-      command << new_resource.instance_name
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    execute "delete instance #{new_resource.instance_name}" do
+      args = []
+      args << 'delete-instance'
+      args << new_resource.instance_name
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
 end
@@ -67,15 +67,15 @@ action :start do
   unless instance_running
     Chef::Log.info "Starting instance #{new_resource.instance_name} in #{new_resource.domain_name}"
 
-    bash "stop instance #{new_resource.instance_name}" do
-      command = []
-      command << 'start-local-instance'
-      command << new_resource.instance_name
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    execute "stop instance #{new_resource.instance_name}" do
+      args = []
+      args << 'start-local-instance'
+      args << new_resource.instance_name
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
 end
@@ -86,15 +86,15 @@ action :stop do
   if instance_running
     Chef::Log.info "Stopping instance #{new_resource.instance_name} in #{new_resource.domain_name}"
 
-    bash "delete instance #{new_resource.instance_name}" do
-      command = []
-      command << 'stop-local-instance'
-      command << new_resource.instance_name
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    execute "delete instance #{new_resource.instance_name}" do
+      args = []
+      args << 'stop-local-instance'
+      args << new_resource.instance_name
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
   end
 end

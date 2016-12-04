@@ -20,21 +20,21 @@ use_inline_resources
 
 action :create do
 
-  command = []
-  command << 'create-resource-adapter-config'
+  args = []
+  args << 'create-resource-adapter-config'
 
-  command << '--threadpoolid' << new_resource.threadpoolid if new_resource.threadpoolid
-  command << '--objecttype' << new_resource.objecttype if new_resource.objecttype
+  args << '--threadpoolid' << new_resource.threadpoolid if new_resource.threadpoolid
+  args << '--objecttype' << new_resource.objecttype if new_resource.objecttype
 
-  command << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  command << new_resource.resource_adapter_name
+  args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+  args << new_resource.resource_adapter_name
 
-  bash "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
+  execute "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
     not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end
 
@@ -43,11 +43,11 @@ action :delete do
   command << 'delete-resource-adapter-config'
   command << new_resource.resource_adapter_name
 
-  bash "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
+  execute "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
     only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", :timeout => node['glassfish']['asadmin']['timeout']
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
-    code asadmin_command(command.join(' '))
+    command asadmin_command(command.join(' '))
   end
 end

@@ -86,19 +86,19 @@ action :deploy do
         subscribes :delete, "archive[#{new_resource.component_name}]", :immediately
       end
 
-      bash "Create #{deployment_plan}" do
-        command = <<-CMD
+      execute "Create #{deployment_plan}" do
+        cmd = <<-CMD
         rm -rf #{build_dir}
         mkdir -p #{build_dir}
         cd #{build_dir}
         CMD
         new_resource.descriptors.collect do |key, file|
           if ::File.dirname(key) != ''
-            command << "mkdir -p #{::File.dirname(key)}\n"
+            cmd << "mkdir -p #{::File.dirname(key)}\n"
           end
-          command << "cp #{file} #{key}\n"
+          cmd << "cp #{file} #{key}\n"
         end
-        command << <<-CMD
+        cmd << <<-CMD
         jar -cf #{deployment_plan} .
         chown #{new_resource.system_user}:#{new_resource.system_group} #{deployment_plan}
         chmod 0700 #{deployment_plan}
@@ -107,12 +107,12 @@ action :deploy do
         CMD
 
         timeout node['glassfish']['asadmin']['timeout']
-        code command
+        command cmd
         not_if { ::File.exists?(deployment_plan) }
       end
     end
 
-    bash "deploy application #{new_resource.component_name}" do
+    execute "deploy application #{new_resource.component_name}" do
       command = []
       command << 'deploy'
       command << asadmin_target_flag
@@ -135,7 +135,7 @@ action :deploy do
       command << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
       command << a.target_artifact
 
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
@@ -165,11 +165,11 @@ action :undeploy do
     command << asadmin_target_flag
     command << new_resource.component_name
 
-    bash "asadmin_undeploy #{new_resource.component_name}" do
+    execute "asadmin_undeploy #{new_resource.component_name}" do
       unless cache_present
         only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => node['glassfish']['asadmin']['timeout']
       end
-      # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
@@ -198,9 +198,9 @@ action :disable do
   command << asadmin_target_flag
   command << new_resource.component_name
 
-  bash "asadmin_disable #{new_resource.component_name}" do
+  execute "asadmin_disable #{new_resource.component_name}" do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout']
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
@@ -214,9 +214,9 @@ action :enable do
   command << asadmin_target_flag
   command << new_resource.component_name
 
-  bash "asadmin_enable #{new_resource.component_name}" do
+  execute "asadmin_enable #{new_resource.component_name}" do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout']
-    # bash should wait for asadmin to time out first, if it doesn't because of some problem, bash should time out eventually
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group

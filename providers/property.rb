@@ -26,14 +26,14 @@ action :set do
       true
 
   if may_need_update
-    bash "asadmin_set #{new_resource.key}=#{new_resource.value}" do
+    execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
       unless cache_present
         not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
       timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
-      code asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
+      command asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
     end
 
     if cache_present

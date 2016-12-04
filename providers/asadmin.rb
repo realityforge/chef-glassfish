@@ -19,12 +19,12 @@ include Chef::Asadmin
 use_inline_resources
 
 action :run do
-  bash "asadmin #{new_resource.command}" do
+  execute "asadmin #{new_resource.command}" do
     timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
     ignore_failure new_resource.ignore_failure
     returns new_resource.returns
-    code asadmin_command(new_resource.command)
+    command asadmin_command(new_resource.command)
   end
 end
