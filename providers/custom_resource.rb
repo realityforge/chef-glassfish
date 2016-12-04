@@ -42,9 +42,9 @@ action :create do
 
     bash "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
       unless cache_present
-        not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => 150
+        not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
-      timeout 150
+      timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
       code asadmin_command(command.join(' '))
@@ -86,9 +86,9 @@ action :delete do
 
     bash "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
       unless cache_present
-        only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => 150
+        only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
-      timeout 150
+      timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
       code asadmin_command(command.join(' '))

@@ -199,7 +199,7 @@ action :create do
   end
 
   bash "create domain #{new_resource.domain_name}" do
-    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '", :timeout => 150
+    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '", :timeout => node['glassfish']['asadmin']['timeout']
 
     create_args = []
     create_args << '--checkports=false'
@@ -210,7 +210,7 @@ action :create do
     create_args << '--nopassword=false' if new_resource.username
     create_args << domain_dir_arg
 
-    timeout 150
+    timeout node['glassfish']['asadmin']['timeout']
     user new_resource.system_user
     group new_resource.system_group
     code (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)

@@ -1,4 +1,6 @@
 ## v0.7.8 (Pending):
+* Fix     : Make sure all the timeouts use the node attribute `node['glassfish']['asadmin']['timeout']`
+            rather than hardcoding a specific value. Submitted by Akos Vandra.
 * Fix     : Restore support for multiple instances of GlassFish under ubuntu.
             Fix submitted by Tero Pihlaja.
 * Enhance : Generate `bin/<instance>_imqcmd` script to ease interacting from the

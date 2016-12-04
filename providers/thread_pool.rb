@@ -43,9 +43,9 @@ action :create do
 
     bash "asadmin_threadpool #{new_resource.threadpool_id}" do
       unless cache_present
-        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
+        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
-      timeout 150
+      timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
       code asadmin_command(command.join(' '))
@@ -92,9 +92,9 @@ action :delete do
 
     bash "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
       unless cache_present
-        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => 150
+        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => node['glassfish']['asadmin']['timeout']
       end
-      timeout 150
+      timeout node['glassfish']['asadmin']['timeout']
       user new_resource.system_user
       group new_resource.system_group
       code asadmin_command(command.join(' '))

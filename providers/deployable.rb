@@ -106,7 +106,7 @@ action :deploy do
         test -f #{deployment_plan}
         CMD
 
-        timeout 150
+        timeout node['glassfish']['asadmin']['timeout']
         code command
         not_if { ::File.exists?(deployment_plan) }
       end
