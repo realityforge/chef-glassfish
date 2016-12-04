@@ -33,8 +33,8 @@ action :create do
   args << new_resource.iioplistener_id
 
   execute "asadmin_create-iiop-listener #{new_resource.iioplistener_id}" do
-    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(args.join(' '))
@@ -68,8 +68,8 @@ action :delete do
   command << new_resource.iioplistener_id
 
   execute "asadmin_delete_iiop-listener #{new_resource.iioplistener_id}" do
-    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(command.join(' '))

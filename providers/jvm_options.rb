@@ -37,7 +37,7 @@ action :set do
         args << encode_options([line])
 
         execute "asadmin_create-jvm-option #{line}" do
-          timeout node['glassfish']['asadmin']['timeout']
+          timeout node['glassfish']['asadmin']['timeout'] + 5
           user new_resource.system_user
           group new_resource.system_group
           command asadmin_command(args.join(' '))
@@ -54,7 +54,7 @@ action :set do
         args << encode_options([line])
 
         execute "asadmin_delete-jvm-option #{line}" do
-          timeout node['glassfish']['asadmin']['timeout']
+          timeout node['glassfish']['asadmin']['timeout'] + 5
           user new_resource.system_user
           group new_resource.system_group
           command asadmin_command(args.join(' '))
@@ -81,7 +81,7 @@ action :set do
       create_command << asadmin_target_flag
 
       execute "asadmin_set-jvm-options #{new_resource.name}" do
-        timeout node['glassfish']['asadmin']['timeout']
+        timeout node['glassfish']['asadmin']['timeout'] + 5
         user new_resource.system_user
         group new_resource.system_group
         command "#{asadmin_command(delete_command.join(' '))} && #{asadmin_command(create_command.join(' '))}"

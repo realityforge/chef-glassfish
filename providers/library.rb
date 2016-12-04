@@ -55,8 +55,8 @@ action :add do
   args << cached_package_filename
 
   execute "asadmin_add-library #{new_resource.url}" do
-    not_if check_command, :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    not_if check_command, :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(args.join(' '))
@@ -73,8 +73,8 @@ action :remove do
   args << ::File.basename(new_resource.url)
 
   execute "asadmin_remove-library #{new_resource.url}" do
-    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(args.join(' '))

@@ -25,8 +25,8 @@ action :enable do
   end
 
   execute 'asadmin_enable-secure-admin' do
-    not_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    not_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command('enable-secure-admin', true, :secure => false)
@@ -41,8 +41,8 @@ action :disable do
   end
 
   execute 'asadmin_disable-secure-admin' do
-    only_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    only_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command('disable-secure-admin')

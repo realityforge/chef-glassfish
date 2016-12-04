@@ -25,8 +25,8 @@ action :create do
   args << new_resource.name
 
   execute "asadmin_create-jmsdest #{new_resource.name}" do
-    not_if "#{asadmin_command('list-jmsdest')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    not_if "#{asadmin_command('list-jmsdest')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(args.join(' '))
@@ -40,8 +40,8 @@ action :delete do
   args << new_resource.name
 
   execute "asadmin_delete-jmsdest #{new_resource.name}" do
-    only_if "#{asadmin_command('list-jmsdest')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    only_if "#{asadmin_command('list-jmsdest')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(args.join(' '))

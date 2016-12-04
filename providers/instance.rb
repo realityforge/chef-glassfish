@@ -34,7 +34,7 @@ action :create do
       args << '--systemproperties' << encode_parameters(new_resource.systemproperties) unless new_resource.systemproperties.empty?
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
-      timeout node['glassfish']['asadmin']['timeout'] + 5
+      timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
       user new_resource.system_user
       group new_resource.system_group
       command asadmin_command(args.join(' '))
@@ -53,7 +53,7 @@ action :delete do
       args << 'delete-instance'
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
-      timeout node['glassfish']['asadmin']['timeout'] + 5
+      timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
       user new_resource.system_user
       group new_resource.system_group
       command asadmin_command(args.join(' '))
@@ -72,7 +72,7 @@ action :start do
       args << 'start-local-instance'
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
-      timeout node['glassfish']['asadmin']['timeout'] + 5
+      timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
       user new_resource.system_user
       group new_resource.system_group
       command asadmin_command(args.join(' '))
@@ -91,7 +91,7 @@ action :stop do
       args << 'stop-local-instance'
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
-      timeout node['glassfish']['asadmin']['timeout'] + 5
+      timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
       user new_resource.system_user
       group new_resource.system_group
       command asadmin_command(args.join(' '))

@@ -20,7 +20,7 @@ use_inline_resources
 
 action :run do
   execute "asadmin #{new_resource.command}" do
-    timeout node['glassfish']['asadmin']['timeout']
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     ignore_failure new_resource.ignore_failure

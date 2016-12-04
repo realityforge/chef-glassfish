@@ -28,9 +28,9 @@ action :set do
   if may_need_update
     execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
       unless cache_present
-        not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", :timeout => node['glassfish']['asadmin']['timeout']
+        not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
-      timeout node['glassfish']['asadmin']['timeout']
+      timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user
       group new_resource.system_group
       command asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")

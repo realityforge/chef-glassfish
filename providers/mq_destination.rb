@@ -22,8 +22,8 @@ action :create do
   Chef::Log.info "Creating MQ Destination #{new_resource.destination_name}"
 
   execute "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command imqcmd_command("create dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")
@@ -41,7 +41,7 @@ action :create do
 
   execute "imqcmd_update_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
     only_if { processed_config.size > 0 }
-    timeout node['glassfish']['asadmin']['timeout']
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command imqcmd_command("update dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name} #{processed_config.collect { |k, v| "-o #{k}=#{v}" }.join(' ')}")
@@ -51,8 +51,8 @@ end
 
 action :destroy do
   execute "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout']
-    timeout node['glassfish']['asadmin']['timeout']
+    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user
     group new_resource.system_group
     command imqcmd_command("destroy dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")
