@@ -124,12 +124,12 @@ use_inline_resources
 
 action :create do
   if new_resource.system_group != node['glassfish']['group']
-    group new_resource.system_group unless node[:os] == 'windows' do
+    group new_resource.system_group do
     end
   end
 
   if new_resource.system_user != node['glassfish']['user'] and new_resource.system_user != 'root'
-    user new_resource.system_user unless node[:os] == 'windows' do
+    user new_resource.system_user do
       comment "GlassFish #{new_resource.domain_name} Domain"
       gid new_resource.system_group
       home "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
