@@ -31,8 +31,8 @@ action :create do
   execute "asadmin_create-jms-resource #{new_resource.name}" do
     not_if "#{asadmin_command('list-jms-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(args.join(' '))
   end
 end
@@ -46,8 +46,8 @@ action :delete do
   execute "asadmin_delete-custom-resource #{new_resource.name}" do
     only_if "#{asadmin_command('list-jms-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(args.join(' '))
   end
 end

@@ -38,8 +38,8 @@ action :create do
   execute "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
     not_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(args.join(' '))
   end
 end
@@ -53,8 +53,8 @@ action :delete do
   execute "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
     only_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(args.join(' '))
   end
 end

@@ -46,8 +46,8 @@ action :create do
         not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node[:os] == 'windows'
-      group new_resource.system_group unless node[:os] == 'windows'
+      user new_resource.system_user unless node['os'] == 'windows'
+      group new_resource.system_group unless node['os'] == 'windows'
       command asadmin_command(args.join(' '))
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
     end
@@ -95,8 +95,8 @@ action :delete do
         only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node[:os] == 'windows'
-      group new_resource.system_group unless node[:os] == 'windows'
+      user new_resource.system_user unless node['os'] == 'windows'
+      group new_resource.system_group unless node['os'] == 'windows'
       command asadmin_command(args.join(' '))
     end
   end

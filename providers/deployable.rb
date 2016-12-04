@@ -137,8 +137,8 @@ action :deploy do
 
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user unless node[:os] == 'windows'
-      group new_resource.system_group unless node[:os] == 'windows'
+      user new_resource.system_user unless node['os'] == 'windows'
+      group new_resource.system_group unless node['os'] == 'windows'
       code asadmin_command(command.join(' '))
     end
 
@@ -171,8 +171,8 @@ action :undeploy do
       end
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user unless node[:os] == 'windows'
-      group new_resource.system_group unless node[:os] == 'windows'
+      user new_resource.system_user unless node['os'] == 'windows'
+      group new_resource.system_group unless node['os'] == 'windows'
       code asadmin_command(command.join(' '))
     end
 
@@ -202,8 +202,8 @@ action :disable do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     code asadmin_command(command.join(' '))
   end
 end
@@ -218,8 +218,8 @@ action :enable do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     code asadmin_command(command.join(' '))
   end
 end

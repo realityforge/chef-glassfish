@@ -35,8 +35,8 @@ action :create do
   execute "asadmin_create-iiop-listener #{new_resource.iioplistener_id}" do
     not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(args.join(' '))
   end
 
@@ -70,8 +70,8 @@ action :delete do
   execute "asadmin_delete_iiop-listener #{new_resource.iioplistener_id}" do
     only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(command.join(' '))
   end
 end

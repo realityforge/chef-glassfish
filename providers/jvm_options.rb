@@ -38,8 +38,8 @@ action :set do
 
         execute "asadmin_create-jvm-option #{line}" do
           timeout node['glassfish']['asadmin']['timeout'] + 5
-          user new_resource.system_user unless node[:os] == 'windows'
-          group new_resource.system_group unless node[:os] == 'windows'
+          user new_resource.system_user unless node['os'] == 'windows'
+          group new_resource.system_group unless node['os'] == 'windows'
           command asadmin_command(args.join(' '))
 
           notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
@@ -55,8 +55,8 @@ action :set do
 
         execute "asadmin_delete-jvm-option #{line}" do
           timeout node['glassfish']['asadmin']['timeout'] + 5
-          user new_resource.system_user unless node[:os] == 'windows'
-          group new_resource.system_group unless node[:os] == 'windows'
+          user new_resource.system_user unless node['os'] == 'windows'
+          group new_resource.system_group unless node['os'] == 'windows'
           command asadmin_command(args.join(' '))
 
           notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
@@ -82,8 +82,8 @@ action :set do
 
       execute "asadmin_set-jvm-options #{new_resource.name}" do
         timeout node['glassfish']['asadmin']['timeout'] + 5
-        user new_resource.system_user unless node[:os] == 'windows'
-        group new_resource.system_group unless node[:os] == 'windows'
+        user new_resource.system_user unless node['os'] == 'windows'
+        group new_resource.system_group unless node['os'] == 'windows'
         command "#{asadmin_command(delete_command.join(' '))} && #{asadmin_command(create_command.join(' '))}"
 
         notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate

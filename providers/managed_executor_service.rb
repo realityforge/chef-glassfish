@@ -40,8 +40,8 @@ action :create do
   execute "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
     not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(args.join(' '))
   end
 
@@ -83,8 +83,8 @@ action :delete do
   execute "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
     only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node['os'] == 'windows'
+    group new_resource.system_group unless node['os'] == 'windows'
     command asadmin_command(command.join(' '))
   end
 end
