@@ -31,8 +31,8 @@ action :set do
         not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
     end
 

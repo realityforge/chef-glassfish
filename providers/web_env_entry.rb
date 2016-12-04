@@ -34,8 +34,8 @@ action :set do
   execute "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
     not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user
-    group new_resource.system_group
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     command asadmin_command(args.join(' '))
   end
 end
@@ -49,8 +49,8 @@ action :unset do
   execute "asadmin_unset-web-env-entry #{new_resource.name}" do
     only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user
-    group new_resource.system_group
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     command asadmin_command(args.join(' '))
   end
 end

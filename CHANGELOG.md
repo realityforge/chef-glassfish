@@ -1,4 +1,6 @@
 ## v0.7.8 (Pending):
+* Change  : Avoid specifying the user and group when executing asadmin commands if
+            on the windows platform. Submitted by Akos Vandra.
 * Fix     : Start using the execute resource rather than the bash resource in preparation
             for supporting windows. Submitted by Akos Vandra.
 * Fix     : Make sure all the timeouts use the node attribute `node['glassfish']['asadmin']['timeout']`

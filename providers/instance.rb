@@ -35,8 +35,8 @@ action :create do
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command(args.join(' '))
     end
   end
@@ -54,8 +54,8 @@ action :delete do
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command(args.join(' '))
     end
   end
@@ -73,8 +73,8 @@ action :start do
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command(args.join(' '))
     end
   end
@@ -92,8 +92,8 @@ action :stop do
       args << new_resource.instance_name
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command(args.join(' '))
     end
   end

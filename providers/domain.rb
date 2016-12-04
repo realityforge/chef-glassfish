@@ -124,12 +124,12 @@ use_inline_resources
 
 action :create do
   if new_resource.system_group != node['glassfish']['group']
-    group new_resource.system_group do
+    group new_resource.system_group unless node[:os] == 'windows' do
     end
   end
 
   if new_resource.system_user != node['glassfish']['user'] and new_resource.system_user != 'root'
-    user new_resource.system_user do
+    user new_resource.system_user unless node[:os] == 'windows' do
       comment "GlassFish #{new_resource.domain_name} Domain"
       gid new_resource.system_group
       home "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
@@ -168,7 +168,7 @@ action :create do
       only_if { new_resource.password }
       source 'password.erb'
       owner new_resource.system_user
-      group new_resource.system_group
+      group new_resource.system_group unless node[:os] == 'windows'
       mode '0600'
       variables :password => new_resource.password, :master_password => master_password
     end
@@ -177,13 +177,13 @@ action :create do
   authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
     only_if { new_resource.port < 1024 }
     port new_resource.port
-    user new_resource.system_user
+    user new_resource.system_user unless node[:os] == 'windows'
   end
 
   authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
     only_if { new_resource.admin_port < 1024 }
     port new_resource.admin_port
-    user new_resource.system_user
+    user new_resource.system_user unless node[:os] == 'windows'
   end
 
   cookbook_file "#{new_resource.domain_dir_path}/config/default-web.xml" do
@@ -211,8 +211,8 @@ action :create do
     create_args << domain_dir_arg
 
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user
-    group new_resource.system_group
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
     if node['glassfish']['variant'] != 'payara'
@@ -243,7 +243,7 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    group new_resource.system_group
+    group new_resource.system_group unless node[:os] == 'windows'
     variables(:logging_properties => default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, "service[#{service_name}]", :delayed
   end
@@ -253,7 +253,7 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    group new_resource.system_group
+    group new_resource.system_group unless node[:os] == 'windows'
     variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
     notifies :restart, "service[#{service_name}]", :delayed
   end
@@ -261,7 +261,7 @@ action :create do
   # Directory required for Payara 4.1.151
   directory "#{new_resource.domain_dir_path}/bin" do
     owner new_resource.system_user
-    group new_resource.system_group
+    group new_resource.system_group unless node[:os] == 'windows'
     mode '0755'
   end
 
@@ -269,7 +269,7 @@ action :create do
   %w(lib lib/ext).each do |dir|
     directory "#{new_resource.domain_dir_path}/#{dir}" do
       owner new_resource.system_user
-      group new_resource.system_group
+      group new_resource.system_group unless node[:os] == 'windows'
       mode '0755'
     end
   end
@@ -277,7 +277,7 @@ action :create do
   file "#{new_resource.domain_dir_path}/bin/#{new_resource.domain_name}_asadmin" do
     mode '0700'
     owner new_resource.system_user
-    group new_resource.system_group
+    group new_resource.system_group unless node[:os] == 'windows'
     content <<-SH
 #!/bin/sh
 

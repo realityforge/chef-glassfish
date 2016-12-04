@@ -27,8 +27,8 @@ action :enable do
   execute 'asadmin_enable-secure-admin' do
     not_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user
-    group new_resource.system_group
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     command asadmin_command('enable-secure-admin', true, :secure => false)
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
@@ -43,8 +43,8 @@ action :disable do
   execute 'asadmin_disable-secure-admin' do
     only_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user
-    group new_resource.system_group
+    user new_resource.system_user unless node[:os] == 'windows'
+    group new_resource.system_group unless node[:os] == 'windows'
     command asadmin_command('disable-secure-admin')
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end

@@ -40,8 +40,8 @@ action :create do
         not_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target}| grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command(args.join(' '))
     end
   end
@@ -84,8 +84,8 @@ action :delete do
         only_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user
-      group new_resource.system_group
+      user new_resource.system_user unless node[:os] == 'windows'
+      group new_resource.system_group unless node[:os] == 'windows'
       command asadmin_command(command.join(' '))
     end
   end
