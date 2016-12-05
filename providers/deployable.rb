@@ -113,33 +113,33 @@ action :deploy do
     end
 
     execute "deploy application #{new_resource.component_name}" do
-      command = []
-      command << 'deploy'
-      command << asadmin_target_flag
-      command << '--name' << new_resource.component_name
-      command << "--enabled=#{new_resource.enabled}"
-      command << '--upload=true' unless node['glassfish']['version'] == '4.1'
-      command << '--force=true'
-      command << '--type' << new_resource.type if new_resource.type
-      command << "--contextroot=#{new_resource.context_root}" if new_resource.context_root
-      command << "--generatermistubs=#{new_resource.generate_rmi_stubs}"
-      command << "--availabilityenabled=#{new_resource.availability_enabled}"
-      command << "--lbenabled=#{new_resource.lb_enabled}"
-      command << "--keepstate=#{new_resource.keep_state}"
-      command << "--verify=#{new_resource.verify}"
-      command << "--precompilejsp=#{new_resource.precompile_jsp}"
-      command << "--asyncreplication=#{new_resource.async_replication}"
-      command << '--properties' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-      command << "--virtualservers=#{new_resource.virtual_servers.join(',')}" unless new_resource.virtual_servers.empty?
-      command << '--deploymentplan' << deployment_plan if deployment_plan
-      command << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
-      command << a.target_artifact
+      args = []
+      args << 'deploy'
+      args << asadmin_target_flag
+      args << '--name' << new_resource.component_name
+      args << "--enabled=#{new_resource.enabled}"
+      args << '--upload=true' unless node['glassfish']['version'] == '4.1'
+      args << '--force=true'
+      args << '--type' << new_resource.type if new_resource.type
+      args << "--contextroot=#{new_resource.context_root}" if new_resource.context_root
+      args << "--generatermistubs=#{new_resource.generate_rmi_stubs}"
+      args << "--availabilityenabled=#{new_resource.availability_enabled}"
+      args << "--lbenabled=#{new_resource.lb_enabled}"
+      args << "--keepstate=#{new_resource.keep_state}"
+      args << "--verify=#{new_resource.verify}"
+      args << "--precompilejsp=#{new_resource.precompile_jsp}"
+      args << "--asyncreplication=#{new_resource.async_replication}"
+      args << '--properties' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+      args << "--virtualservers=#{new_resource.virtual_servers.join(',')}" unless new_resource.virtual_servers.empty?
+      args << '--deploymentplan' << deployment_plan if deployment_plan
+      args << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
+      args << a.target_artifact
 
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
       user new_resource.system_user unless node['os'] == 'windows'
       group new_resource.system_group unless node['os'] == 'windows'
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
 
     file version_file do
@@ -159,11 +159,11 @@ action :undeploy do
 
   if maybe_deployed
 
-    command = []
-    command << 'undeploy'
-    command << '--cascade=true'
-    command << asadmin_target_flag
-    command << new_resource.component_name
+    args = []
+    args << 'undeploy'
+    args << '--cascade=true'
+    args << asadmin_target_flag
+    args << new_resource.component_name
 
     execute "asadmin_undeploy #{new_resource.component_name}" do
       unless cache_present
@@ -173,7 +173,7 @@ action :undeploy do
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
       user new_resource.system_user unless node['os'] == 'windows'
       group new_resource.system_group unless node['os'] == 'windows'
-      code asadmin_command(command.join(' '))
+      command asadmin_command(args.join(' '))
     end
 
     file version_file do
@@ -193,10 +193,10 @@ action :undeploy do
 end
 
 action :disable do
-  command = []
-  command << 'disable'
-  command << asadmin_target_flag
-  command << new_resource.component_name
+  args = []
+  args << 'disable'
+  args << asadmin_target_flag
+  args << new_resource.component_name
 
   execute "asadmin_disable #{new_resource.component_name}" do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] + 5
@@ -204,15 +204,15 @@ action :disable do
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end
 
 action :enable do
-  command = []
-  command << 'enable'
-  command << asadmin_target_flag
-  command << new_resource.component_name
+  args = []
+  args << 'enable'
+  args << asadmin_target_flag
+  args << new_resource.component_name
 
   execute "asadmin_enable #{new_resource.component_name}" do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] + 5
@@ -220,6 +220,6 @@ action :enable do
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
-    code asadmin_command(command.join(' '))
+    command asadmin_command(args.join(' '))
   end
 end
