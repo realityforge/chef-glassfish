@@ -320,7 +320,7 @@ action :create do
   end
 
   execute 'wait for payara domain to be up and running' do
-    command 'curl -f http://localhost:4848'
+    command 'curl -sf http://localhost:4848 > nul'
 
     retry_delay 60
     retries 15
@@ -347,7 +347,7 @@ action :restart do
   end
 
   execute 'wait for payara domain to be up and running' do
-    command 'curl -f http://localhost:4848'
+    command 'curl -sf http://localhost:4848 > nul'
 
     retry_delay 60
     retries 15
