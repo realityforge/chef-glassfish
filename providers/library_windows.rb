@@ -84,7 +84,7 @@ action :add do
     command asadmin_command(args.join(' '))
 
     if new_resource.requires_restart
-      notifies :restart, "glassfish_domain[#{service_name}]", :immediate
+      notifies :restart, "windows_service[#{service_name}]", :immediate
     end
   end
 end
