@@ -20,7 +20,7 @@ use_inline_resources
 
 action :create do
   args = []
-  args << 'create-managed-executor-service'
+  args << 'create-managed-scheduled-executor-service'
   args << asadmin_target_flag
 
   args << '--enabled' << new_resource.enabled

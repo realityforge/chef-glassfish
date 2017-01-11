@@ -30,6 +30,7 @@ action :create do
   args << new_resource.name
 
   execute "asadmin_create_auth_realm #{new_resource.name}" do
+    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 

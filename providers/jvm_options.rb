@@ -105,7 +105,7 @@ action :set do
 
         user new_resource.system_user unless node[:os] == 'windows'
         group new_resource.system_group unless node[:os] == 'windows'
-        command "#{asadmin_command(create_command.join(' '))}"
+        command "#{asadmin_command(delete_command.join(' '))} && #{asadmin_command(create_command.join(' '))}"
 
         action :nothing
         notifies :restart, "service[#{service_name}]", :immediate

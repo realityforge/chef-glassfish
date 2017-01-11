@@ -35,7 +35,7 @@ default['glassfish']['remove_domains_dir_on_install'] = true
 default['glassfish']['domains_dir'] = nil # See platform specific defaults
 #<> GlassFish Domain Definitions: A map of domain definitions that drive the instantiation of a domain.
 default['glassfish']['domains'] = Mash.new
-#<> Asadmin Timeout: The timeout in seconds set for asadmin calls
+#<> Asadmin Timeout: The timeout in seconds set for asadmin calls. Usually the timeout for the wrapper chef resource adds 5 seconds to this.
 default['glassfish']['asadmin']['timeout'] = 150
 
 #<> Extract libraries for the OpenMQ Broker: A list of URLs to jars that are added to brokers classpath.
@@ -50,9 +50,12 @@ default['glassfish']['package_urls']['glassfish']['4.0'] = "http://download.java
 default['glassfish']['package_urls']['glassfish']['4.1'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 default['glassfish']['package_urls']['glassfish']['4.1.1'] = "http://download.java.net/glassfish/#{node['glassfish']['version']}/release/glassfish-#{node['glassfish']['version']}.zip"
 
-default['glassfish']['package_urls']['payara']['4.1.1.151'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.1.151.zip'
-default['glassfish']['package_urls']['payara']['4.1.1.152'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.1.152.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.151'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.151.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.152'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.152.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.153'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.153/payara-4.1.153.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.154'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.154/payara-4.1.1.154.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.161'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.161/payara-4.1.1.161.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.161.1'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.161.1/payara-4.1.1.161.1.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.162'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.162/payara-4.1.1.162.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.163'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.163/payara-4.1.1.163.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.164'] = 'https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.1.164/payara-4.1.1.164.zip'

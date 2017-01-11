@@ -201,7 +201,7 @@ action :create do
     action :nothing
   end
 
-  bash "create domain #{new_resource.domain_name}" do
+  execute "create domain #{new_resource.domain_name}" do
     not_if "#{asadmin_command('list-domains')} #{domain_dir_arg}| grep -- '#{new_resource.domain_name} '", :timeout => node['glassfish']['asadmin']['timeout'] + 5
 
     create_args = []
@@ -215,9 +215,9 @@ action :create do
 
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
-    code (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    user new_resource.system_user
+    group new_resource.system_group
+    command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
     if node['glassfish']['variant'] != 'payara'
       notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate
@@ -247,7 +247,7 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group
     variables(:logging_properties => default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, "service[#{service_name}]", :delayed
   end
@@ -257,7 +257,7 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group
     variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
     notifies :restart, "service[#{service_name}]", :delayed
   end
@@ -265,7 +265,7 @@ action :create do
   # Directory required for Payara 4.1.151
   directory "#{new_resource.domain_dir_path}/bin" do
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group
     mode '0755'
   end
 
@@ -273,7 +273,7 @@ action :create do
   %w(lib lib/ext).each do |dir|
     directory "#{new_resource.domain_dir_path}/#{dir}" do
       owner new_resource.system_user
-      group new_resource.system_group unless node[:os] == 'windows'
+      group new_resource.system_group
       mode '0755'
     end
   end
@@ -281,7 +281,7 @@ action :create do
   file "#{new_resource.domain_dir_path}/bin/#{new_resource.domain_name}_asadmin" do
     mode '0700'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group
     content <<-SH
 #!/bin/sh
 
