@@ -44,8 +44,8 @@ action :set do
           # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
           timeout node['glassfish']['asadmin']['timeout'] + 5
 
-          user new_resource.system_user unless node[:os] == 'windows'
-          group new_resource.system_group unless node[:os] == 'windows'
+          user new_resource.system_user unless node.windows?
+          group new_resource.system_group unless node.windows?
           command asadmin_command(args.join(' '))
 
           notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
@@ -63,8 +63,8 @@ action :set do
           # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
           timeout node['glassfish']['asadmin']['timeout'] + 5
 
-          user new_resource.system_user unless node[:os] == 'windows'
-          group new_resource.system_group unless node[:os] == 'windows'
+          user new_resource.system_user unless node.windows?
+          group new_resource.system_group unless node.windows?
           command asadmin_command(args.join(' '))
 
           notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
@@ -87,8 +87,8 @@ action :set do
         # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
         timeout node['glassfish']['asadmin']['timeout'] + 5
 
-        user new_resource.system_user unless node[:os] == 'windows'
-        group new_resource.system_group unless node[:os] == 'windows'
+        user new_resource.system_user unless node.windows?
+        group new_resource.system_group unless node.windows?
         command "#{asadmin_command(delete_command.join(' '))}"
 
         notifies :run, "execute[asadmin_create-jvm-options #{new_resource.name}]", :immediate
@@ -103,8 +103,8 @@ action :set do
         # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
         timeout node['glassfish']['asadmin']['timeout'] + 5
 
-        user new_resource.system_user unless node[:os] == 'windows'
-        group new_resource.system_group unless node[:os] == 'windows'
+        user new_resource.system_user unless node.windows?
+        group new_resource.system_group unless node.windows?
         command "#{asadmin_command(delete_command.join(' '))} && #{asadmin_command(create_command.join(' '))}"
 
         action :nothing

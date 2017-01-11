@@ -39,8 +39,8 @@ action :create do
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
 
-      user new_resource.system_user unless node[:os] == 'windows'
-      group new_resource.system_group unless node[:os] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
 
       unless cache_present
@@ -87,8 +87,8 @@ action :delete do
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
 
-      user new_resource.system_user unless node[:os] == 'windows'
-      group new_resource.system_group unless node[:os] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
       unless cache_present
         filter = pipe_filter(new_resource.name, regexp: false, line: true)

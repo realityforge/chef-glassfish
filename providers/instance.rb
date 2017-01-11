@@ -31,8 +31,8 @@ action :create do
   execute "create instance #{new_resource.instance_name}" do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.instance_name, regexp: false, line: true)
@@ -48,8 +48,8 @@ action :delete do
   execute "delete instance #{new_resource.instance_name}" do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.instance_name, regexp: false, line: true)
@@ -66,8 +66,8 @@ action :start do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter("#{new_resource.instance_name}.*running", regexp: true)
@@ -84,8 +84,8 @@ action :stop do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter("^#{new_resource.instance_name}.*running", regexp: true)

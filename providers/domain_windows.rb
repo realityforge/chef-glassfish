@@ -169,7 +169,7 @@ action :create do
     cookbook 'glassfish'
     source 'password.erb'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group unless node.windows?
     mode '0600'
     variables({
       :password => new_resource.password,
@@ -208,10 +208,6 @@ action :create do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    # Not really supported on windows...
-    # user new_resource.system_user unless node[:os] == 'windows'
-    # group new_resource.system_group unless node[:os] == 'windows'
-
     command asadmin_command("--user #{new_resource.system_user} create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
     if node['glassfish']['variant'] != 'payara'
@@ -243,7 +239,6 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
     variables(:logging_properties => logging_properties)
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
@@ -253,7 +248,7 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group unless node.windows?
     variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
@@ -261,7 +256,7 @@ action :create do
   # Directory required for Payara 4.1.151
   directory "#{new_resource.domain_dir_path}/bin" do
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group unless node.windows?
     mode '0755'
   end
 
@@ -269,7 +264,7 @@ action :create do
   %w(lib lib/ext).each do |dir|
     directory "#{new_resource.domain_dir_path}/#{dir}" do
       owner new_resource.system_user
-      group new_resource.system_group unless node[:os] == 'windows'
+      group new_resource.system_group unless node.windows?
       mode '0755'
     end
   end
@@ -277,7 +272,7 @@ action :create do
   file "#{new_resource.domain_dir_path}/bin/#{new_resource.domain_name}_asadmin.bat" do
     mode '0700'
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group unless node.windows?
     content <<-BAT
 #{Asadmin.asadmin_command(node, '%*', :remote_command => true, :terse => false, :echo => new_resource.echo, :username => new_resource.username, :password_file => new_resource.password_file, :secure => new_resource.secure, :admin_port => new_resource.admin_port)}
     BAT

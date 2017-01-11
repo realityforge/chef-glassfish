@@ -170,7 +170,7 @@ action :create do
       only_if { new_resource.password }
       source 'password.erb'
       owner new_resource.system_user
-      group new_resource.system_group unless node[:os] == 'windows'
+      group new_resource.system_group unless node.windows?
       mode '0600'
       variables :password => new_resource.password, :master_password => master_password
     end
@@ -179,13 +179,13 @@ action :create do
   authbind_port "AuthBind GlassFish Port #{new_resource.port}" do
     only_if { new_resource.port < 1024 }
     port new_resource.port
-    user new_resource.system_user unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
   end
 
   authbind_port "AuthBind GlassFish Port #{new_resource.admin_port}" do
     only_if { new_resource.admin_port < 1024 }
     port new_resource.admin_port
-    user new_resource.system_user unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
   end
 
   cookbook_file "#{new_resource.domain_dir_path}/config/default-web.xml" do

@@ -64,8 +64,8 @@ action :add do
     not_if check_command, :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     if new_resource.requires_restart
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
     end
@@ -82,7 +82,7 @@ action :remove do
     only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
   end
 end

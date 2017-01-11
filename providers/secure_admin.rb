@@ -28,8 +28,8 @@ action :enable do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command('enable-secure-admin', true, :secure => false)
 
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
@@ -48,8 +48,8 @@ action :disable do
   execute 'asadmin_disable-secure-admin' do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command('disable-secure-admin')
 
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)

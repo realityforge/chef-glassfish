@@ -111,7 +111,7 @@ class Chef
       ENV['AS_ADMIN_READTIMEOUT'] = (node['glassfish']['asadmin']['timeout'] * 1000).to_s
 
       script = "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
-      script.gsub!("/", "\\") if node[:os] == 'windows'
+      script.gsub!("/", "\\") if node.windows?
 
       script
     end

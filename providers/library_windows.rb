@@ -55,7 +55,7 @@ action :add do
   directory ::File.dirname(cached_package_filename) do
     not_if check_command
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group unless node.windows?
     mode '0770'
     recursive true
   end
@@ -64,7 +64,7 @@ action :add do
     not_if check_command
     source new_resource.url
     owner new_resource.system_user
-    group new_resource.system_group unless node[:os] == 'windows'
+    group new_resource.system_group unless node.windows?
     mode '0640'
     action :create_if_missing
   end
@@ -99,8 +99,8 @@ action :remove do
     only_if "#{asadmin_command('list-libraries')} #{type_flag} | findstr /R /B /C:'#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node[:os] == 'windows'
-    group new_resource.system_group unless node[:os] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(command.join(' '))
   end
 end
