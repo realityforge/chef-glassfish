@@ -63,7 +63,7 @@ action :create do
     end
 
     parameters.each do |key, mapping|
-      sets[mapping] = new_resource.send(key)
+      sets[mapping] = new_resource.send(key) if new_resource.send(key)
     end
 
     sets.each_pair do |key, value|
