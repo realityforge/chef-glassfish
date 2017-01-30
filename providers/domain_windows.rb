@@ -279,22 +279,6 @@ action :create do
   end
 
 
-  windows_service service_name do
-    asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
-    status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
-
-    #Stopping the service should be made with asadmin to ensure
-    restart_command            "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command               "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
-
-    startup_type               :automatic
-    supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
-    timeout                    120
-
-    action [:nothing]
-  end
-
   nssm service_name do
     program jdk_path.gsub('/', '\\')
     args %(-jar "#{::File.join(node['glassfish']['install_dir'], 'glassfish', 'modules', 'admin-cli.jar')}" start-domain --watchdog --user ui --passwordfile "#{new_resource.password_file}" --domaindir "#{node['glassfish']['domains_dir']}" "#{new_resource.domain_name}")
@@ -308,10 +292,22 @@ action :create do
     notifies :restart, "windows_service[#{service_name}]"
   end
 
-  execute "start domain" do
-    command "echo start"
+  windows_service service_name do
+    asadmin = Asadmin.asadmin_script(node)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
+    status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
 
-    notifies :start, "windows_service[#{service_name}]"
+    #Stopping the service should be made with asadmin to ensure
+    restart_command            "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command               "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
+
+    startup_type               :automatic
+    supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
+    timeout                    120
+
+    action :nothing
+
+    notifies :run, "execute[wait for payara domain to be up and running]"
   end
 
   execute 'wait for payara domain to be up and running' do
@@ -321,6 +317,8 @@ action :create do
     retries 15
 
     timeout 30
+
+    action :nothing
   end
 end
 
