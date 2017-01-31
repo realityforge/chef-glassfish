@@ -203,6 +203,7 @@ action :create do
     create_args << "--instanceport #{new_resource.port}" unless new_resource.portbase
     create_args << "--adminport #{new_resource.admin_port}" unless new_resource.portbase
     create_args << '--nopassword=false' if new_resource.username
+    create_args << "--keytooloptions CN=#{new_resource.certificate_cn}" if new_resource.certificate_cn
     create_args << domain_dir_arg
 
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
