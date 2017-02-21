@@ -59,3 +59,4 @@ default['glassfish']['package_urls']['payara']['4.1.1.161.1'] = 'https://s3-eu-w
 default['glassfish']['package_urls']['payara']['4.1.1.162'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.162/payara-4.1.1.162.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.163'] = 'https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/Payara+4.1.1.163/payara-4.1.1.163.zip'
 default['glassfish']['package_urls']['payara']['4.1.1.164'] = 'https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.1.164/payara-4.1.1.164.zip'
+default['glassfish']['package_urls']['payara']['4.1.1.171'] = 'https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.1.171.0.1/payara-4.1.1.171.0.1.zip'
