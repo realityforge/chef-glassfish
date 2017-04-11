@@ -21,7 +21,7 @@ use_inline_resources
 action :enable do
   service "glassfish-#{new_resource.domain_name}" do
     supports :restart => true, :status => true
-    action :nothing
+    action :start
   end
 
   execute 'asadmin_enable-secure-admin' do
