@@ -308,7 +308,7 @@ end
     notifies :restart, "service[#{service_name}]", :delayed
   end
 
-  template "/etc/systemd/system/#{service_name}.service" do
+  template "/lib/systemd/system/#{service_name}.service" do
     only_if { new_resource.systemd_enabled }
     source 'systemd.service.erb'
     mode '0644'
@@ -344,7 +344,7 @@ action :destroy do
     action :delete
   end
 
-  file "/etc/systemd/system/#{service_name}.service" do
+  file "/lib/systemd/system/#{service_name}.service" do
     action :delete
   end
 
