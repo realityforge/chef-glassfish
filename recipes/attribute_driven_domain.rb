@@ -390,6 +390,15 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end
 
+# Start Hopsworks Hack
+case node.platform_family
+when "rhel"
+  kagent_config "glassfish-domain1" do
+    action :systemd_reload
+  end
+end  
+# Stop Hopsworks Hack
+  
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - caching properties"
   glassfish_property_cache "#{domain_key} Cache" do
     domain_name domain_key
