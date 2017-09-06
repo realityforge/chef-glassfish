@@ -59,13 +59,13 @@ directory node['glassfish']['base_dir'] do
   group node['glassfish']['group']
 end
 
-a = archive 'glassfish' do
+a = glassfish_archive 'glassfish' do
   prefix node['glassfish']['install_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
   owner node['glassfish']['user']
   group node['glassfish']['group']
-  extract_action 'unzip_and_strip_dir'
+  action 'unzip_and_strip_dir'
 end
 
 exists_at_run_start = ::File.exist?(a.target_directory)
