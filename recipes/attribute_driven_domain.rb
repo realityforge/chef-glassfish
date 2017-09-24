@@ -391,7 +391,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
 # Start Hopsworks Hack
-case node.platform_family
+case node["platform_family"]
 when "rhel"
   kagent_config "glassfish-domain1" do
     action :systemd_reload

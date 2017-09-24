@@ -24,8 +24,6 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 * compat_resource
 * java
 * authbind
-* archive
-* cutlery
 
 # Attributes
 

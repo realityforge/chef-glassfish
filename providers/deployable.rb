@@ -67,7 +67,7 @@ action :deploy do
 
     Chef::Log.info "Deploying #{new_resource.component_name} from #{new_resource.url}"
 
-    a = archive new_resource.component_name do
+    a = glassfish_archive new_resource.component_name do
       prefix archives_dir
       url new_resource.url
       version new_resource.version_value
