@@ -21,8 +21,8 @@ use_inline_resources
 action :create do
 
   parameters = [:connectiondefinition, :raname, :transactionsupport] +
-    ::Chef::Resource::GlassfishConnectorConnectionPool::NUMERIC_ATTRIBUTES +
-    ::Chef::Resource::GlassfishConnectorConnectionPool::BOOLEAN_ATTRIBUTES
+               Chef::Resource.resource_for_node(:glassfish_connector_connection_pool, node)::NUMERIC_ATTRIBUTES +
+               Chef::Resource.resource_for_node(:glassfish_connector_connection_pool, node)::BOOLEAN_ATTRIBUTES
 
   args = []
   args << 'create-connector-connection-pool'

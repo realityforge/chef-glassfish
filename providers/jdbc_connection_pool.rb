@@ -28,7 +28,8 @@ action :create do
   parameters = {:restype => 'res-type',
                 :isolationlevel => 'transaction-isolation-level',
                 :validationmethod => 'connection-validation-method'}
-  ::Chef::Resource::GlassfishJdbcConnectionPool::ATTRIBUTES.each do |attr|
+
+  Chef::Resource.resource_for_node(:glassfish_jdbc_connection_pool, node)::ATTRIBUTES.each do |attr|
     parameters[attr.key] = attr.arg
   end
 
