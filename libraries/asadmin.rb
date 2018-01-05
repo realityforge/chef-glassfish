@@ -17,11 +17,11 @@
 class Chef
   module Asadmin
     def encode_options(options)
-      "'#{options.collect{|v| escape_property(v)}.join(':')}'"
+      "\"#{options.collect{|v| escape_property(v)}.join(':')}\""
     end
 
     def encode_parameters(properties)
-      "'#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(':')}'"
+      "\"#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(':')}\""
     end
 
     def asadmin_target_flag
@@ -30,6 +30,27 @@ class Chef
 
     def escape_property(string)
       string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) {|match| "\\#{match}" }
+    end
+
+    def self.pipe_filter(node, pattern, regexp: true, line: false)
+      case node[:os]
+      when 'linux'
+        switches = [
+          regexp ? "" : "-F",
+          line ? "-x" : ""
+        ]
+        "grep #{switches.join(' ')} -- '#{pattern}'"
+      when 'windows'
+        switches = [
+          regexp ? "/R" : "/L",
+          line ? "/X" : ""
+        ]
+        "findstr #{switches.join(' ')} \"#{pattern}\""
+      end
+    end
+
+    def pipe_filter(pattern, regexp: true, line: false)
+      Asadmin.pipe_filter(node, pattern, regexp: regexp, line: line)
     end
 
     def asadmin_command(command, remote_command = true, params = {})
@@ -88,7 +109,11 @@ class Chef
     def self.asadmin_script(node)
       # converting seconds to miliseconds
       ENV['AS_ADMIN_READTIMEOUT'] = (node['glassfish']['asadmin']['timeout'] * 1000).to_s
-      "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
+
+      script = "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
+      script.gsub!("/", "\\") if node.windows?
+
+      script
     end
   end
 end

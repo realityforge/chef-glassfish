@@ -32,11 +32,14 @@ action :set do
   args << new_resource.webapp
 
   execute "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
+
+    filter = pipe_filter("#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})", regexp: false, line: true)
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
@@ -47,10 +50,14 @@ action :unset do
   args << new_resource.webapp
 
   execute "asadmin_unset-web-env-entry #{new_resource.name}" do
-    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
   end
 end

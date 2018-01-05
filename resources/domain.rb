@@ -89,6 +89,8 @@ attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :logging_properties, :kind_of => Hash, :default => {}
 #<> @attribute realm_types A map of names to realm implementation classes that is merged into the default realm types.
 attribute :realm_types, :kind_of => Hash, :default => {}
+#<> @attribute certificate_cn The common name that should be used when generating the self-signed ssl certificate for the domain
+attribute :certificate_cn, :kind_of => String, :default => nil
 
 #<> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
 attribute :system_user, :kind_of => String, :default => nil
