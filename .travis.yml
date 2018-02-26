@@ -18,5 +18,5 @@ before_script:
   - foodcritic --version
 
 script:
-  - cookstyle
-  - foodcritic
+  - cookstyle -D --fail-level W
+  - foodcritic -f any .
