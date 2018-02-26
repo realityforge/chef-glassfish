@@ -213,7 +213,7 @@ action :create do
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
-    command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false) # rubocop:disable Lint/ParenthesesAsGroupedExpression
 
     if node['glassfish']['variant'] != 'payara'
       notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate
@@ -229,8 +229,8 @@ action :create do
     dest_file = "#{new_resource.domain_dir_path}/master-password"
 
     only_if { node['glassfish']['version'][0] == '4' }
-    only_if { ::File.exists?(source_file) }
-    not_if { ::File.exists?(dest_file) }
+    only_if { ::File.exist?(source_file) }
+    not_if { ::File.exist?(dest_file) }
 
     block do
       FileUtils.cp(source_file, dest_file)

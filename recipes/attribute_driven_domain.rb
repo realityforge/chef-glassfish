@@ -232,7 +232,7 @@ end
 def gf_sort(hash)
   return {} if hash.nil?
   hash = hash.dup
-  hash.delete_if { |k, v| k =~ /^_.*/ || k == 'managed' }
+  hash.delete_if { |k, _| k =~ /^_.*/ || k == 'managed' }
   Hash[hash.sort_by { |key, value| "#{'%04d' % gf_priority(value)}#{key}" }]
 end
 
@@ -317,7 +317,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     secure secure if secure
     system_user system_username if system_username
     system_group system_group if system_group
-    action ('true' == remote_access.to_s) ? :enable : :disable
+    action ('true' == remote_access.to_s) ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
   end
 
   if admin_port
@@ -337,7 +337,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
               http.use_ssl = true
               http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             end
-            http.start do |http|
+            http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
               request = Net::HTTP::Get.new(uri.request_uri)
               request.basic_auth username, password
               request['Accept'] = 'application/json'
@@ -345,7 +345,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
             end
             return true if res.code.to_s == code.to_s
             puts "GlassFish not responding OK - #{res.code} to #{url}"
-          rescue Exception => e
+          rescue StandardError => e
             puts "GlassFish error while accessing web interface at #{url}"
             puts e.message
             puts e.backtrace.join("\n")
@@ -617,7 +617,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
     if configuration['type'] && configuration['type'].to_s == 'rar'
       if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
           include_recipe recipe
         end
       end
