@@ -14,7 +14,9 @@ install: echo "skip bundle install"
 before_script:
   - eval "$(chef shell-init bash)"
   - chef --version
-
-script:
   - cookstyle --version
   - foodcritic --version
+
+script:
+  - cookstyle
+  - foodcritic
