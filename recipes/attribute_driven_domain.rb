@@ -1051,7 +1051,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-resources') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing resource connector #{existing}"
     found = false
-    gf_sort(definition['resource_adapters'] || {}).each_pair do |key, configuration|
+    gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
       gf_sort(configuration['connection_pools'] || {}).each_pair do |_, pool_configuration|
         if pool_configuration['resources'] && pool_configuration['resources'][existing]
           found = true

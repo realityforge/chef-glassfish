@@ -16,6 +16,8 @@
 
 require 'socket'
 
+use_inline_resources
+
 action :run do
   ruby_block 'block_until_running' do
     block do
