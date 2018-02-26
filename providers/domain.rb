@@ -322,8 +322,7 @@ end
               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :stop_domain_timeout => new_resource.systemd_stop_timeout,
-              :authbind => requires_authbind,
-              :listen_ports => [new_resource.admin_port, new_resource.port])
+              :authbind => requires_authbind)
     notifies :restart, "service[#{service_name}]", :delayed
   end
 
