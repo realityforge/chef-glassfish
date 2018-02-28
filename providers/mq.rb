@@ -245,7 +245,7 @@ action :create do
       group new_resource.system_group unless node['os'] == 'windows'
       mode '0400'
       action :create
-      content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("")
+      content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("") # rubocop:disable Lint/ParenthesesAsGroupedExpression
       notifies :restart, service_resource_name, :delayed
     end
 
@@ -254,7 +254,7 @@ action :create do
       group new_resource.system_group unless node['os'] == 'windows'
       mode '0400'
       action :create
-      content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("")
+      content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("") # rubocop:disable Lint/ParenthesesAsGroupedExpression
       notifies :restart, service_resource_name, :delayed
     end
   end

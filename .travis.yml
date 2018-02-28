@@ -1,3 +1,22 @@
-script: "gem install foodcritic -v 2.0.0 && foodcritic -f any -t ~FC023 -t ~FC017 -t ~FC007 -t ~FC034 -t ~FC048 -t ~FC009 -t ~FC014 -t ~FC022 ."
-rvm:
-  - 1.9.3
+sudo: required
+dist: trusty
+
+addons:
+  apt:
+    sources:
+      - chef-current-trusty
+    packages:
+      - chefdk
+
+# Don't `bundle install` which takes about 1.5 mins
+install: echo "skip bundle install"
+
+before_script:
+  - eval "$(chef shell-init bash)"
+  - chef --version
+  - cookstyle --version
+  - foodcritic --version
+
+script:
+  - cookstyle -D --fail-level W
+  - foodcritic -f any .

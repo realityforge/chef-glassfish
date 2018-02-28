@@ -36,7 +36,7 @@ NUMERIC_ATTRIBUTES = [:steadypoolsize,
                       :creationretryinterval]
 
 NUMERIC_ATTRIBUTES.each do |key|
-  attribute key, :kind_of => [Fixnum, String], :regex => /^[0-9]+$/, :default => nil
+  attribute key, :kind_of => [Integer, String], :regex => /^[0-9]+$/, :default => nil
 end
 
 BOOLEAN_ATTRIBUTES = [:isconnectvalidatereq,
