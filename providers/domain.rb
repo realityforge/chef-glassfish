@@ -19,6 +19,8 @@ include Chef::Asadmin
 def default_logging_properties
   {
     'handlers' => 'java.util.logging.ConsoleHandler',
+    'handlerServices' => 'com.sun.enterprise.server.logging.GFFileHandler,com.sun.enterprise.server.logging.SyslogHandler',
+
     'java.util.logging.ConsoleHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
 
     'com.sun.enterprise.server.logging.GFFileHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
@@ -86,7 +88,8 @@ def default_logging_properties
     'javax.enterprise.system.ssl.security.level' => 'INFO',
     'ShoalLogger.level' => 'CONFIG',
     'org.eclipse.persistence.session.level' => 'INFO',
-    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING'
+    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING',
+    'com.hazelcast.level' => 'WARNING'
   }
 end
 
@@ -97,7 +100,7 @@ def default_realm_confs
     'solarisRealm' => 'com.sun.enterprise.security.auth.login.SolarisLoginModule',
   }
 
-  if node['glassfish']['version'][0] == '4'
+  if node['glassfish']['version'][0].to_i >= 4
     {
       'jdbcRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCLoginModule',
       'jdbcDigestRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCDigestLoginModule',
