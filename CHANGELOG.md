@@ -1,4 +1,6 @@
 ## v0.7.8 (Pending):
+* Enhance : Improvements based on Cookstyle and Foodcritic
+* Enhance : Add initial support for Payara 5.181
 * Change  : Avoid specifying the user and group when executing asadmin commands if
             on the windows platform. Submitted by Akos Vandra.
 * Fix     : Start using the execute resource rather than the bash resource in preparation
