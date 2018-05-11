@@ -203,7 +203,7 @@ Another approach using a vagrant file is to set the json attribute such as;
 include_recipe 'glassfish::default'
 
 def gf_scan_existing_resources(admin_port, username, password_file, secure, command)
-  options = {:remote_command => true, :terse => true, :echo => false}
+  options = { remote_command: true, terse: true, echo: false }
   options[:username] = username if username
   options[:password_file] = password_file if password_file
   options[:secure] = secure if secure
@@ -217,7 +217,7 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   lines.each do |line|
     if line =~ /CLI[0-9]+: Warning.*/
       # CLI031 Warnings are a result of internal changes in glassfish and we can not control them
-      Chef::Log.warn "Ignoring asadmin output: #{line}" unless (line =~/CLI031: Warning.*/)
+      Chef::Log.warn "Ignoring asadmin output: #{line}" unless line =~ /CLI031: Warning.*/
     else
       existing = line.scan(/^(\S+)/).flatten[0]
       yield existing
@@ -232,7 +232,7 @@ end
 def gf_sort(hash)
   return {} if hash.nil?
   hash = hash.dup
-  hash.delete_if { |k, v| k =~ /^_.*/ || k == 'managed' }
+  hash.delete_if { |k, _| k =~ /^_.*/ || k == 'managed' }
   Hash[hash.sort_by { |key, value| "#{'%04d' % gf_priority(value)}#{key}" }]
 end
 
@@ -271,7 +271,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   if definition['config']['portbase']
     if definition['config']['admin_port']
-      fail 'Glassfish admin port is automatically calculated from portbase. Please do not set both.'
+      raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.'
     end
     portbase = definition['config']['portbase']
     admin_port = portbase + 48
@@ -317,7 +317,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     secure secure if secure
     system_user system_username if system_username
     system_group system_group if system_group
-    action ('true' == remote_access.to_s) ? :enable : :disable
+    action (remote_access.to_s == 'true') ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
   end
 
   if admin_port
@@ -327,7 +327,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
-
         def is_url_responding_with_code?(url, username, password, code)
           begin
             uri = URI(url)
@@ -337,7 +336,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
               http.use_ssl = true
               http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             end
-            http.start do |http|
+            http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
               request = Net::HTTP::Get.new(uri.request_uri)
               request.basic_auth username, password
               request['Accept'] = 'application/json'
@@ -345,7 +344,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
             end
             return true if res.code.to_s == code.to_s
             puts "GlassFish not responding OK - #{res.code} to #{url}"
-          rescue Exception => e
+          rescue StandardError => e
             puts "GlassFish error while accessing web interface at #{url}"
             puts e.message
             puts e.backtrace.join("\n")
@@ -361,12 +360,12 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           applications_url = "#{base_url}/management/domain/applications"
           password = definition['config']['password']
           if is_url_responding_with_code?(nodes_url, username, password, 200) &&
-            is_url_responding_with_code?(applications_url, username, password, 200) &&
-            is_url_responding_with_code?(base_url, username, password, 200)
+             is_url_responding_with_code?(applications_url, username, password, 200) &&
+             is_url_responding_with_code?(base_url, username, password, 200)
             sleep 1
             break
           end
-          fail_count = fail_count + 1
+          fail_count += 1
           sleep 1
         end
       end
@@ -418,7 +417,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
   gf_sort(definition['extra_libraries'] || {}).values.each do |config|
-    config = config.is_a?(Hash) ? config : {'url' => config}
+    config = config.is_a?(Hash) ? config : { 'url' => config }
     url = config['url']
     library_type = config['type'] || 'ext'
     requires_restart = config['requires_restart'].nil? ? false : config['requires_restart']
@@ -617,7 +616,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
     if configuration['type'] && configuration['type'].to_s == 'rar'
       if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
           include_recipe recipe
         end
       end
@@ -663,7 +662,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         end
       end
       if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+        gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
           include_recipe recipe
         end
       end
@@ -752,7 +751,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           self.send(config_key, value)
         end if pool_configuration['config']
       end
-      gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
+      gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration| # rubocop:disable Lint/ShadowingOuterLocalVariable
         glassfish_connector_resource resource_name.to_s do
           domain_name domain_key
           admin_port admin_port if admin_port
@@ -796,7 +795,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       secure secure if secure
       system_user system_username if system_username
       system_group system_group if system_group
-      desttype (resource_config['desttype'] || 'Queue')
+      desttype (resource_config['desttype'] || 'Queue') # rubocop:disable Lint/ParenthesesAsGroupedExpression
     end
   end
 
@@ -814,7 +813,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       enabled resource_config['enabled'] if resource_config['enabled']
       description resource_config['description'] if resource_config['description']
       properties resource_config['properties'] if resource_config['properties']
-      restype (resource_config['restype'] || 'javax.jms.Queue')
+      restype (resource_config['restype'] || 'javax.jms.Queue') # rubocop:disable Lint/ParenthesesAsGroupedExpression
     end
   end
 
@@ -822,8 +821,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_sort(definition['custom_resources'] || {}).each_pair do |key, value|
     hash = value.is_a?(Hash) ? value : {'value' => value}
     hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
-    hash['restype'] = 'java.lang.Integer' if hash['restype'].nil? && hash['value'].is_a?(Fixnum)
-    hash['restype'] = 'java.lang.Long' if hash['restype'].nil? && hash['value'].is_a?(Bignum)
+    hash['restype'] = 'java.lang.Integer' if hash['restype'].nil? && hash['value'].is_a?(Fixnum) # rubocop:disable Lint/UnifiedInteger
+    hash['restype'] = 'java.lang.Long' if hash['restype'].nil? && hash['value'].is_a?(Bignum) # rubocop:disable Lint/UnifiedInteger
     hash['restype'] = 'java.lang.Float' if hash['restype'].nil? && hash['value'].is_a?(Float)
     glassfish_custom_resource key.to_s do
       domain_name domain_key
@@ -863,7 +862,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
     if configuration['type'].nil? || (configuration['type'].to_s != 'osgi' && configuration['type'].to_s != 'rar')
       if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
           include_recipe recipe
         end
       end
@@ -910,7 +909,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         end
       end
       if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+        gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
           include_recipe recipe
         end
       end
@@ -1019,7 +1018,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing connector pool #{existing}"
     found = false
     if definition['resource_adapters']
-      gf_sort(definition['resource_adapters']).each_pair do |key, configuration|
+      gf_sort(definition['resource_adapters']).each_pair do |_, configuration|
         if configuration['connection_pools'] && configuration['connection_pools'][existing]
           found = true
         end
@@ -1051,8 +1050,8 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-connector-resources') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing resource connector #{existing}"
     found = false
-    gf_sort(definition['resource_adapters'] || {}).each_pair do |key, configuration|
-      gf_sort(configuration['connection_pools'] || {}).each_pair do |pool_name, pool_configuration|
+    gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
+      gf_sort(configuration['connection_pools'] || {}).each_pair do |_, pool_configuration|
         if pool_configuration['resources'] && pool_configuration['resources'][existing]
           found = true
         end
@@ -1084,7 +1083,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-admin-objects') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing admin object #{existing}"
     found = false
-    gf_sort(definition['resource_adapters'] || {}).each_pair do |key, configuration|
+    gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
       if configuration['admin_objects'] && configuration['admin_objects'][existing]
         found = true
       end
@@ -1139,7 +1138,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing jdbc resource #{existing}"
     found = false
     if definition['jdbc_connection_pools']
-      gf_sort(definition['jdbc_connection_pools']).each_pair do |key, configuration|
+      gf_sort(definition['jdbc_connection_pools']).each_pair do |_, configuration|
         if configuration['resources'] && configuration['resources'][existing]
           found = true
         end

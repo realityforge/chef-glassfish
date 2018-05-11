@@ -25,9 +25,10 @@ action :create do
       !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.") :
       true
 
-  parameters = {:restype => 'res-type',
-                :isolationlevel => 'transaction-isolation-level',
-                :validationmethod => 'connection-validation-method'}
+  parameters = { restype: 'res-type',
+                 isolationlevel: 'transaction-isolation-level',
+                 validationmethod: 'connection-validation-method',
+               }
 
   Chef::Resource.resource_for_node(:glassfish_jdbc_connection_pool, node)::ATTRIBUTES.each do |attr|
     parameters[attr.key] = attr.arg

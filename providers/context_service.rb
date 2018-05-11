@@ -42,7 +42,7 @@ action :create do
     'context-info-enabled' => new_resource.contextinfoenabled,
     'enabled' => new_resource.enabled,
     'description' => (new_resource.description || ''),
-    #deployment-order=100
+    # deployment-order=100
   }
 
   properties.each_pair do |key, value|

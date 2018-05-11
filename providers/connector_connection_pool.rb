@@ -19,7 +19,6 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-
   parameters = [:connectiondefinition, :raname, :transactionsupport] +
                Chef::Resource.resource_for_node(:glassfish_connector_connection_pool, node)::NUMERIC_ATTRIBUTES +
                Chef::Resource.resource_for_node(:glassfish_connector_connection_pool, node)::BOOLEAN_ATTRIBUTES
@@ -34,9 +33,8 @@ action :create do
   args << "--description='#{new_resource.description}'" if new_resource.description
   args << new_resource.pool_name
 
-
   execute "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do
-    not_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -51,7 +49,7 @@ action :delete do
   args << new_resource.pool_name
 
   execute "asadmin_delete-connector-connection-pool #{new_resource.pool_name}" do
-    only_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-connector-connection-pools')} | grep -F -x -- '#{new_resource.pool_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
