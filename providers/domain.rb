@@ -19,6 +19,8 @@ include Chef::Asadmin
 def default_logging_properties
   {
     'handlers' => 'java.util.logging.ConsoleHandler',
+    'handlerServices' => 'com.sun.enterprise.server.logging.GFFileHandler,com.sun.enterprise.server.logging.SyslogHandler',
+
     'java.util.logging.ConsoleHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
 
     'com.sun.enterprise.server.logging.GFFileHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
