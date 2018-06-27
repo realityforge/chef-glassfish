@@ -203,7 +203,7 @@ Another approach using a vagrant file is to set the json attribute such as;
 include_recipe 'glassfish::default'
 
 def gf_scan_existing_resources(admin_port, username, password_file, secure, command)
-  options = {:remote_command => true, :terse => true, :echo => false}
+  options = { remote_command: true, terse: true, echo: false }
   options[:username] = username if username
   options[:password_file] = password_file if password_file
   options[:secure] = secure if secure
@@ -217,7 +217,7 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   lines.each do |line|
     if line =~ /CLI[0-9]+: Warning.*/
       # CLI031 Warnings are a result of internal changes in glassfish and we can not control them
-      Chef::Log.warn "Ignoring asadmin output: #{line}" unless (line =~/CLI031: Warning.*/)
+      Chef::Log.warn "Ignoring asadmin output: #{line}" unless line =~ /CLI031: Warning.*/
     else
       existing = line.scan(/^(\S+)/).flatten[0]
       yield existing
@@ -271,7 +271,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   if definition['config']['portbase']
     if definition['config']['admin_port']
-      fail 'Glassfish admin port is automatically calculated from portbase. Please do not set both.'
+      raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.'
     end
     portbase = definition['config']['portbase']
     admin_port = portbase + 48
@@ -317,7 +317,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     secure secure if secure
     system_user system_username if system_username
     system_group system_group if system_group
-    action ('true' == remote_access.to_s) ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
+    action (remote_access.to_s == 'true') ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
   end
 
   if admin_port
@@ -327,7 +327,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
-
         def is_url_responding_with_code?(url, username, password, code)
           begin
             uri = URI(url)
@@ -361,12 +360,12 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           applications_url = "#{base_url}/management/domain/applications"
           password = definition['config']['password']
           if is_url_responding_with_code?(nodes_url, username, password, 200) &&
-            is_url_responding_with_code?(applications_url, username, password, 200) &&
-            is_url_responding_with_code?(base_url, username, password, 200)
+             is_url_responding_with_code?(applications_url, username, password, 200) &&
+             is_url_responding_with_code?(base_url, username, password, 200)
             sleep 1
             break
           end
-          fail_count = fail_count + 1
+          fail_count += 1
           sleep 1
         end
       end
@@ -418,7 +417,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
   gf_sort(definition['extra_libraries'] || {}).values.each do |config|
-    config = config.is_a?(Hash) ? config : {'url' => config}
+    config = config.is_a?(Hash) ? config : { 'url' => config }
     url = config['url']
     library_type = config['type'] || 'ext'
     requires_restart = config['requires_restart'].nil? ? false : config['requires_restart']

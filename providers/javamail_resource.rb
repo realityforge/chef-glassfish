@@ -19,7 +19,6 @@ include Chef::Asadmin
 use_inline_resources
 
 action :create do
-
   args = []
   args << 'create-javamail-resource'
   args << '--mailhost' << new_resource.mailhost
