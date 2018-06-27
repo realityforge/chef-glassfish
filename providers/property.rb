@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :set do
   cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
   may_need_update =

@@ -20,8 +20,6 @@ def type_flag
   "--type #{new_resource.library_type}"
 end
 
-use_inline_resources
-
 action :add do
   service "glassfish-#{new_resource.domain_name}" do
     supports :restart => true, :status => true

@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 def domain_dir
   "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
 end

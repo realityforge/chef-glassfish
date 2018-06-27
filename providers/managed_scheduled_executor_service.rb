@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   args = []
   args << 'create-managed-scheduled-executor-service'

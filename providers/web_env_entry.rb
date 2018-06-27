@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :set do
   args = []
   args << 'set-web-env-entry'

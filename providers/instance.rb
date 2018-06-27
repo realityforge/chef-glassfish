@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   instance_exists = 0 != `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -- '#{new_resource.instance_name} '`.strip.split("\n").size
 

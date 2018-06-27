@@ -17,11 +17,11 @@
 class Chef
   module Asadmin
     def encode_options(options)
-      "'#{options.collect{|v| escape_property(v)}.join(':')}'"
+      "'#{options.collect { |v| escape_property(v) }.join(':')}'"
     end
 
     def encode_parameters(properties)
-      "'#{properties.collect{|k,v| "#{k}=#{escape_property(v)}"}.join(':')}'"
+      "'#{properties.collect { |k,v| "#{k}=#{escape_property(v)}" }.join(':')}'"
     end
 
     def asadmin_target_flag

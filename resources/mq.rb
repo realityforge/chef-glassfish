@@ -50,17 +50,17 @@ Creates an OpenMQ message broker instance, creates an OS-level service and start
 
 actions :create, :destroy
 
-#<> @attribute max_memory The amount of heap memory to allocate to the domain in MiB.
+# <> @attribute max_memory The amount of heap memory to allocate to the domain in MiB.
 attribute :max_memory, :kind_of => Integer, :default => 512
-#<> @attribute max_stack_size The amount of stack memory to allocate to the domain in KiB.
+# <> @attribute max_stack_size The amount of stack memory to allocate to the domain in KiB.
 attribute :max_stack_size, :kind_of => Integer, :default => 250
-#<> @attribute instance The name of the broker instance.
+# <> @attribute instance The name of the broker instance.
 attribute :instance, :kind_of => String, :name_attribute => true
-#<> @attribute users A map of users to passwords for interacting with the service.
+# <> @attribute users A map of users to passwords for interacting with the service.
 attribute :users, :kind_of => Hash, :default => {}
-#<> @attribute access_control_rules An access control list of patterns to users.
+# <> @attribute access_control_rules An access control list of patterns to users.
 attribute :access_control_rules, :kind_of => Hash, :default => {}
-#<> @attribute logging_properties A hash of properties that will be merged into logging.properties. Use this to send logs to syslog or graylog.
+# <> @attribute logging_properties A hash of properties that will be merged into logging.properties. Use this to send logs to syslog or graylog.
 attribute :logging_properties,
           :kind_of => Hash,
           :default =>
@@ -69,38 +69,38 @@ attribute :logging_properties,
               '.level' => 'INFO',
               'java.util.logging.ConsoleHandler.level' => 'INFO',
             }
-#<> @attribute config A map of key-value properties that are merged into the OpenMQ configuration file.
+# <> @attribute config A map of key-value properties that are merged into the OpenMQ configuration file.
 attribute :config, :kind_of => Hash, :default => {}
-#<> @attribute queues A map of queue names to queue properties.
+# <> @attribute queues A map of queue names to queue properties.
 attribute :queues, :kind_of => Hash, :default => {}
-#<> @attribute topics A map of topic names to topic properties.
+# <> @attribute topics A map of topic names to topic properties.
 attribute :topics, :kind_of => Hash, :default => {}
-#<> @attribute jmx_admins A map of username to password for read-write JMX admin interface. Ignored unless jmx_port is specified.
+# <> @attribute jmx_admins A map of username to password for read-write JMX admin interface. Ignored unless jmx_port is specified.
 attribute :jmx_admins, :kind_of => Hash, :default => {}
-#<> @attribute jmx_monitors A map of username to password for read-only JMX admin interface. Ignored unless jmx_port is specified.
+# <> @attribute jmx_monitors A map of username to password for read-only JMX admin interface. Ignored unless jmx_port is specified.
 attribute :jmx_monitors, :kind_of => Hash, :default => {}
-#<> @attribute admin_user The user in the users map that is used during administration.
+# <> @attribute admin_user The user in the users map that is used during administration.
 attribute :admin_user, :kind_of => String, :default => 'imqadmin'
 
-#<> @attribute port The port for the portmapper to bind.
+# <> @attribute port The port for the portmapper to bind.
 attribute :port, :kind_of => Integer, :default => 7676
-#<> @attribute admin_port The port on which admin service will bind.
+# <> @attribute admin_port The port on which admin service will bind.
 attribute :admin_port, :kind_of => Integer, :default => 7677
-#<> @attribute jms_port The port on which jms service will bind.
+# <> @attribute jms_port The port on which jms service will bind.
 attribute :jms_port, :kind_of => Integer, :default => 7678
-#<> @attribute jmx_port The port on which jmx service will bind. If not specified, no jmx service will be exported.
+# <> @attribute jmx_port The port on which jmx service will bind. If not specified, no jmx service will be exported.
 attribute :jmx_port, :kind_of => Integer, :default => nil
-#<> @attribute rmi_port The port on which rmi service will bind. If not specified, a random port will be used. Typically used to lock down port for jmx access through firewalls.
+# <> @attribute rmi_port The port on which rmi service will bind. If not specified, a random port will be used. Typically used to lock down port for jmx access through firewalls.
 attribute :rmi_port, :kind_of => Integer, :default => nil
-#<> @attribute stomp_port The port on which the stomp service will bind. If not specified, no stomp service will execute.
+# <> @attribute stomp_port The port on which the stomp service will bind. If not specified, no stomp service will execute.
 attribute :stomp_port, :kind_of => Integer, :default => nil
 
-#<> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
+# <> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
 attribute :system_user, :kind_of => String, :default => nil
-#<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
+# <> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
 attribute :system_group, :kind_of => String, :default => nil
 
-#<> @attribute init_style The init system used to run the service.
+# <> @attribute init_style The init system used to run the service.
 attribute :init_style, :equal_to => ['upstart', 'runit'], :default => 'upstart'
 
 default_action :create

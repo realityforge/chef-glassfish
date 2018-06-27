@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :run do
   execute "asadmin #{new_resource.command}" do
     timeout node['glassfish']['asadmin']['timeout'] + 5
