@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :enable do
   service "glassfish-#{new_resource.domain_name}" do
     supports :restart => true, :status => true

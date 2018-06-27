@@ -16,14 +16,12 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   output = `#{asadmin_command("get '*'", true, :terse => true, :echo => false)}`
-  raise "Error caching properties" unless $?.exitstatus.to_i == 0
+  raise 'Error caching properties' unless $?.exitstatus.to_i == 0
 
   values = {}
-  output.split("\n").each do |line|
+  output.split('\n').each do |line|
     index = line.index('=')
     key = line[0, index]
     value = line[index + 1, line.size]

@@ -121,8 +121,6 @@ def service_name
   "glassfish-#{new_resource.domain_name}"
 end
 
-use_inline_resources
-
 action :create do
   if new_resource.system_group != node['glassfish']['group']
     group new_resource.system_group do

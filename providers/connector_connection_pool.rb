@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   parameters = [:connectiondefinition, :raname, :transactionsupport] +
                Chef::Resource.resource_for_node(:glassfish_connector_connection_pool, node)::NUMERIC_ATTRIBUTES +

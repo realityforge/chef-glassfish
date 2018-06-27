@@ -6,7 +6,7 @@ description 'Installs/Configures GlassFish Application Server'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '0.7.7'
 
-chef_version '>= 12.0' if respond_to?(:chef_version)
+chef_version '>= 13.0' if respond_to?(:chef_version)
 
 issues_url 'https://github.com/realityforge/chef-glassfish'
 source_url 'https://github.com/realityforge/chef-glassfish'

@@ -33,7 +33,7 @@ Ensures that a OpenMQ message broker instance has had a chance to finish startin
 actions :run
 default_action :run
 
-#<> @attribute host The host on which the broker runs.
+# <> @attribute host The host on which the broker runs.
 attribute :host, :kind_of => String
-#<> @attribute port The port on which the broker listens.
+# <> @attribute port The port on which the broker listens.
 attribute :port, :kind_of => Integer

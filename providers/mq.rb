@@ -85,8 +85,6 @@ def mq_config_settings(resource)
   configs
 end
 
-use_inline_resources
-
 action :create do
   service_name = "omq-#{new_resource.instance}"
   service_resource_name = new_resource.init_style == 'upstart' ? "service[#{service_name}]" : "runit_service[#{service_name}]"

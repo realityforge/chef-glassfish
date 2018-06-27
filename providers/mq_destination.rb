@@ -16,8 +16,6 @@
 
 include Chef::Imqcmd
 
-use_inline_resources
-
 action :create do
   Chef::Log.info "Creating MQ Destination #{new_resource.destination_name}"
 

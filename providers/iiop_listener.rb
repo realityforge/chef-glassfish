@@ -16,15 +16,11 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   args = []
   args << 'create-iiop-listener'
   args << asadmin_target_flag
-  if new_resource.listeneraddress
-    args << '--listeneraddress' << new_resource.listeneraddress
-  end
+  args << '--listeneraddress' << new_resource.listeneraddress if new_resource.listeneraddress
   args << '--iiopport' << new_resource.iiopport
   args << '--securityenabled' << new_resource.securityenabled
   args << '--enabled' << new_resource.enabled
