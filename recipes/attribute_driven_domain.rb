@@ -265,14 +265,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   system_username = definition['config']['system_user']
   system_group = definition['config']['system_group']
 
-  if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
-    include_recipe 'authbind'
-  end
-
+  include_recipe 'authbind' if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
+  
   if definition['config']['portbase']
-    if definition['config']['admin_port']
-      raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.'
-    end
+    raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.' if definition['config']['admin_port']
     portbase = definition['config']['portbase']
     admin_port = portbase + 48
   end
@@ -327,7 +323,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
-        def is_url_responding_with_code?(url, username, password, code)
+        def url_responding_with_code?(url, username, password, code)
           begin
             uri = URI(url)
             res = nil
@@ -359,9 +355,9 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           nodes_url = "#{base_url}/management/domain/nodes"
           applications_url = "#{base_url}/management/domain/applications"
           password = definition['config']['password']
-          if is_url_responding_with_code?(nodes_url, username, password, 200) &&
-             is_url_responding_with_code?(applications_url, username, password, 200) &&
-             is_url_responding_with_code?(base_url, username, password, 200)
+          if url_responding_with_code?(nodes_url, username, password, 200) &&
+             url_responding_with_code?(applications_url, username, password, 200) &&
+             url_responding_with_code?(base_url, username, password, 200)
             sleep 1
             break
           end
@@ -655,7 +651,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           system_user system_username if system_username
           system_group system_group if system_group
           webapp component_name
-          name key
+          glassfish_web_env_entry_name key
           type hash['type'] if hash['type']
           value hash['value'].to_s unless hash['value'].nil?
           description hash['description'] if hash['description']
@@ -902,7 +898,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           system_user system_username if system_username
           system_group system_group if system_group
           webapp component_name
-          name key
+          glassfish_web_env_entry_name key
           type hash['type'] if hash['type']
           value hash['value'].to_s unless hash['value'].nil?
           description hash['description'] if hash['description']
@@ -958,7 +954,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           system_user system_username if system_username
           system_group system_group if system_group
           webapp component_name
-          name existing
+          glassfish_web_env_entry_name existing
           action :unset
         end
       end
@@ -1139,12 +1135,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     found = false
     if definition['jdbc_connection_pools']
       gf_sort(definition['jdbc_connection_pools']).each_pair do |_, configuration|
-        if configuration['resources'] && configuration['resources'][existing]
-          found = true
-        end
+        found = true if configuration['resources'] && configuration['resources'][existing]
       end
     end
-    standard_resources = %w{jdbc/__TimerPool}
+    standard_resources = %w(jdbc/__TimerPool)
     unless found || standard_resources.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing jdbc resource #{existing}"
       glassfish_jdbc_connection_pool existing do
@@ -1248,7 +1242,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing auth realms"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-auth-realms') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing auth realms #{existing}"
-    standard_realms = %w{admin-realm file certificate}
+    standard_realms = %w(admin-realm file certificate)
     unless definition['realms'] && definition['realms'][existing] || standard_realms.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing auth realms #{existing}"
       glassfish_auth_realm existing do
@@ -1406,10 +1400,10 @@ end
 
 domain_names = node['glassfish']['domains'].keys
 
-Dir["#{node['glassfish']['domains_dir']}/*"].
-  select { |file| File.directory?(file) }.
-  select { |file| !domain_names.include?(File.basename(file)) }.
-  each do |file|
+Dir["#{node['glassfish']['domains_dir']}/*"]
+  .select { |file| File.directory?(file) }
+  .select { |file| !domain_names.include?(File.basename(file)) }
+  .each do |file|
 
   Chef::Log.info "Removing historic Glassfish Domain #{File.basename(file)}"
 

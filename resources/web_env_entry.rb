@@ -39,7 +39,7 @@ actions :set, :unset
 # <> @attribute webapp The name of the web application name.
 attribute :webapp, :kind_of => String, :required => true
 # <> @attribute name The key name of the web env entry.
-attribute :name, :kind_of => String, :required => true
+attribute :glassfish_web_env_entry_name, :kind_of => String, :required => true
 # <> @attribute type The java type name of env entry.
 attribute :type, :kind_of => String, :default => 'java.lang.String'
 # <> @attribute value The value of the entry.

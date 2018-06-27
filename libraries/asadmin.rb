@@ -21,7 +21,7 @@ class Chef
     end
 
     def encode_parameters(properties)
-      "'#{properties.collect { |k,v| "#{k}=#{escape_property(v)}" }.join(':')}'"
+      "'#{properties.collect { |k, v| "#{k}=#{escape_property(v)}" }.join(':')}'"
     end
 
     def asadmin_target_flag
@@ -29,7 +29,7 @@ class Chef
     end
 
     def escape_property(string)
-      string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) {|match| "\\#{match}" }
+      string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) { |match| "\\#{match}" }
     end
 
     def asadmin_command(command, remote_command = true, params = {})
@@ -64,10 +64,8 @@ class Chef
       return component_name if version.nil? && url.nil?
       version_value = version ? version.to_s : Digest::SHA1.hexdigest(url)
       versioned_component_name = "#{component_name}:#{version_value}"
-      if descriptors && !descriptors.empty?
-        versioned_component_name = "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}"
-      end
-      versioned_component_name = versioned_component_name.gsub(':', '_') if component_type.to_s == 'osgi'
+      versioned_component_name = "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}" if descriptors && !descriptors.empty?
+      versioned_component_name = versioned_component_name.tr(':', '_') if component_type.to_s == 'osgi'
       versioned_component_name
     end
 
@@ -78,7 +76,7 @@ class Chef
       args << "--user #{options[:username]}" if options[:username]
       args << "--passwordfile=#{options[:password_file]}" if options[:password_file]
       if options[:remote_command].nil? || options[:remote_command]
-        args << "--secure" if options[:secure]
+        args << '--secure' if options[:secure]
         args << "--port #{options[:admin_port]}"
       end
 
