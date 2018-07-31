@@ -900,10 +900,9 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         description hash['description'] if hash['description']
       end
     end
-    if configuration['recipes'] && configuration['recipes']['after']
-      gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
-        include_recipe recipe
-      end
+    next unless configuration['recipes'] && configuration['recipes']['after']
+    gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
+      include_recipe recipe
     end
   end
 
