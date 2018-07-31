@@ -22,43 +22,41 @@ action :set do
     action :nothing
   end
 
-  output = `#{asadmin_command('list-jvm-options', true, :terse => true, :echo => false)}`
+  output = `#{asadmin_command('list-jvm-options', true, terse: true, echo: false)}`
 
   # Work around bugs in 3.1.2.2
   if node['glassfish']['version'] == '3.1.2.2'
-    existing = output.gsub(' ', '+').split("\n")
+    existing = output.tr(' ', '+').split("\n")
     new_resource.options.each do |line|
-      unless existing.include?(line)
-        args = []
-        args << 'create-jvm-options'
-        args << asadmin_target_flag
-        args << encode_options([line])
+      next if existing.include?(line)
+      args = []
+      args << 'create-jvm-options'
+      args << asadmin_target_flag
+      args << encode_options([line])
 
-        execute "asadmin_create-jvm-option #{line}" do
-          timeout node['glassfish']['asadmin']['timeout'] + 5
-          user new_resource.system_user unless node['os'] == 'windows'
-          group new_resource.system_group unless node['os'] == 'windows'
-          command asadmin_command(args.join(' '))
+      execute "asadmin_create-jvm-option #{line}" do
+        timeout node['glassfish']['asadmin']['timeout'] + 5
+        user new_resource.system_user unless node['os'] == 'windows'
+        group new_resource.system_group unless node['os'] == 'windows'
+        command asadmin_command(args.join(' '))
 
-          notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
-        end
+        notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
       end
     end
     existing.each do |line|
-      unless new_resource.options.include?(line)
-        args = []
-        args << 'delete-jvm-options'
-        args << asadmin_target_flag
-        args << encode_options([line])
+      next if new_resource.options.include?(line)
+      args = []
+      args << 'delete-jvm-options'
+      args << asadmin_target_flag
+      args << encode_options([line])
 
-        execute "asadmin_delete-jvm-option #{line}" do
-          timeout node['glassfish']['asadmin']['timeout'] + 5
-          user new_resource.system_user unless node['os'] == 'windows'
-          group new_resource.system_group unless node['os'] == 'windows'
-          command asadmin_command(args.join(' '))
+      execute "asadmin_delete-jvm-option #{line}" do
+        timeout node['glassfish']['asadmin']['timeout'] + 5
+        user new_resource.system_user unless node['os'] == 'windows'
+        group new_resource.system_group unless node['os'] == 'windows'
+        command asadmin_command(args.join(' '))
 
-          notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
-        end
+        notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :delayed
       end
     end
   else

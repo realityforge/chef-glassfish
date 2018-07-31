@@ -27,7 +27,7 @@ action :create do
   args << new_resource.resource_adapter_name
 
   execute "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -41,7 +41,7 @@ action :delete do
   command << new_resource.resource_adapter_name
 
   execute "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'

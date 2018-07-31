@@ -32,7 +32,7 @@ def mq_config_settings(resource)
   # the file age (seconds). 0 means don't rollover based on that criteria.
   configs['imq.log.file.rolloverbytes'] = '268435456'
   configs['imq.log.file.rolloversecs'] = '604800'
-  configs['imq.log.file.dirpath'] = "${imq.instanceshome}${/}${imq.instancename}${/}log"
+  configs['imq.log.file.dirpath'] = '${imq.instanceshome}${/}${imq.instancename}${/}log'
   configs['imq.log.file.filename'] = 'omq.log'
   configs['imq.log.file.output'] = 'ERROR|WARNING'
 
@@ -67,9 +67,7 @@ def mq_config_settings(resource)
     configs['imq.bridge.stomp.logfile.count'] = '3'
   end
 
-  if services.size > 0
-    configs['imq.service.activelist'] = services.join(',')
-  end
+  configs['imq.service.activelist'] = services.join(',') unless services.size.empty?
 
   configs['imq.bridge.admin.user'] = resource.admin_user
   user = resource.users[resource.admin_user]
@@ -77,7 +75,7 @@ def mq_config_settings(resource)
   configs['imq.bridge.admin.password'] = user['password']
   configs['imq.imqcmd.password'] = user['password']
 
-  if bridges.size > 0
+  unless bridges.size.empty?
     configs['imq.bridge.enabled'] = 'true'
     configs['imq.bridge.activelist'] = bridges.join(',')
   end
@@ -142,7 +140,7 @@ action :create do
     content <<-SH
 #!/bin/sh
 
-#{Imqcmd.imqcmd_command(node, '"$@"', :host => '127.0.0.1', :port => new_resource.port, :username => new_resource.admin_user, :passfile => passfile)}
+#{Imqcmd.imqcmd_command(node, '"$@"', host: '127.0.0.1', port: new_resource.port, username: new_resource.admin_user, passfile: passfile)}
     SH
   end
 
@@ -208,14 +206,14 @@ action :create do
       mode '0644'
       cookbook 'glassfish'
 
-      variables(:resource => new_resource,
-                :authbind => requires_authbind,
-                :vmargs => vm_args.join(' '))
+      variables(resource: new_resource,
+                authbind: requires_authbind,
+                vmargs: vm_args.join(' '))
     end
 
     service service_name do
       provider Chef::Provider::Service::Upstart
-      supports :start => true, :restart => true, :stop => true, :status => true
+      supports start: true, restart: true, stop: true, status: true
       action [:enable]
     end
   elsif new_resource.init_style == 'runit'
@@ -225,11 +223,11 @@ action :create do
       cookbook 'glassfish'
       run_template_name 'omq'
       check_script_template_name 'omq'
-      options(:instance_dir => instance_dir,
-              :instance_name => new_resource.instance,
-              :authbind => requires_authbind,
-              :vmargs => vm_args.join(' '),
-              :listen_ports => listen_ports)
+      options(instance_dir: instance_dir,
+              instance_name: new_resource.instance,
+              authbind: requires_authbind,
+              vmargs: vm_args.join(' '),
+              listen_ports: listen_ports)
       sv_timeout 300
       action [:nothing]
     end
@@ -243,7 +241,7 @@ action :create do
       group new_resource.system_group unless node['os'] == 'windows'
       mode '0400'
       action :create
-      content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join("") # rubocop:disable Lint/ParenthesesAsGroupedExpression
+      content (new_resource.jmx_admins.keys.sort.collect { |username| "#{username}=readwrite\n" } + new_resource.jmx_monitors.keys.sort.collect { |username| "#{username}=readonly\n" }).join('') # rubocop:disable Lint/ParenthesesAsGroupedExpression
       notifies :restart, service_resource_name, :delayed
     end
 
@@ -252,7 +250,7 @@ action :create do
       group new_resource.system_group unless node['os'] == 'windows'
       mode '0400'
       action :create
-      content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join("") # rubocop:disable Lint/ParenthesesAsGroupedExpression
+      content (new_resource.jmx_admins.sort.collect { |username, password| "#{username}=#{password}\n" } + new_resource.jmx_monitors.sort.collect { |username, password| "#{username}=#{password}\n" }).join('') # rubocop:disable Lint/ParenthesesAsGroupedExpression
       notifies :restart, service_resource_name, :delayed
     end
   end
@@ -264,7 +262,7 @@ action :create do
       keep_existing = false
       if ::File.exist?(filename)
         IO.foreach(filename) do |line|
-          properties[$1.strip] = $2 if (line =~ /([^#=]+)=(.*)/)
+          properties[$1.strip] = $2 if line =~ /([^#=]+)=(.*)/
         end
         keep_existing = true
         mq_config_settings(new_resource).each do |k, v|
@@ -278,7 +276,7 @@ action :create do
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group unless node['os'] == 'windows'
-    variables(:configs => mq_config_settings(new_resource))
+    variables(configs: mq_config_settings(new_resource))
     notifies :restart, service_resource_name, :delayed
   end
 
@@ -288,7 +286,7 @@ action :create do
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group unless node['os'] == 'windows'
-    variables(:logging_properties => new_resource.logging_properties)
+    variables(logging_properties: new_resource.logging_properties)
     notifies :restart, service_resource_name, :delayed
   end
 
@@ -298,7 +296,7 @@ action :create do
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group unless node['os'] == 'windows'
-    variables(:users => new_resource.users)
+    variables(users: new_resource.users)
   end
 
   template "#{instance_dir}/etc/accesscontrol.properties" do
@@ -307,7 +305,7 @@ action :create do
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group unless node['os'] == 'windows'
-    variables(:rules => new_resource.access_control_rules)
+    variables(rules: new_resource.access_control_rules)
   end
 
   ruby_block service_resource_name do
@@ -347,7 +345,7 @@ action :destroy do
   if new_resource.init_style == 'upstart'
     service service_name do
       provider Chef::Provider::Service::Upstart
-      supports :start => true, :restart => true, :stop => true, :status => true
+      supports start: true, restart: true, stop: true, status: true
       action [:stop, :disable]
     end
 

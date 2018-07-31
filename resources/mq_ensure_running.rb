@@ -14,26 +14,22 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Ensures that a OpenMQ message broker instance has had a chance to finish starting before proceeding.
-
-@action run Block until the broker has come online.
-
-@section Examples
-
-    # Wait for OpenMQ broker to start
-    glassfish_mq_ensure_running "wait for broker" do
-      host "localhost"
-      port 7676
-    end
-#>
-=end
+# Ensures that a OpenMQ message broker instance has had a chance to finish starting before proceeding.
+#
+# @action run Block until the broker has come online.
+#
+# @section Examples
+#
+#     # Wait for OpenMQ broker to start
+#     glassfish_mq_ensure_running "wait for broker" do
+#       host "localhost"
+#       port 7676
+#     end
 
 actions :run
 default_action :run
 
 # <> @attribute host The host on which the broker runs.
-attribute :host, :kind_of => String
+attribute :host, kind_of: String
 # <> @attribute port The port on which the broker listens.
-attribute :port, :kind_of => Integer
+attribute :port, kind_of: Integer

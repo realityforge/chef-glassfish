@@ -20,7 +20,7 @@ action :create do
   Chef::Log.info "Creating MQ Destination #{new_resource.destination_name}"
 
   execute "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -38,7 +38,7 @@ action :create do
   end
 
   execute "imqcmd_update_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    only_if { processed_config.size > 0 }
+    only_if { !processed_config.size.empty? }
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -46,10 +46,9 @@ action :create do
   end
 end
 
-
 action :destroy do
   execute "imqcmd_create_#{new_resource.queue ? 'queue' : 'topic'} #{new_resource.destination_name}" do
-    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{imqcmd_command("query dst -t #{new_resource.queue ? 'q' : 't'} -n #{new_resource.destination_name}")} >/dev/null", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'

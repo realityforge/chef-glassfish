@@ -223,9 +223,7 @@ action :create do
     group new_resource.system_group unless node['os'] == 'windows'
     command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false) # rubocop:disable Lint/ParenthesesAsGroupedExpression
 
-    if node['glassfish']['variant'] != 'payara'
-      notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate
-    end
+    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
 
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
     notifies :start, "service[#{service_name}]", :delayed

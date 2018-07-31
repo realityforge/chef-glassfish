@@ -266,7 +266,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   system_group = definition['config']['system_group']
 
   include_recipe 'authbind' if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
-  
+
   if definition['config']['portbase']
     raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.' if definition['config']['admin_port']
     portbase = definition['config']['portbase']
@@ -577,31 +577,29 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   ##
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'] && configuration['type'].to_s == 'osgi'
-      if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
-          Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
-          include_recipe recipe
-        end
+    next unless configuration['type'] && configuration['type'].to_s == 'osgi'
+    if configuration['recipes'] && configuration['recipes']['before']
+      gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+        Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+        include_recipe recipe
       end
-      glassfish_deployable component_name.to_s do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        version configuration['version']
-        url configuration['url']
-        type :osgi
-      end
-      if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
-          Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
-          include_recipe recipe
-        end
-      end
+    end
+    glassfish_deployable component_name.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      version configuration['version']
+      url configuration['url']
+      type :osgi
+    end
+    next unless configuration['recipes'] && configuration['recipes']['after']
+    gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+      Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+      include_recipe recipe
     end
   end
 
@@ -610,13 +608,39 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   ##
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'] && configuration['type'].to_s == 'rar'
-      if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
+    next unless configuration['type'] && configuration['type'].to_s == 'rar'
+    if configuration['recipes'] && configuration['recipes']['before']
+      gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
+        include_recipe recipe
       end
-      glassfish_deployable component_name.to_s do
+    end
+    glassfish_deployable component_name.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      version configuration['version']
+      url configuration['url']
+      context_root configuration['context_root'] if configuration['context_root']
+      target configuration['target'] if configuration['target']
+      enabled configuration['enabled'] if configuration['enabled']
+      generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+      virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+      availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+      keep_state configuration['keep_state'] if configuration['keep_state']
+      verify configuration['verify'] if configuration['verify']
+      precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+      async_replication configuration['async_replication'] if configuration['async_replication']
+      properties configuration['properties'] if configuration['properties']
+      descriptors configuration['descriptors'] if configuration['descriptors']
+      lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+    end
+    gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
+      hash = value.is_a?(Hash) ? value : { 'value' => value }
+      glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
@@ -624,44 +648,16 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         secure secure if secure
         system_user system_username if system_username
         system_group system_group if system_group
-        version configuration['version']
-        url configuration['url']
-        context_root configuration['context_root'] if configuration['context_root']
-        target configuration['target'] if configuration['target']
-        enabled configuration['enabled'] if configuration['enabled']
-        generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
-        virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
-        availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
-        keep_state configuration['keep_state'] if configuration['keep_state']
-        verify configuration['verify'] if configuration['verify']
-        precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
-        async_replication configuration['async_replication'] if configuration['async_replication']
-        properties configuration['properties'] if configuration['properties']
-        descriptors configuration['descriptors'] if configuration['descriptors']
-        lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+        webapp component_name
+        glassfish_web_env_entry_name key
+        type hash['type'] if hash['type']
+        value hash['value'].to_s unless hash['value'].nil?
+        description hash['description'] if hash['description']
       end
-      gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
-        hash = value.is_a?(Hash) ? value : {'value' => value}
-        glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
-          domain_name domain_key
-          admin_port admin_port if admin_port
-          username username if username
-          password_file password_file if password_file
-          secure secure if secure
-          system_user system_username if system_username
-          system_group system_group if system_group
-          webapp component_name
-          glassfish_web_env_entry_name key
-          type hash['type'] if hash['type']
-          value hash['value'].to_s unless hash['value'].nil?
-          description hash['description'] if hash['description']
-        end
-      end
-      if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
-      end
+    end
+    next unless configuration['recipes'] && configuration['recipes']['after']
+    gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
+      include_recipe recipe
     end
   end
 
@@ -695,7 +691,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_user system_username if system_username
       system_group system_group if system_group
       configuration['config'].each_pair do |config_key, value|
-        self.send(config_key, value)
+        send(config_key, value)
       end if configuration['config']
     end
     gf_sort(configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
@@ -711,7 +707,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         connectionpoolid pool_name
         resource_configuration.each_pair do |config_key, value|
-          self.send(config_key, value) unless config_key == 'priority'
+          send(config_key, value) unless config_key == 'priority'
         end
       end
     end
@@ -729,7 +725,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_user system_username if system_username
       system_group system_group if system_group
       resource_configuration['config'].each_pair do |config_key, value|
-        self.send(config_key, value)
+        send(config_key, value)
       end if resource_configuration['config']
     end
     gf_sort(resource_configuration['connection_pools'] || {}).each_pair do |pool_key, pool_configuration|
@@ -744,7 +740,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         raname resource_adapter_key
         pool_configuration['config'].each_pair do |config_key, value|
-          self.send(config_key, value)
+          send(config_key, value)
         end if pool_configuration['config']
       end
       gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration| # rubocop:disable Lint/ShadowingOuterLocalVariable
@@ -758,7 +754,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           system_group system_group if system_group
           poolname pool_key.to_s
           resource_configuration.each_pair do |config_key, value|
-            self.send(config_key, value) unless config_key == 'priority'
+            send(config_key, value) unless config_key == 'priority'
           end
         end
       end
@@ -775,7 +771,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         raname resource_adapter_key
         admin_object_configuration.each_pair do |config_key, value|
-          self.send(config_key, value) unless config_key == 'priority'
+          send(config_key, value) unless config_key == 'priority'
         end
       end
     end
@@ -815,7 +811,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - custom_resources"
   gf_sort(definition['custom_resources'] || {}).each_pair do |key, value|
-    hash = value.is_a?(Hash) ? value : {'value' => value}
+    hash = value.is_a?(Hash) ? value : { 'value' => value }
     hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
     hash['restype'] = 'java.lang.Integer' if hash['restype'].nil? && hash['value'].is_a?(Fixnum) # rubocop:disable Lint/UnifiedInteger
     hash['restype'] = 'java.lang.Long' if hash['restype'].nil? && hash['value'].is_a?(Bignum) # rubocop:disable Lint/UnifiedInteger
@@ -849,20 +845,47 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_user system_username if system_username
       system_group system_group if system_group
       javamail_configuration.each_pair do |config_key, value|
-        self.send(config_key, value) unless config_key == 'priority'
+        send(config_key, value) unless config_key == 'priority'
       end
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'].nil? || (configuration['type'].to_s != 'osgi' && configuration['type'].to_s != 'rar')
-      if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
+    next unless configuration['type'].nil? || (configuration['type'].to_s != 'osgi' && configuration['type'].to_s != 'rar')
+    if configuration['recipes'] && configuration['recipes']['before']
+      gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
+        include_recipe recipe
       end
-      glassfish_deployable component_name.to_s do
+    end
+    glassfish_deployable component_name.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      version configuration['version']
+      url configuration['url']
+      context_root configuration['context_root'] if configuration['context_root']
+      target configuration['target'] if configuration['target']
+      enabled configuration['enabled'] if configuration['enabled']
+      generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+      virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+      availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+      keep_state configuration['keep_state'] if configuration['keep_state']
+      verify configuration['verify'] if configuration['verify']
+      precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+      async_replication configuration['async_replication'] if configuration['async_replication']
+      properties configuration['properties'] if configuration['properties']
+      descriptors configuration['descriptors'] if configuration['descriptors']
+      lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+      libraries configuration['libraries'] if configuration['libraries']
+    end
+    gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
+      hash = value.is_a?(Hash) ? value : { 'value' => value }
+      glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
@@ -870,44 +893,16 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         secure secure if secure
         system_user system_username if system_username
         system_group system_group if system_group
-        version configuration['version']
-        url configuration['url']
-        context_root configuration['context_root'] if configuration['context_root']
-        target configuration['target'] if configuration['target']
-        enabled configuration['enabled'] if configuration['enabled']
-        generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
-        virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
-        availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
-        keep_state configuration['keep_state'] if configuration['keep_state']
-        verify configuration['verify'] if configuration['verify']
-        precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
-        async_replication configuration['async_replication'] if configuration['async_replication']
-        properties configuration['properties'] if configuration['properties']
-        descriptors configuration['descriptors'] if configuration['descriptors']
-        lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
-        libraries configuration['libraries'] if configuration['libraries']
+        webapp component_name
+        glassfish_web_env_entry_name key
+        type hash['type'] if hash['type']
+        value hash['value'].to_s unless hash['value'].nil?
+        description hash['description'] if hash['description']
       end
-      gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
-        hash = value.is_a?(Hash) ? value : {'value' => value}
-        glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
-          domain_name domain_key
-          admin_port admin_port if admin_port
-          username username if username
-          password_file password_file if password_file
-          secure secure if secure
-          system_user system_username if system_username
-          system_group system_group if system_group
-          webapp component_name
-          glassfish_web_env_entry_name key
-          type hash['type'] if hash['type']
-          value hash['value'].to_s unless hash['value'].nil?
-          description hash['description'] if hash['description']
-        end
-      end
-      if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
+    end
+    if configuration['recipes'] && configuration['recipes']['after']
+      gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
+        include_recipe recipe
       end
     end
   end
@@ -1015,16 +1010,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     found = false
     if definition['resource_adapters']
       gf_sort(definition['resource_adapters']).each_pair do |_, configuration|
-        if configuration['connection_pools'] && configuration['connection_pools'][existing]
-          found = true
-        end
+        found = true if configuration['connection_pools'] && configuration['connection_pools'][existing]
       end
     end
 
     jms_defined_resources = []
     gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
       restype = resource_config['restype'] || 'javax.jms.Queue'
-      jms_defined_resources << "#{key}-Connection-Pool" if ['javax.jms.ConnectionFactory','javax.jms.TopicConnectionFactory','javax.jms.QueueConnectionFactory'].include?(restype)
+      jms_defined_resources << "#{key}-Connection-Pool" if ['javax.jms.ConnectionFactory', 'javax.jms.TopicConnectionFactory', 'javax.jms.QueueConnectionFactory'].include?(restype)
     end
 
     unless found || jms_defined_resources.include?(existing)
@@ -1048,16 +1041,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     found = false
     gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
       gf_sort(configuration['connection_pools'] || {}).each_pair do |_, pool_configuration|
-        if pool_configuration['resources'] && pool_configuration['resources'][existing]
-          found = true
-        end
+        found = true if pool_configuration['resources'] && pool_configuration['resources'][existing]
       end
     end
 
     jms_defined_resources = []
     gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
       restype = resource_config['restype'] || 'javax.jms.Queue'
-      jms_defined_resources << key if ['javax.jms.ConnectionFactory','javax.jms.TopicConnectionFactory','javax.jms.QueueConnectionFactory'].include?(restype)
+      jms_defined_resources << key if ['javax.jms.ConnectionFactory', 'javax.jms.TopicConnectionFactory', 'javax.jms.QueueConnectionFactory'].include?(restype)
     end
 
     unless found || jms_defined_resources.include?(existing)
@@ -1080,15 +1071,13 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing admin object #{existing}"
     found = false
     gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
-      if configuration['admin_objects'] && configuration['admin_objects'][existing]
-        found = true
-      end
+      found = true if configuration['admin_objects'] && configuration['admin_objects'][existing]
     end
 
     jms_defined_resources = []
     gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
       restype = resource_config['restype'] || 'javax.jms.Queue'
-      jms_defined_resources << key if ['javax.jms.Queue','javax.jms.Topic'].include?(restype)
+      jms_defined_resources << key if ['javax.jms.Queue', 'javax.jms.Topic'].include?(restype)
     end
 
     unless found || jms_defined_resources.include?(existing)
@@ -1109,7 +1098,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing jdbc pools"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-connection-pools') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing jdbc pool #{existing}"
-    standard_pools = %w{__TimerPool}
+    standard_pools = %w(__TimerPool)
     unless definition['jdbc_connection_pools'] &&
            definition['jdbc_connection_pools'][existing] ||
            standard_pools.include?(existing)
@@ -1173,8 +1162,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end if gf_managed?(definition['javamail_resources'])
 
   jmsra_defined_resources = []
-  if definition['resource_adapters'] &&
-    definition['resource_adapters']['jmsra']
+  if definition['resource_adapters'] && definition['resource_adapters']['jmsra']
     if definition['resource_adapters']['jmsra']['connection_pools']
       definition['resource_adapters']['jmsra']['connection_pools'].each_value do |pool|
         pool['resources'].keys.each { |k| jmsra_defined_resources << k } if pool['resources']

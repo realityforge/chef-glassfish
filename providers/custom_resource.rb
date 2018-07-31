@@ -17,7 +17,7 @@
 include Chef::Asadmin
 
 action :create do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   may_need_create =
     cache_present ?
       !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.custom-resource.#{new_resource.jndi_name}.") :
@@ -40,7 +40,7 @@ action :create do
 
     execute "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
       unless cache_present
-        not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'
@@ -49,7 +49,7 @@ action :create do
     end
   end
   if !cache_present || !may_need_create
-    sets = {'factory-class' => factoryclass, 'res-type' => new_resource.restype}
+    sets = { 'factory-class' => factoryclass, 'res-type' => new_resource.restype }
     properties.each_pair do |key, value|
       sets["property.#{key}"] = value
     end
@@ -70,7 +70,7 @@ action :create do
 end
 
 action :delete do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   may_need_delete =
     cache_present ?
       RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.custom-resource.#{new_resource.jndi_name}.") :
@@ -84,7 +84,7 @@ action :delete do
 
     execute "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
       unless cache_present
-        only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'

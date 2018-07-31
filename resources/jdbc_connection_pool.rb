@@ -32,12 +32,12 @@ def self.bool(key, arg, default_value = true)
   ATTRIBUTES << JdbcAttribute.new(key, :boolean, arg, default_value)
 end
 
-str(:datasourceclassname , 'datasource-classname')
-str(:initsql , 'init-sql')
-str(:sqltracelisteners , 'sql-trace-listeners')
-str(:driverclassname , 'driver-classname')
-str(:validationclassname , 'validation-classname')
-str(:validationtable , 'validation-table-name')
+str(:datasourceclassname, 'datasource-classname')
+str(:initsql, 'init-sql')
+str(:sqltracelisteners, 'sql-trace-listeners')
+str(:driverclassname, 'driver-classname')
+str(:validationclassname, 'validation-classname')
+str(:validationtable, 'validation-table-name')
 
 num(:steadypoolsize, 'steady-pool-size', 8)
 num(:maxpoolsize, 'max-pool-size', 32)
@@ -68,50 +68,49 @@ bool(:ping, 'ping')
 bool(:pooling, 'pooling')
 bool(:wrapjdbcobjects, 'wrap-jdbc-objects')
 
-
 public
 
 actions :create, :delete
 
-attribute :pool_name, :kind_of => String, :name_attribute => true
+attribute :pool_name, kind_of: String, name_attribute: true
 
 ATTRIBUTES.each do |attr|
   if attr.type == :string
-    attribute attr.key, :kind_of => String, :default => attr.default_value
+    attribute attr.key, kind_of: String, default: attr.default_value
   elsif attr.type == :numeric
-    attribute attr.key, :kind_of => [Integer, String], :regex => /^-?[0-9]+$/, :default => attr.default_value
+    attribute attr.key, kind_of: [Integer, String], regex: /^-?[0-9]+$/, default: attr.default_value
   else
-    attribute attr.key, :equal_to => [true, false, 'true', 'false'], :default => attr.default_value
+    attribute attr.key, equal_to: [true, false, 'true', 'false'], default: attr.default_value
   end
 end
 
-attribute :description, :kind_of => String, :default => nil
-attribute :properties, :kind_of => Hash, :default => {}
+attribute :description, kind_of: String, default: nil
+attribute :properties, kind_of: Hash, default: {}
 attribute :restype,
-          :equal_to => %w(java.sql.Driver javax.sql.DataSource javax.sql.XADataSource javax.sql.ConnectionPoolDataSource),
-          :default => nil
-attribute :isolationlevel, :equal_to => %w(read-uncommitted read-committed repeatable-read serializable)
-attribute :validationmethod, :equal_to => %w(auto-commit meta-data table custom-validation)
+          equal_to: %w(java.sql.Driver javax.sql.DataSource javax.sql.XADataSource javax.sql.ConnectionPoolDataSource),
+          default: nil
+attribute :isolationlevel, equal_to: %w(read-uncommitted read-committed repeatable-read serializable)
+attribute :validationmethod, equal_to: %w(auto-commit meta-data table custom-validation)
 
 # <> @attribute domain_name The name of the domain.
-attribute :domain_name, :kind_of => String, :required => true
+attribute :domain_name, kind_of: String, required: true
 # <> @attribute terse Use terse output from the underlying asadmin.
-attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :terse, kind_of: [TrueClass, FalseClass], default: false
 # <> @attribute echo If true, echo commands supplied to asadmin.
-attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :echo, kind_of: [TrueClass, FalseClass], default: true
 # <> @attribute username The username to use when communicating with the domain.
-attribute :username, :kind_of => String, :default => nil
+attribute :username, kind_of: String, default: nil
 # <> @attribute password_file The file in which the password must be stored assigned to appropriate key.
-attribute :password_file, :kind_of => String, :default => nil
+attribute :password_file, kind_of: String, default: nil
 # <> @attribute secure If true use SSL when communicating with the domain for administration.
-attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :secure, kind_of: [TrueClass, FalseClass], default: false
 # <> @attribute admin_port The port on which the web management console is bound.
-attribute :admin_port, :kind_of => Integer, :default => 4848
+attribute :admin_port, kind_of: Integer, default: 4848
 
 # <> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
-attribute :system_user, :kind_of => String, :default => nil
+attribute :system_user, kind_of: String, default: nil
 # <> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
-attribute :system_group, :kind_of => String, :default => nil
+attribute :system_group, kind_of: String, default: nil
 
 default_action :create
 

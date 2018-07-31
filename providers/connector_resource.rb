@@ -28,7 +28,7 @@ action :create do
   args << new_resource.name
 
   execute "asadmin_create-connector-resource #{new_resource.name}" do
-    not_if "#{asadmin_command('list-connector-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-connector-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -43,7 +43,7 @@ action :delete do
   args << new_resource.name
 
   execute "asadmin_delete-connector-resource #{new_resource.name}" do
-    only_if "#{asadmin_command('list-connector-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-connector-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
