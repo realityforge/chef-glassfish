@@ -37,6 +37,16 @@ def default_logging_properties
 
     'log4j.logger.org.hibernate.validator.util.Version' => 'warn',
 
+    # Payara 5.182
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.compressOnRotation' => 'false',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => '2000000',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationOnDateChange' => 'false',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.file' => '${com.sun.aas.instanceRoot}/logs/notification.log',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.logtoFile' => 'true',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => '0',
+    'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => 'true',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => '0',
+
     # All log level details
     '.level' => 'INFO',
 
