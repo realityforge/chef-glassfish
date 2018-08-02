@@ -14,28 +14,23 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Configures 0 or more GlassFish domains using search to generate the configuration.
-#>
-=end
+# Configures 0 or more GlassFish domains using search to generate the configuration.
 
 node['glassfish']['domains'].each_pair do |domain_key, definition|
-  if definition['discover']
-    domain_key = domain_key.to_s
-    databag_key = definition['discover']['type'] || domain_key
-    query = definition['discover']['query'] || '*:*'
-    sort_key = definition['discover']['sort']
-    entry_key = definition['discover']['entry_key'] || 'config'
+  next unless definition['discover']
+  domain_key = domain_key.to_s
+  databag_key = definition['discover']['type'] || domain_key
+  query = definition['discover']['query'] || '*:*'
+  sort_key = definition['discover']['sort']
+  entry_key = definition['discover']['entry_key'] || 'config'
 
-    ::Chef::Log.info "Collecting data for GlassFish Domain #{domain_key} from indexes #{databag_key}"
-    ::Chef::SearchBlender.blend_search_results_into_node(node,
-                                                         databag_key,
-                                                         query,
-                                                         entry_key,
-                                                         "glassfish.domains.#{domain_key}",
-                                                         'sort' => sort_key)
-  end
+  ::Chef::Log.info "Collecting data for GlassFish Domain #{domain_key} from indexes #{databag_key}"
+  ::Chef::SearchBlender.blend_search_results_into_node(node,
+                                                        databag_key,
+                                                        query,
+                                                        entry_key,
+                                                        "glassfish.domains.#{domain_key}",
+                                                        'sort' => sort_key)
 end
 
 include_recipe 'glassfish::attribute_driven_domain'

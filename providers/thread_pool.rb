@@ -17,14 +17,15 @@
 include Chef::Asadmin
 
 action :create do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  may_need_create =
-    cache_present ?
-      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}") :
-      true
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  may_need_create = if cache_present
+                      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}")
+                    else
+                      true
+                    end
 
   service "glassfish-#{new_resource.domain_name}" do
-    supports :restart => true, :status => true
+    supports restart: true, status: true
     action :nothing
   end
 
@@ -41,7 +42,7 @@ action :create do
 
     execute "asadmin_threadpool #{new_resource.threadpool_id}" do
       unless cache_present
-        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'
@@ -55,7 +56,7 @@ action :create do
     'idle-thread-timeout-seconds' => new_resource.idletimeout,
     'max-queue-size' => new_resource.maxqueuesize,
     'max-thread-pool-size' => new_resource.maxthreadpoolsize,
-    'min-thread-pool-size' => new_resource.minthreadpoolsize
+    'min-thread-pool-size' => new_resource.minthreadpoolsize,
   }
 
   if !cache_present || !may_need_create
@@ -76,11 +77,12 @@ action :create do
 end
 
 action :delete do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  may_need_delete =
-    cache_present ?
-      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}.") :
-      true
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  may_need_delete = if cache_present
+                      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "configs.config.server-config.thread-pools.thread-pool.#{new_resource.threadpool_id}.")
+                    else
+                      true
+                    end
 
   if may_need_delete
     args = []
@@ -90,7 +92,7 @@ action :delete do
 
     execute "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
       unless cache_present
-        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'

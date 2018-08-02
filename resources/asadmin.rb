@@ -14,48 +14,44 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Asadmin is the command line application used to manage a GlassFish application server. Typically this resource is
-used when there is not yet a resource defined in this cookbook for executing an underlying command on the server.
-
-@action run Execute the command.
-
-@section Examples
-
-    # List all the domains on the server
-    glassfish_asadmin "list-domains" do
-       domain_name 'my_domain'
-    end
-#>
-=end
+# Asadmin is the command line application used to manage a GlassFish application server. Typically this resource is
+# used when there is not yet a resource defined in this cookbook for executing an underlying command on the server.
+#
+# @action run Execute the command.
+#
+# @section Examples
+#
+#     # List all the domains on the server
+#     glassfish_asadmin "list-domains" do
+#        domain_name 'my_domain'
+#     end
 
 actions :run
 
 # <> @attribute command The command to execute.
-attribute :command, :kind_of => String, :name_attribute => true
+attribute :command, kind_of: String, name_attribute: true
 # <> @attribute returns A return code or an array of return codes that are considered successful completions.
-attribute :returns, :kind_of => [Array, Integer], :default => 0
+attribute :returns, kind_of: [Array, Integer], default: 0
 
 # <> @attribute domain_name The name of the domain.
-attribute :domain_name, :kind_of => String, :required => true
+attribute :domain_name, kind_of: String, required: true
 # <> @attribute terse Use terse output from the underlying asadmin.
-attribute :terse, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :terse, kind_of: [TrueClass, FalseClass], default: false
 # <> @attribute echo If true, echo commands supplied to asadmin.
-attribute :echo, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :echo, kind_of: [TrueClass, FalseClass], default: true
 # <> @attribute username The username to use when communicating with the domain.
-attribute :username, :kind_of => String, :default => nil
+attribute :username, kind_of: String, default: nil
 # <> @attribute password_file The file in which the password must be stored assigned to appropriate key.
-attribute :password_file, :kind_of => String, :default => nil
+attribute :password_file, kind_of: String, default: nil
 # <> @attribute secure If true use SSL when communicating with the domain for administration.
-attribute :secure, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :secure, kind_of: [TrueClass, FalseClass], default: false
 # <> @attribute admin_port The port on which the web management console is bound.
-attribute :admin_port, :kind_of => Integer, :default => 4848
+attribute :admin_port, kind_of: Integer, default: 4848
 
 # <> @attribute system_user The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset.
-attribute :system_user, :kind_of => String, :default => nil
+attribute :system_user, kind_of: String, default: nil
 # <> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
-attribute :system_group, :kind_of => String, :default => nil
+attribute :system_group, kind_of: String, default: nil
 
 default_action :run
 

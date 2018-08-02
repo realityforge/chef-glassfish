@@ -17,16 +17,17 @@
 include Chef::Asadmin
 
 action :set do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  may_need_update =
-    cache_present ?
-      new_resource.value != RealityForge::GlassFish.get_cached_property(node, new_resource.domain_name, new_resource.key) :
-      true
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  may_need_update = if cache_present
+                      new_resource.value != RealityForge::GlassFish.get_cached_property(node, new_resource.domain_name, new_resource.key)
+                    else
+                      true
+                    end
 
   if may_need_update
     execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
       unless cache_present
-        not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'
@@ -34,8 +35,6 @@ action :set do
       command asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
     end
 
-    if cache_present
-      RealityForge::GlassFish.set_cached_property(node, new_resource.domain_name, new_resource.key, new_resource.value)
-    end
+    RealityForge::GlassFish.set_cached_property(node, new_resource.domain_name, new_resource.key, new_resource.value) if cache_present
   end
 end

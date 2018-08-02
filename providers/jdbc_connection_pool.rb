@@ -17,11 +17,12 @@
 include Chef::Asadmin
 
 action :create do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  may_need_create =
-    cache_present ?
-      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.") :
-      true
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  may_need_create = if cache_present
+                      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.")
+                    else
+                      true
+                    end
 
   parameters = { restype: 'res-type',
                  isolationlevel: 'transaction-isolation-level',
@@ -45,7 +46,7 @@ action :create do
 
     execute "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
-        not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'
@@ -55,7 +56,7 @@ action :create do
   end
 
   if !cache_present || !may_need_create
-    sets = {'description' => new_resource.description}
+    sets = { 'description' => new_resource.description }
     new_resource.properties.each_pair do |key, value|
       sets["property.#{key}"] = value
     end
@@ -80,11 +81,12 @@ action :create do
 end
 
 action :delete do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  may_need_delete =
-    cache_present ?
-      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.") :
-      true
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  may_need_delete = if cache_present
+                      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.")
+                    else
+                      true
+                    end
 
   if may_need_delete
     args = []
@@ -94,7 +96,7 @@ action :delete do
 
     execute "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
-        only_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        only_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
       user new_resource.system_user unless node['os'] == 'windows'

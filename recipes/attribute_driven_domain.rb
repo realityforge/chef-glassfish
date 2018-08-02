@@ -14,191 +14,187 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Configures 0 or more GlassFish domains using the glassfish/domains attribute.
-
-The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
-
-A typical approach is to define the configuration for the entire application on the node and include the recipe.
-Another approach using a vagrant file is to set the json attribute such as;
-
-```ruby
-  chef.json = {
-        "java" => {
-            "install_flavor" => "oracle",
-            "jdk_version" => 7,
-            "oracle" => {
-                "accept_oracle_download_terms" => true
-            }
-        },
-        "glassfish" => {
-            "version" => "4.0.1",
-            "package_url" => "http://dlc.sun.com.edgesuite.net/glassfish/4.0.1/promoted/glassfish-4.0.1-b01.zip",
-            "base_dir" => "/usr/local/glassfish",
-            "domains_dir" => "/usr/local/glassfish/glassfish/domains",
-            "domains" => {
-                "myapp" => {
-                    "config" => {
-                        "min_memory" => 1024,
-                        "max_memory" => 1024,
-                        "max_perm_size" => 256,
-                        "port" => 7070,
-                        "admin_port" => 4848,
-                        "username" => "adminuser",
-                        "password" => "adminpw",
-                        "master_password" => "mykeystorepassword",
-                        "remote_access" => false,
-                        "jvm_options" => ["-DMYAPP_CONFIG_DIR=/usr/local/myapp/config", "-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true"],
-                        "secure" => false
-                    },
-                    'extra_libraries' => {
-                        'realm' => {
-                          'type' => 'common',
-                          'url' => 'https://s3.amazonaws.com/somebucket/lib/realm.jar',
-                          'requires_restart' => true
-                        },
-                        'jdbcdriver' => {
-                          'type' => 'common',
-                          'url' => 'https://s3.amazonaws.com/somebucket/lib/mysql-connector-java-5.1.25-bin.jar'
-                        },
-                        'encryption' => {
-                          'type' => 'common',
-                          'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
-                        }
-                    },
-                    'threadpools' => {
-                      'thread-pool-1' => {
-                        'maxthreadpoolsize' => 200,
-                        'minthreadpoolsize' => 5,
-                        'idletimeout' => 900,
-                        'maxqueuesize' => 4096
-                      },
-                      'http-thread-pool' => {
-                        'maxthreadpoolsize' => 200,
-                        'minthreadpoolsize' => 5,
-                        'idletimeout' => 900,
-                        'maxqueuesize' => 4096
-                      },
-                      'admin-pool' => {
-                        'maxthreadpoolsize' => 50,
-                        'minthreadpoolsize' => 5,
-                        'maxqueuesize' => 256
-                      }
-                    },
-                    'iiop_listeners' => {
-                      'orb-listener-1' => {
-                        'enabled' => true,
-                        'iiopport' => 1072,
-                        'securityenabled' => false
-                      }
-                    },
-                    'context_services' => {
-                      'concurrent/MyAppContextService' => {
-                        'description' => 'My Apps ContextService'
-                      }
-                    },
-                    'managed_thread_factories' => {
-                      'concurrent/myThreadFactory' => {
-                        'threadpriority' => 12,
-                        'description' => 'My Thread Factory'
-                      }
-                    },
-                    'managed_executor_services' => {
-                      'concurrent/myExecutorService' => {
-                        'threadpriority' => 12,
-                        'description' => 'My Executor Service'
-                      }
-                    },
-                    'managed_scheduled_executor_services' => {
-                      'concurrent/myScheduledExecutorService' => {
-                        'corepoolsize' => 12,
-                        'description' => 'My Executor Service'
-                      }
-                    },
-                    'jdbc_connection_pools' => {
-                        'RealmPool' => {
-                            'config' => {
-                                'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-                                'restype' => 'javax.sql.DataSource',
-                                'isconnectvalidatereq' => 'true',
-                                'validationmethod' => 'auto-commit',
-                                'ping' => 'true',
-                                'description' => 'Realm Pool',
-                                'properties' => {
-                                   'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/realmdb",
-                                   'ServerName' => "devdb.somecompany.com",
-                                   'User' => 'realmuser',
-                                   'Password' => 'realmpw',
-                                   'PortNumber' => '3306',
-                                   'DatabaseName' => 'realmdb'
-                                }
-                            },
-                            'resources' => {
-                                'jdbc/Realm' => {
-                                    'description' => 'Resource for Realm Pool',
-                                }
-                            }
-                        },
-                        'AppPool' => {
-                            'config' => {
-                                'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-                                'restype' => 'javax.sql.DataSource',
-                                'isconnectvalidatereq' => 'true',
-                                'validationmethod' => 'auto-commit',
-                                'ping' => 'true',
-                                'description' => 'App Pool',
-                                'properties' => {
-                                  'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/appdb",
-                                  'ServerName' => "devdb.somecompany.com",
-                                  'User' => 'appuser',
-                                  'Password' => 'apppw',
-                                  'PortNumber' => '3306',
-                                  'DatabaseName' => 'appdb'
-                                }
-                            },
-                            'resources' => {
-                                'jdbc/App' => {
-                                    'description' => 'Resource for App Pool',
-                                }
-                            }
-                        }
-                    },
-                    'realms' => {
-                        'custom-realm' => {
-                            'classname' => 'com.somecompany.realm.CustomRealm',
-                            'jaas-context' => 'customRealm',
-                            'properties' => {
-                                'jaas-context' => 'customRealm',
-                                'datasource' => 'jdbc/Realm',
-                                'groupQuery' => 'SELECT ...',
-                                'passwordQuery' => 'SELECT ...'
-                            }
-                         }
-                    },
-                    'realm_types' => {
-                        'customRealm' => 'com.somecompany.realm.CustomLoginModule'
-                    },
-                    'deployables' => {
-                        'myapp' => {
-                            'url' => 'https://s3.amazonaws.com/somebucket/apps/app.war',
-                            'context_root' => '/'
-                         }
-                    },
-                    "custom_resources" => {
-                      "env/myapp/timeout" => {
-                        "restype" => "java.lang.Long",
-                        "value" => 300000
-                      },
-                      "env/myapp/mykey" => "123",
-                      "env/myapp/someString" => "XYZ"
-                    }
-                }
-            }
-        }
-```
-#>
-=end
+# Configures 0 or more GlassFish domains using the glassfish/domains attribute.
+#
+# The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
+#
+# A typical approach is to define the configuration for the entire application on the node and include the recipe.
+# Another approach using a vagrant file is to set the json attribute such as;
+#
+# ```ruby
+#   chef.json = {
+#         "java" => {
+#             "install_flavor" => "oracle",
+#             "jdk_version" => 7,
+#             "oracle" => {
+#                 "accept_oracle_download_terms" => true
+#             }
+#         },
+#         "glassfish" => {
+#             "version" => "4.0.1",
+#             "package_url" => "http://dlc.sun.com.edgesuite.net/glassfish/4.0.1/promoted/glassfish-4.0.1-b01.zip",
+#             "base_dir" => "/usr/local/glassfish",
+#             "domains_dir" => "/usr/local/glassfish/glassfish/domains",
+#             "domains" => {
+#                 "myapp" => {
+#                     "config" => {
+#                         "min_memory" => 1024,
+#                         "max_memory" => 1024,
+#                         "max_perm_size" => 256,
+#                         "port" => 7070,
+#                         "admin_port" => 4848,
+#                         "username" => "adminuser",
+#                         "password" => "adminpw",
+#                         "master_password" => "mykeystorepassword",
+#                         "remote_access" => false,
+#                         "jvm_options" => ["-DMYAPP_CONFIG_DIR=/usr/local/myapp/config", "-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true"],
+#                         "secure" => false
+#                     },
+#                     'extra_libraries' => {
+#                         'realm' => {
+#                           'type' => 'common',
+#                           'url' => 'https://s3.amazonaws.com/somebucket/lib/realm.jar',
+#                           'requires_restart' => true
+#                         },
+#                         'jdbcdriver' => {
+#                           'type' => 'common',
+#                           'url' => 'https://s3.amazonaws.com/somebucket/lib/mysql-connector-java-5.1.25-bin.jar'
+#                         },
+#                         'encryption' => {
+#                           'type' => 'common',
+#                           'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
+#                         }
+#                     },
+#                     'threadpools' => {
+#                       'thread-pool-1' => {
+#                         'maxthreadpoolsize' => 200,
+#                         'minthreadpoolsize' => 5,
+#                         'idletimeout' => 900,
+#                         'maxqueuesize' => 4096
+#                       },
+#                       'http-thread-pool' => {
+#                         'maxthreadpoolsize' => 200,
+#                         'minthreadpoolsize' => 5,
+#                         'idletimeout' => 900,
+#                         'maxqueuesize' => 4096
+#                       },
+#                       'admin-pool' => {
+#                         'maxthreadpoolsize' => 50,
+#                         'minthreadpoolsize' => 5,
+#                         'maxqueuesize' => 256
+#                       }
+#                     },
+#                     'iiop_listeners' => {
+#                       'orb-listener-1' => {
+#                         'enabled' => true,
+#                         'iiopport' => 1072,
+#                         'securityenabled' => false
+#                       }
+#                     },
+#                     'context_services' => {
+#                       'concurrent/MyAppContextService' => {
+#                         'description' => 'My Apps ContextService'
+#                       }
+#                     },
+#                     'managed_thread_factories' => {
+#                       'concurrent/myThreadFactory' => {
+#                         'threadpriority' => 12,
+#                         'description' => 'My Thread Factory'
+#                       }
+#                     },
+#                     'managed_executor_services' => {
+#                       'concurrent/myExecutorService' => {
+#                         'threadpriority' => 12,
+#                         'description' => 'My Executor Service'
+#                       }
+#                     },
+#                     'managed_scheduled_executor_services' => {
+#                       'concurrent/myScheduledExecutorService' => {
+#                         'corepoolsize' => 12,
+#                         'description' => 'My Executor Service'
+#                       }
+#                     },
+#                     'jdbc_connection_pools' => {
+#                         'RealmPool' => {
+#                             'config' => {
+#                                 'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+#                                 'restype' => 'javax.sql.DataSource',
+#                                 'isconnectvalidatereq' => 'true',
+#                                 'validationmethod' => 'auto-commit',
+#                                 'ping' => 'true',
+#                                 'description' => 'Realm Pool',
+#                                 'properties' => {
+#                                    'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/realmdb",
+#                                    'ServerName' => "devdb.somecompany.com",
+#                                    'User' => 'realmuser',
+#                                    'Password' => 'realmpw',
+#                                    'PortNumber' => '3306',
+#                                    'DatabaseName' => 'realmdb'
+#                                 }
+#                             },
+#                             'resources' => {
+#                                 'jdbc/Realm' => {
+#                                     'description' => 'Resource for Realm Pool',
+#                                 }
+#                             }
+#                         },
+#                         'AppPool' => {
+#                             'config' => {
+#                                 'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+#                                 'restype' => 'javax.sql.DataSource',
+#                                 'isconnectvalidatereq' => 'true',
+#                                 'validationmethod' => 'auto-commit',
+#                                 'ping' => 'true',
+#                                 'description' => 'App Pool',
+#                                 'properties' => {
+#                                   'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/appdb",
+#                                   'ServerName' => "devdb.somecompany.com",
+#                                   'User' => 'appuser',
+#                                   'Password' => 'apppw',
+#                                   'PortNumber' => '3306',
+#                                   'DatabaseName' => 'appdb'
+#                                 }
+#                             },
+#                             'resources' => {
+#                                 'jdbc/App' => {
+#                                     'description' => 'Resource for App Pool',
+#                                 }
+#                             }
+#                         }
+#                     },
+#                     'realms' => {
+#                         'custom-realm' => {
+#                             'classname' => 'com.somecompany.realm.CustomRealm',
+#                             'jaas-context' => 'customRealm',
+#                             'properties' => {
+#                                 'jaas-context' => 'customRealm',
+#                                 'datasource' => 'jdbc/Realm',
+#                                 'groupQuery' => 'SELECT ...',
+#                                 'passwordQuery' => 'SELECT ...'
+#                             }
+#                          }
+#                     },
+#                     'realm_types' => {
+#                         'customRealm' => 'com.somecompany.realm.CustomLoginModule'
+#                     },
+#                     'deployables' => {
+#                         'myapp' => {
+#                             'url' => 'https://s3.amazonaws.com/somebucket/apps/app.war',
+#                             'context_root' => '/'
+#                          }
+#                     },
+#                     "custom_resources" => {
+#                       "env/myapp/timeout" => {
+#                         "restype" => "java.lang.Long",
+#                         "value" => 300000
+#                       },
+#                       "env/myapp/mykey" => "123",
+#                       "env/myapp/someString" => "XYZ"
+#                     }
+#                 }
+#             }
+#         }
+# ```
 
 include_recipe 'glassfish::default'
 
@@ -233,7 +229,7 @@ def gf_sort(hash)
   return {} if hash.nil?
   hash = hash.dup
   hash.delete_if { |k, _| k =~ /^_.*/ || k == 'managed' }
-  Hash[hash.sort_by { |key, value| "#{'%04d' % gf_priority(value)}#{key}" }]
+  Hash[hash.sort_by { |key, value| "#{format('%04d', gf_priority(value))}#{key}" }]
 end
 
 def gf_managed?(data)
@@ -265,14 +261,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   system_username = definition['config']['system_user']
   system_group = definition['config']['system_group']
 
-  if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
-    include_recipe 'authbind'
-  end
+  include_recipe 'authbind' if (definition['config']['port'] && definition['config']['port'] < 1024) || (admin_port && admin_port < 1024)
 
   if definition['config']['portbase']
-    if definition['config']['admin_port']
-      raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.'
-    end
+    raise 'Glassfish admin port is automatically calculated from portbase. Please do not set both.' if definition['config']['admin_port']
     portbase = definition['config']['portbase']
     admin_port = portbase + 48
   end
@@ -327,29 +319,27 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
-        def is_url_responding_with_code?(url, username, password, code)
-          begin
-            uri = URI(url)
-            res = nil
-            http = Net::HTTP.new(uri.hostname, uri.port)
-            if url =~ /https\:/
-              http.use_ssl = true
-              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-            end
-            http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
-              request = Net::HTTP::Get.new(uri.request_uri)
-              request.basic_auth username, password
-              request['Accept'] = 'application/json'
-              res = http.request(request)
-            end
-            return true if res.code.to_s == code.to_s
-            puts "GlassFish not responding OK - #{res.code} to #{url}"
-          rescue StandardError => e
-            puts "GlassFish error while accessing web interface at #{url}"
-            puts e.message
-            puts e.backtrace.join("\n")
-            return url
+        def url_responding_with_code?(url, username, password, code)
+          uri = URI(url)
+          res = nil
+          http = Net::HTTP.new(uri.hostname, uri.port)
+          if url =~ /https\:/
+            http.use_ssl = true
+            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
           end
+          http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
+            request = Net::HTTP::Get.new(uri.request_uri)
+            request.basic_auth username, password
+            request['Accept'] = 'application/json'
+            res = http.request(request)
+          end
+          return true if res.code.to_s == code.to_s
+          puts "GlassFish not responding OK - #{res.code} to #{url}"
+        rescue StandardError => e
+          puts "GlassFish error while accessing web interface at #{url}"
+          puts e.message
+          puts e.backtrace.join("\n")
+          url
         end
 
         fail_count = 0
@@ -359,9 +349,9 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           nodes_url = "#{base_url}/management/domain/nodes"
           applications_url = "#{base_url}/management/domain/applications"
           password = definition['config']['password']
-          if is_url_responding_with_code?(nodes_url, username, password, 200) &&
-             is_url_responding_with_code?(applications_url, username, password, 200) &&
-             is_url_responding_with_code?(base_url, username, password, 200)
+          if url_responding_with_code?(nodes_url, username, password, 200) &&
+             url_responding_with_code?(applications_url, username, password, 200) &&
+             url_responding_with_code?(base_url, username, password, 200)
             sleep 1
             break
           end
@@ -581,31 +571,29 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   ##
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'] && configuration['type'].to_s == 'osgi'
-      if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
-          Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
-          include_recipe recipe
-        end
+    next unless configuration['type'] && configuration['type'].to_s == 'osgi'
+    if configuration['recipes'] && configuration['recipes']['before']
+      gf_sort(configuration['recipes']['before']).each_pair do |recipe, config|
+        Chef::Log.info "Including '#{component_name}' application 'before' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+        include_recipe recipe
       end
-      glassfish_deployable component_name.to_s do
-        domain_name domain_key
-        admin_port admin_port if admin_port
-        username username if username
-        password_file password_file if password_file
-        secure secure if secure
-        system_user system_username if system_username
-        system_group system_group if system_group
-        version configuration['version']
-        url configuration['url']
-        type :osgi
-      end
-      if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
-          Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
-          include_recipe recipe
-        end
-      end
+    end
+    glassfish_deployable component_name.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      version configuration['version']
+      url configuration['url']
+      type :osgi
+    end
+    next unless configuration['recipes'] && configuration['recipes']['after']
+    gf_sort(configuration['recipes']['after']).each_pair do |recipe, config|
+      Chef::Log.info "Including '#{component_name}' application 'after' recipe '#{recipe}' Priority: #{gf_priority(config)}"
+      include_recipe recipe
     end
   end
 
@@ -614,13 +602,39 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   ##
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'] && configuration['type'].to_s == 'rar'
-      if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
+    next unless configuration['type'] && configuration['type'].to_s == 'rar'
+    if configuration['recipes'] && configuration['recipes']['before']
+      gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
+        include_recipe recipe
       end
-      glassfish_deployable component_name.to_s do
+    end
+    glassfish_deployable component_name.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      version configuration['version']
+      url configuration['url']
+      context_root configuration['context_root'] if configuration['context_root']
+      target configuration['target'] if configuration['target']
+      enabled configuration['enabled'] if configuration['enabled']
+      generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+      virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+      availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+      keep_state configuration['keep_state'] if configuration['keep_state']
+      verify configuration['verify'] if configuration['verify']
+      precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+      async_replication configuration['async_replication'] if configuration['async_replication']
+      properties configuration['properties'] if configuration['properties']
+      descriptors configuration['descriptors'] if configuration['descriptors']
+      lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+    end
+    gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
+      hash = value.is_a?(Hash) ? value : { 'value' => value }
+      glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
@@ -628,44 +642,16 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         secure secure if secure
         system_user system_username if system_username
         system_group system_group if system_group
-        version configuration['version']
-        url configuration['url']
-        context_root configuration['context_root'] if configuration['context_root']
-        target configuration['target'] if configuration['target']
-        enabled configuration['enabled'] if configuration['enabled']
-        generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
-        virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
-        availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
-        keep_state configuration['keep_state'] if configuration['keep_state']
-        verify configuration['verify'] if configuration['verify']
-        precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
-        async_replication configuration['async_replication'] if configuration['async_replication']
-        properties configuration['properties'] if configuration['properties']
-        descriptors configuration['descriptors'] if configuration['descriptors']
-        lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+        webapp component_name
+        glassfish_web_env_entry_name key
+        type hash['type'] if hash['type']
+        value hash['value'].to_s unless hash['value'].nil?
+        description hash['description'] if hash['description']
       end
-      gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
-        hash = value.is_a?(Hash) ? value : {'value' => value}
-        glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
-          domain_name domain_key
-          admin_port admin_port if admin_port
-          username username if username
-          password_file password_file if password_file
-          secure secure if secure
-          system_user system_username if system_username
-          system_group system_group if system_group
-          webapp component_name
-          name key
-          type hash['type'] if hash['type']
-          value hash['value'].to_s unless hash['value'].nil?
-          description hash['description'] if hash['description']
-        end
-      end
-      if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
-      end
+    end
+    next unless configuration['recipes'] && configuration['recipes']['after']
+    gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
+      include_recipe recipe
     end
   end
 
@@ -699,7 +685,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_user system_username if system_username
       system_group system_group if system_group
       configuration['config'].each_pair do |config_key, value|
-        self.send(config_key, value)
+        send(config_key, value)
       end if configuration['config']
     end
     gf_sort(configuration['resources'] || {}).each_pair do |resource_name, resource_configuration|
@@ -715,7 +701,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         connectionpoolid pool_name
         resource_configuration.each_pair do |config_key, value|
-          self.send(config_key, value) unless config_key == 'priority'
+          send(config_key, value) unless config_key == 'priority'
         end
       end
     end
@@ -733,7 +719,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_user system_username if system_username
       system_group system_group if system_group
       resource_configuration['config'].each_pair do |config_key, value|
-        self.send(config_key, value)
+        send(config_key, value)
       end if resource_configuration['config']
     end
     gf_sort(resource_configuration['connection_pools'] || {}).each_pair do |pool_key, pool_configuration|
@@ -748,7 +734,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         raname resource_adapter_key
         pool_configuration['config'].each_pair do |config_key, value|
-          self.send(config_key, value)
+          send(config_key, value)
         end if pool_configuration['config']
       end
       gf_sort(pool_configuration['resources'] || {}).each_pair do |resource_name, resource_configuration| # rubocop:disable Lint/ShadowingOuterLocalVariable
@@ -762,7 +748,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           system_group system_group if system_group
           poolname pool_key.to_s
           resource_configuration.each_pair do |config_key, value|
-            self.send(config_key, value) unless config_key == 'priority'
+            send(config_key, value) unless config_key == 'priority'
           end
         end
       end
@@ -779,7 +765,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         system_group system_group if system_group
         raname resource_adapter_key
         admin_object_configuration.each_pair do |config_key, value|
-          self.send(config_key, value) unless config_key == 'priority'
+          send(config_key, value) unless config_key == 'priority'
         end
       end
     end
@@ -819,7 +805,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - custom_resources"
   gf_sort(definition['custom_resources'] || {}).each_pair do |key, value|
-    hash = value.is_a?(Hash) ? value : {'value' => value}
+    hash = value.is_a?(Hash) ? value : { 'value' => value }
     hash['restype'] = 'java.lang.Boolean' if hash['restype'].nil? && (hash['value'].is_a?(TrueClass) || hash['value'].is_a?(FalseClass))
     hash['restype'] = 'java.lang.Integer' if hash['restype'].nil? && hash['value'].is_a?(Fixnum) # rubocop:disable Lint/UnifiedInteger
     hash['restype'] = 'java.lang.Long' if hash['restype'].nil? && hash['value'].is_a?(Bignum) # rubocop:disable Lint/UnifiedInteger
@@ -853,20 +839,47 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       system_user system_username if system_username
       system_group system_group if system_group
       javamail_configuration.each_pair do |config_key, value|
-        self.send(config_key, value) unless config_key == 'priority'
+        send(config_key, value) unless config_key == 'priority'
       end
     end
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - deployables"
   gf_sort(definition['deployables'] || {}).each_pair do |component_name, configuration|
-    if configuration['type'].nil? || (configuration['type'].to_s != 'osgi' && configuration['type'].to_s != 'rar')
-      if configuration['recipes'] && configuration['recipes']['before']
-        gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
+    next unless configuration['type'].nil? || (configuration['type'].to_s != 'osgi' && configuration['type'].to_s != 'rar')
+    if configuration['recipes'] && configuration['recipes']['before']
+      gf_sort(configuration['recipes']['before']).each_pair do |recipe, _|
+        include_recipe recipe
       end
-      glassfish_deployable component_name.to_s do
+    end
+    glassfish_deployable component_name.to_s do
+      domain_name domain_key
+      admin_port admin_port if admin_port
+      username username if username
+      password_file password_file if password_file
+      secure secure if secure
+      system_user system_username if system_username
+      system_group system_group if system_group
+      version configuration['version']
+      url configuration['url']
+      context_root configuration['context_root'] if configuration['context_root']
+      target configuration['target'] if configuration['target']
+      enabled configuration['enabled'] if configuration['enabled']
+      generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
+      virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
+      availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
+      keep_state configuration['keep_state'] if configuration['keep_state']
+      verify configuration['verify'] if configuration['verify']
+      precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
+      async_replication configuration['async_replication'] if configuration['async_replication']
+      properties configuration['properties'] if configuration['properties']
+      descriptors configuration['descriptors'] if configuration['descriptors']
+      lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
+      libraries configuration['libraries'] if configuration['libraries']
+    end
+    gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
+      hash = value.is_a?(Hash) ? value : { 'value' => value }
+      glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
         domain_name domain_key
         admin_port admin_port if admin_port
         username username if username
@@ -874,45 +887,16 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         secure secure if secure
         system_user system_username if system_username
         system_group system_group if system_group
-        version configuration['version']
-        url configuration['url']
-        context_root configuration['context_root'] if configuration['context_root']
-        target configuration['target'] if configuration['target']
-        enabled configuration['enabled'] if configuration['enabled']
-        generate_rmi_stubs configuration['generate_rmi_stubs'] if configuration['generate_rmi_stubs']
-        virtual_servers configuration['virtual_servers'] if configuration['virtual_servers']
-        availability_enabled configuration['availability_enabled'] if configuration['availability_enabled']
-        keep_state configuration['keep_state'] if configuration['keep_state']
-        verify configuration['verify'] if configuration['verify']
-        precompile_jsp configuration['precompile_jsp'] if configuration['precompile_jsp']
-        async_replication configuration['async_replication'] if configuration['async_replication']
-        properties configuration['properties'] if configuration['properties']
-        descriptors configuration['descriptors'] if configuration['descriptors']
-        lb_enabled configuration['lb_enabled'] if configuration['lb_enabled']
-        libraries configuration['libraries'] if configuration['libraries']
+        webapp component_name
+        glassfish_web_env_entry_name key
+        type hash['type'] if hash['type']
+        value hash['value'].to_s unless hash['value'].nil?
+        description hash['description'] if hash['description']
       end
-      gf_sort(configuration['web_env_entries'] || {}).each_pair do |key, value|
-        hash = value.is_a?(Hash) ? value : {'value' => value}
-        glassfish_web_env_entry "#{domain_key}: #{component_name} set #{key}" do
-          domain_name domain_key
-          admin_port admin_port if admin_port
-          username username if username
-          password_file password_file if password_file
-          secure secure if secure
-          system_user system_username if system_username
-          system_group system_group if system_group
-          webapp component_name
-          name key
-          type hash['type'] if hash['type']
-          value hash['value'].to_s unless hash['value'].nil?
-          description hash['description'] if hash['description']
-        end
-      end
-      if configuration['recipes'] && configuration['recipes']['after']
-        gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
-          include_recipe recipe
-        end
-      end
+    end
+    next unless configuration['recipes'] && configuration['recipes']['after']
+    gf_sort(configuration['recipes']['after']).each_pair do |recipe, _|
+      include_recipe recipe
     end
   end
 
@@ -958,7 +942,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           system_user system_username if system_username
           system_group system_group if system_group
           webapp component_name
-          name existing
+          glassfish_web_env_entry_name existing
           action :unset
         end
       end
@@ -1019,16 +1003,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     found = false
     if definition['resource_adapters']
       gf_sort(definition['resource_adapters']).each_pair do |_, configuration|
-        if configuration['connection_pools'] && configuration['connection_pools'][existing]
-          found = true
-        end
+        found = true if configuration['connection_pools'] && configuration['connection_pools'][existing]
       end
     end
 
     jms_defined_resources = []
     gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
       restype = resource_config['restype'] || 'javax.jms.Queue'
-      jms_defined_resources << "#{key}-Connection-Pool" if ['javax.jms.ConnectionFactory','javax.jms.TopicConnectionFactory','javax.jms.QueueConnectionFactory'].include?(restype)
+      jms_defined_resources << "#{key}-Connection-Pool" if ['javax.jms.ConnectionFactory', 'javax.jms.TopicConnectionFactory', 'javax.jms.QueueConnectionFactory'].include?(restype)
     end
 
     unless found || jms_defined_resources.include?(existing)
@@ -1052,16 +1034,14 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     found = false
     gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
       gf_sort(configuration['connection_pools'] || {}).each_pair do |_, pool_configuration|
-        if pool_configuration['resources'] && pool_configuration['resources'][existing]
-          found = true
-        end
+        found = true if pool_configuration['resources'] && pool_configuration['resources'][existing]
       end
     end
 
     jms_defined_resources = []
     gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
       restype = resource_config['restype'] || 'javax.jms.Queue'
-      jms_defined_resources << key if ['javax.jms.ConnectionFactory','javax.jms.TopicConnectionFactory','javax.jms.QueueConnectionFactory'].include?(restype)
+      jms_defined_resources << key if ['javax.jms.ConnectionFactory', 'javax.jms.TopicConnectionFactory', 'javax.jms.QueueConnectionFactory'].include?(restype)
     end
 
     unless found || jms_defined_resources.include?(existing)
@@ -1084,15 +1064,13 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing admin object #{existing}"
     found = false
     gf_sort(definition['resource_adapters'] || {}).each_pair do |_, configuration|
-      if configuration['admin_objects'] && configuration['admin_objects'][existing]
-        found = true
-      end
+      found = true if configuration['admin_objects'] && configuration['admin_objects'][existing]
     end
 
     jms_defined_resources = []
     gf_sort(definition['jms_resources'] || {}).each_pair do |key, resource_config|
       restype = resource_config['restype'] || 'javax.jms.Queue'
-      jms_defined_resources << key if ['javax.jms.Queue','javax.jms.Topic'].include?(restype)
+      jms_defined_resources << key if ['javax.jms.Queue', 'javax.jms.Topic'].include?(restype)
     end
 
     unless found || jms_defined_resources.include?(existing)
@@ -1113,7 +1091,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing jdbc pools"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-jdbc-connection-pools') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing jdbc pool #{existing}"
-    standard_pools = %w{__TimerPool}
+    standard_pools = %w(__TimerPool)
     unless definition['jdbc_connection_pools'] &&
            definition['jdbc_connection_pools'][existing] ||
            standard_pools.include?(existing)
@@ -1139,12 +1117,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     found = false
     if definition['jdbc_connection_pools']
       gf_sort(definition['jdbc_connection_pools']).each_pair do |_, configuration|
-        if configuration['resources'] && configuration['resources'][existing]
-          found = true
-        end
+        found = true if configuration['resources'] && configuration['resources'][existing]
       end
     end
-    standard_resources = %w{jdbc/__TimerPool}
+    standard_resources = %w(jdbc/__TimerPool)
     unless found || standard_resources.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing jdbc resource #{existing}"
       glassfish_jdbc_connection_pool existing do
@@ -1179,8 +1155,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end if gf_managed?(definition['javamail_resources'])
 
   jmsra_defined_resources = []
-  if definition['resource_adapters'] &&
-    definition['resource_adapters']['jmsra']
+  if definition['resource_adapters'] && definition['resource_adapters']['jmsra']
     if definition['resource_adapters']['jmsra']['connection_pools']
       definition['resource_adapters']['jmsra']['connection_pools'].each_value do |pool|
         pool['resources'].keys.each { |k| jmsra_defined_resources << k } if pool['resources']
@@ -1248,7 +1223,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing auth realms"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-auth-realms') do |existing|
     Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing auth realms #{existing}"
-    standard_realms = %w{admin-realm file certificate}
+    standard_realms = %w(admin-realm file certificate)
     unless definition['realms'] && definition['realms'][existing] || standard_realms.include?(existing)
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing auth realms #{existing}"
       glassfish_auth_realm existing do
@@ -1406,10 +1381,10 @@ end
 
 domain_names = node['glassfish']['domains'].keys
 
-Dir["#{node['glassfish']['domains_dir']}/*"].
-  select { |file| File.directory?(file) }.
-  select { |file| !domain_names.include?(File.basename(file)) }.
-  each do |file|
+Dir["#{node['glassfish']['domains_dir']}/*"]
+  .select { |file| File.directory?(file) }
+  .select { |file| !domain_names.include?(File.basename(file)) }
+  .each do |file|
 
   Chef::Log.info "Removing historic Glassfish Domain #{File.basename(file)}"
 
