@@ -16,10 +16,8 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
-  instance_exists = 0 != `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -- '#{new_resource.instance_name} '`.strip.split("\n").size
+  instance_exists = !`#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -- '#{new_resource.instance_name} '`.strip.split("\n").size.empty?
 
   unless instance_exists
     Chef::Log.info "Creating instance #{new_resource.instance_name} in #{new_resource.domain_name}"
@@ -43,7 +41,7 @@ action :create do
 end
 
 action :delete do
-  instance_exists = 0 != `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -- '#{new_resource.instance_name} '`.strip.split("\n").size
+  instance_exists = !`#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -- '#{new_resource.instance_name} '`.strip.split("\n").size.empty?
 
   if instance_exists
     Chef::Log.info "Deleting instance #{new_resource.instance_name} in #{new_resource.domain_name}"
@@ -62,7 +60,7 @@ action :delete do
 end
 
 action :start do
-  instance_running = 1 == `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -E '^#{new_resource.instance_name}\\s*running'`.strip.split("\n").size
+  instance_running = `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -E '^#{new_resource.instance_name}\\s*running'`.strip.split("\n").size == 1
 
   unless instance_running
     Chef::Log.info "Starting instance #{new_resource.instance_name} in #{new_resource.domain_name}"
@@ -81,7 +79,7 @@ action :start do
 end
 
 action :stop do
-  instance_running = 1 == `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -E '^#{new_resource.instance_name}\\s*running'`.strip.split("\n").size
+  instance_running = `#{asadmin_command('list-instances')} #{new_resource.instance_name} | grep -E '^#{new_resource.instance_name}\\s*running'`.strip.split("\n").size == 1
 
   if instance_running
     Chef::Log.info "Stopping instance #{new_resource.instance_name} in #{new_resource.domain_name}"

@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 def domain_dir
   "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
 end
@@ -41,11 +39,12 @@ end
 action :deploy do
   raise 'Must specify url' unless new_resource.url
 
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  is_deployed =
-    cache_present ?
-      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.") :
-      0 != `#{asadmin_command('list-applications')} #{new_resource.target} | grep -- '#{new_resource.component_name} '`.strip.split("\n").size
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  is_deployed = if cache_present
+                  RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
+                else
+                  !`#{asadmin_command('list-applications')} #{new_resource.target} | grep -- '#{new_resource.component_name} '`.strip.split("\n").size.empty?
+                end
 
   plan_version = new_resource.descriptors.empty? ? nil : Asadmin.generate_component_plan_digest(new_resource.descriptors)
 
@@ -93,9 +92,7 @@ action :deploy do
         cd #{build_dir}
         CMD
         new_resource.descriptors.collect do |key, file|
-          if ::File.dirname(key) != ''
-            cmd << "mkdir -p #{::File.dirname(key)}\n"
-          end
+          cmd << "mkdir -p #{::File.dirname(key)}\n" if ::File.dirname(key) != ''
           cmd << "cp #{file} #{key}\n"
         end
         cmd << <<-CMD
@@ -151,11 +148,12 @@ action :deploy do
 end
 
 action :undeploy do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
-  maybe_deployed =
-    cache_present ?
-      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.") :
-      true
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
+  maybe_deployed = if cache_present
+                     RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
+                   else
+                     true
+                   end
 
   if maybe_deployed
 
@@ -167,7 +165,7 @@ action :undeploy do
 
     execute "asadmin_undeploy #{new_resource.component_name}" do
       unless cache_present
-        only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        only_if "#{asadmin_command('list-applications')} #{new_resource.target}| grep -- '#{new_resource.component_name} '", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
@@ -199,7 +197,7 @@ action :disable do
   args << new_resource.component_name
 
   execute "asadmin_disable #{new_resource.component_name}" do
-    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
     user new_resource.system_user unless node['os'] == 'windows'
@@ -215,7 +213,7 @@ action :enable do
   args << new_resource.component_name
 
   execute "asadmin_enable #{new_resource.component_name}" do
-    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
     user new_resource.system_user unless node['os'] == 'windows'

@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   args = []
   args << 'create-javamail-resource'
@@ -36,7 +34,7 @@ action :create do
   args << new_resource.jndi_name
 
   execute "asadmin_create-javamail-resource #{new_resource.jndi_name}" do
-    not_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -51,7 +49,7 @@ action :delete do
   args << new_resource.jndi_name
 
   execute "asadmin_delete-javamail-resource #{new_resource.jndi_name}" do
-    only_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-javamail-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'

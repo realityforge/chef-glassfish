@@ -37,6 +37,16 @@ def default_logging_properties
 
     'log4j.logger.org.hibernate.validator.util.Version' => 'warn',
 
+    # Payara 5.182
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.compressOnRotation' => 'false',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => '2000000',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationOnDateChange' => 'false',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.file' => '${com.sun.aas.instanceRoot}/logs/notification.log',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.logtoFile' => 'true',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => '0',
+    'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => 'true',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => '0',
+
     # All log level details
     '.level' => 'INFO',
 
@@ -123,8 +133,6 @@ def service_name
   "glassfish-#{new_resource.domain_name}"
 end
 
-use_inline_resources
-
 action :create do
   if new_resource.system_group != node['glassfish']['group']
     group new_resource.system_group do
@@ -165,7 +173,7 @@ action :create do
   if new_resource.password_file
     template new_resource.password_file do
       cookbook 'glassfish'
-      only_if { new_resource.password }
+      not_if { new_resource.password.nil? }
       source 'password.erb'
       owner new_resource.system_user
       group new_resource.system_group unless node['os'] == 'windows'
@@ -215,9 +223,7 @@ action :create do
     group new_resource.system_group unless node['os'] == 'windows'
     command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false) # rubocop:disable Lint/ParenthesesAsGroupedExpression
 
-    if node['glassfish']['variant'] != 'payara'
-      notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate
-    end
+    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
 
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
     notifies :start, "service[#{service_name}]", :delayed

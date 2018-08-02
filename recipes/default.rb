@@ -14,25 +14,21 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Downloads, and extracts the glassfish binaries, creates the glassfish user and group.
-
-Does not create any Application Server or Message Broker instances. This recipe is not
-typically included directly but is included transitively through either <code>glassfish::attribute_driven_domain</code>
-or <code>glassfish::attribute_driven_mq</code>.
-#>
-=end
+# Downloads, and extracts the glassfish binaries, creates the glassfish user and group.
+#
+# Does not create any Application Server or Message Broker instances. This recipe is not
+# typically included directly but is included transitively through either <code>glassfish::attribute_driven_domain</code>
+# or <code>glassfish::attribute_driven_mq</code>.
 
 # Scans Glassfish's binary for endorsed JARs and returns a list of filenames
 def gf_scan_existing_binary_endorsed_jars(install_dir)
   jar_extensions = ['.jar']
   gf_binary_endorsed_dir = install_dir + '/glassfish/lib/endorsed'
-  if Dir.exist?(gf_binary_endorsed_dir)
-    existing_binary_endorsed_jars = Dir.entries(gf_binary_endorsed_dir).reject { |f| File.directory?(f) || !jar_extensions.include?(File.extname(f)) }
-  else
-    existing_binary_endorsed_jars = []
-  end
+  existing_binary_endorsed_jars = if Dir.exist?(gf_binary_endorsed_dir)
+                                    Dir.entries(gf_binary_endorsed_dir).reject { |f| File.directory?(f) || !jar_extensions.include?(File.extname(f)) }
+                                  else
+                                    []
+                                  end
   existing_binary_endorsed_jars
 end
 
