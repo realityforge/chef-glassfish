@@ -18,7 +18,6 @@ cookstyle:
   script:
     - cookstyle -v
     - cookstyle -D --fail-level C
-  allow_failure: true
 
 foodcritic:
   stage: lint
