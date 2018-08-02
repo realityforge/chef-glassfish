@@ -1,4 +1,4 @@
-## v0.8.0 (Pending):
+## v0.8.0:
 * Enhance : Add support to Payara 5.182
 * Fix     : Fix Cookstyle issues
 * Change  : Rename is_property_cache_present to property_cache_present
