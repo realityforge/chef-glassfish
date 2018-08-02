@@ -14,15 +14,11 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Downloads, and extracts the glassfish binaries, creates the glassfish user and group.
-
-Does not create any Application Server or Message Broker instances. This recipe is not
-typically included directly but is included transitively through either <code>glassfish::attribute_driven_domain</code>
-or <code>glassfish::attribute_driven_mq</code>.
-#>
-=end
+# Downloads, and extracts the glassfish binaries, creates the glassfish user and group.
+#
+# Does not create any Application Server or Message Broker instances. This recipe is not
+# typically included directly but is included transitively through either <code>glassfish::attribute_driven_domain</code>
+# or <code>glassfish::attribute_driven_mq</code>.
 
 # Scans Glassfish's binary for endorsed JARs and returns a list of filenames
 def gf_scan_existing_binary_endorsed_jars(install_dir)

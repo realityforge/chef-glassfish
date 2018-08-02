@@ -173,7 +173,7 @@ action :create do
   if new_resource.password_file
     template new_resource.password_file do
       cookbook 'glassfish'
-      only_if { new_resource.password }
+      not_if { new_resource.password.nil? }
       source 'password.erb'
       owner new_resource.system_user
       group new_resource.system_group unless node['os'] == 'windows'

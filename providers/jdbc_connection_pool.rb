@@ -18,10 +18,11 @@ include Chef::Asadmin
 
 action :create do
   cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
-  may_need_create =
-    cache_present ?
-      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.") :
-      true
+  may_need_create = if cache_present
+                      !RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.")
+                    else
+                      true
+                    end
 
   parameters = { restype: 'res-type',
                  isolationlevel: 'transaction-isolation-level',
@@ -81,10 +82,11 @@ end
 
 action :delete do
   cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
-  may_need_delete =
-    cache_present ?
-      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.") :
-      true
+  may_need_delete = if cache_present
+                      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "resources.jdbc-connection-pool.#{new_resource.name}.")
+                    else
+                      true
+                    end
 
   if may_need_delete
     args = []

@@ -23,7 +23,7 @@ def gf_priority(value)
 end
 
 def gf_sort(hash)
-  Hash[hash.sort_by { |key, value| "#{'%04d' % gf_priority(value)}#{key}" }]
+  Hash[hash.sort_by { |key, value| "#{format('%04d', gf_priority(value))}#{key}" }]
 end
 
 include_recipe 'glassfish::default'

@@ -33,7 +33,7 @@ NUMERIC_ATTRIBUTES = [:steadypoolsize,
                       :validateatmostonceperiod,
                       :maxconnectionusagecount,
                       :creationretryattempts,
-                      :creationretryinterval]
+                      :creationretryinterval].freeze
 
 NUMERIC_ATTRIBUTES.each do |key|
   attribute key, kind_of: [Integer, String], regex: /^[0-9]+$/, default: nil
@@ -47,7 +47,7 @@ BOOLEAN_ATTRIBUTES = [:isconnectvalidatereq,
                       :associatewiththread,
                       :matchconnections,
                       :ping,
-                      :pooling]
+                      :pooling].freeze
 
 BOOLEAN_ATTRIBUTES.each do |key|
   attribute key, equal_to: [true, false, 'true', 'false'], default: nil

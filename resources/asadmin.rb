@@ -14,21 +14,17 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Asadmin is the command line application used to manage a GlassFish application server. Typically this resource is
-used when there is not yet a resource defined in this cookbook for executing an underlying command on the server.
-
-@action run Execute the command.
-
-@section Examples
-
-    # List all the domains on the server
-    glassfish_asadmin "list-domains" do
-       domain_name 'my_domain'
-    end
-#>
-=end
+# Asadmin is the command line application used to manage a GlassFish application server. Typically this resource is
+# used when there is not yet a resource defined in this cookbook for executing an underlying command on the server.
+#
+# @action run Execute the command.
+#
+# @section Examples
+#
+#     # List all the domains on the server
+#     glassfish_asadmin "list-domains" do
+#        domain_name 'my_domain'
+#     end
 
 actions :run
 

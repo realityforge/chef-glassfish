@@ -14,191 +14,187 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Configures 0 or more GlassFish domains using the glassfish/domains attribute.
-
-The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
-
-A typical approach is to define the configuration for the entire application on the node and include the recipe.
-Another approach using a vagrant file is to set the json attribute such as;
-
-```ruby
-  chef.json = {
-        "java" => {
-            "install_flavor" => "oracle",
-            "jdk_version" => 7,
-            "oracle" => {
-                "accept_oracle_download_terms" => true
-            }
-        },
-        "glassfish" => {
-            "version" => "4.0.1",
-            "package_url" => "http://dlc.sun.com.edgesuite.net/glassfish/4.0.1/promoted/glassfish-4.0.1-b01.zip",
-            "base_dir" => "/usr/local/glassfish",
-            "domains_dir" => "/usr/local/glassfish/glassfish/domains",
-            "domains" => {
-                "myapp" => {
-                    "config" => {
-                        "min_memory" => 1024,
-                        "max_memory" => 1024,
-                        "max_perm_size" => 256,
-                        "port" => 7070,
-                        "admin_port" => 4848,
-                        "username" => "adminuser",
-                        "password" => "adminpw",
-                        "master_password" => "mykeystorepassword",
-                        "remote_access" => false,
-                        "jvm_options" => ["-DMYAPP_CONFIG_DIR=/usr/local/myapp/config", "-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true"],
-                        "secure" => false
-                    },
-                    'extra_libraries' => {
-                        'realm' => {
-                          'type' => 'common',
-                          'url' => 'https://s3.amazonaws.com/somebucket/lib/realm.jar',
-                          'requires_restart' => true
-                        },
-                        'jdbcdriver' => {
-                          'type' => 'common',
-                          'url' => 'https://s3.amazonaws.com/somebucket/lib/mysql-connector-java-5.1.25-bin.jar'
-                        },
-                        'encryption' => {
-                          'type' => 'common',
-                          'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
-                        }
-                    },
-                    'threadpools' => {
-                      'thread-pool-1' => {
-                        'maxthreadpoolsize' => 200,
-                        'minthreadpoolsize' => 5,
-                        'idletimeout' => 900,
-                        'maxqueuesize' => 4096
-                      },
-                      'http-thread-pool' => {
-                        'maxthreadpoolsize' => 200,
-                        'minthreadpoolsize' => 5,
-                        'idletimeout' => 900,
-                        'maxqueuesize' => 4096
-                      },
-                      'admin-pool' => {
-                        'maxthreadpoolsize' => 50,
-                        'minthreadpoolsize' => 5,
-                        'maxqueuesize' => 256
-                      }
-                    },
-                    'iiop_listeners' => {
-                      'orb-listener-1' => {
-                        'enabled' => true,
-                        'iiopport' => 1072,
-                        'securityenabled' => false
-                      }
-                    },
-                    'context_services' => {
-                      'concurrent/MyAppContextService' => {
-                        'description' => 'My Apps ContextService'
-                      }
-                    },
-                    'managed_thread_factories' => {
-                      'concurrent/myThreadFactory' => {
-                        'threadpriority' => 12,
-                        'description' => 'My Thread Factory'
-                      }
-                    },
-                    'managed_executor_services' => {
-                      'concurrent/myExecutorService' => {
-                        'threadpriority' => 12,
-                        'description' => 'My Executor Service'
-                      }
-                    },
-                    'managed_scheduled_executor_services' => {
-                      'concurrent/myScheduledExecutorService' => {
-                        'corepoolsize' => 12,
-                        'description' => 'My Executor Service'
-                      }
-                    },
-                    'jdbc_connection_pools' => {
-                        'RealmPool' => {
-                            'config' => {
-                                'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-                                'restype' => 'javax.sql.DataSource',
-                                'isconnectvalidatereq' => 'true',
-                                'validationmethod' => 'auto-commit',
-                                'ping' => 'true',
-                                'description' => 'Realm Pool',
-                                'properties' => {
-                                   'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/realmdb",
-                                   'ServerName' => "devdb.somecompany.com",
-                                   'User' => 'realmuser',
-                                   'Password' => 'realmpw',
-                                   'PortNumber' => '3306',
-                                   'DatabaseName' => 'realmdb'
-                                }
-                            },
-                            'resources' => {
-                                'jdbc/Realm' => {
-                                    'description' => 'Resource for Realm Pool',
-                                }
-                            }
-                        },
-                        'AppPool' => {
-                            'config' => {
-                                'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-                                'restype' => 'javax.sql.DataSource',
-                                'isconnectvalidatereq' => 'true',
-                                'validationmethod' => 'auto-commit',
-                                'ping' => 'true',
-                                'description' => 'App Pool',
-                                'properties' => {
-                                  'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/appdb",
-                                  'ServerName' => "devdb.somecompany.com",
-                                  'User' => 'appuser',
-                                  'Password' => 'apppw',
-                                  'PortNumber' => '3306',
-                                  'DatabaseName' => 'appdb'
-                                }
-                            },
-                            'resources' => {
-                                'jdbc/App' => {
-                                    'description' => 'Resource for App Pool',
-                                }
-                            }
-                        }
-                    },
-                    'realms' => {
-                        'custom-realm' => {
-                            'classname' => 'com.somecompany.realm.CustomRealm',
-                            'jaas-context' => 'customRealm',
-                            'properties' => {
-                                'jaas-context' => 'customRealm',
-                                'datasource' => 'jdbc/Realm',
-                                'groupQuery' => 'SELECT ...',
-                                'passwordQuery' => 'SELECT ...'
-                            }
-                         }
-                    },
-                    'realm_types' => {
-                        'customRealm' => 'com.somecompany.realm.CustomLoginModule'
-                    },
-                    'deployables' => {
-                        'myapp' => {
-                            'url' => 'https://s3.amazonaws.com/somebucket/apps/app.war',
-                            'context_root' => '/'
-                         }
-                    },
-                    "custom_resources" => {
-                      "env/myapp/timeout" => {
-                        "restype" => "java.lang.Long",
-                        "value" => 300000
-                      },
-                      "env/myapp/mykey" => "123",
-                      "env/myapp/someString" => "XYZ"
-                    }
-                }
-            }
-        }
-```
-#>
-=end
+# Configures 0 or more GlassFish domains using the glassfish/domains attribute.
+#
+# The `attribute_driven_domain` recipe interprets attributes on the node and defines the resources described in the attributes.
+#
+# A typical approach is to define the configuration for the entire application on the node and include the recipe.
+# Another approach using a vagrant file is to set the json attribute such as;
+#
+# ```ruby
+#   chef.json = {
+#         "java" => {
+#             "install_flavor" => "oracle",
+#             "jdk_version" => 7,
+#             "oracle" => {
+#                 "accept_oracle_download_terms" => true
+#             }
+#         },
+#         "glassfish" => {
+#             "version" => "4.0.1",
+#             "package_url" => "http://dlc.sun.com.edgesuite.net/glassfish/4.0.1/promoted/glassfish-4.0.1-b01.zip",
+#             "base_dir" => "/usr/local/glassfish",
+#             "domains_dir" => "/usr/local/glassfish/glassfish/domains",
+#             "domains" => {
+#                 "myapp" => {
+#                     "config" => {
+#                         "min_memory" => 1024,
+#                         "max_memory" => 1024,
+#                         "max_perm_size" => 256,
+#                         "port" => 7070,
+#                         "admin_port" => 4848,
+#                         "username" => "adminuser",
+#                         "password" => "adminpw",
+#                         "master_password" => "mykeystorepassword",
+#                         "remote_access" => false,
+#                         "jvm_options" => ["-DMYAPP_CONFIG_DIR=/usr/local/myapp/config", "-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true"],
+#                         "secure" => false
+#                     },
+#                     'extra_libraries' => {
+#                         'realm' => {
+#                           'type' => 'common',
+#                           'url' => 'https://s3.amazonaws.com/somebucket/lib/realm.jar',
+#                           'requires_restart' => true
+#                         },
+#                         'jdbcdriver' => {
+#                           'type' => 'common',
+#                           'url' => 'https://s3.amazonaws.com/somebucket/lib/mysql-connector-java-5.1.25-bin.jar'
+#                         },
+#                         'encryption' => {
+#                           'type' => 'common',
+#                           'url' => 'https://s3.amazonaws.com/somebucket/lib/jasypt-1.9.0.jar'
+#                         }
+#                     },
+#                     'threadpools' => {
+#                       'thread-pool-1' => {
+#                         'maxthreadpoolsize' => 200,
+#                         'minthreadpoolsize' => 5,
+#                         'idletimeout' => 900,
+#                         'maxqueuesize' => 4096
+#                       },
+#                       'http-thread-pool' => {
+#                         'maxthreadpoolsize' => 200,
+#                         'minthreadpoolsize' => 5,
+#                         'idletimeout' => 900,
+#                         'maxqueuesize' => 4096
+#                       },
+#                       'admin-pool' => {
+#                         'maxthreadpoolsize' => 50,
+#                         'minthreadpoolsize' => 5,
+#                         'maxqueuesize' => 256
+#                       }
+#                     },
+#                     'iiop_listeners' => {
+#                       'orb-listener-1' => {
+#                         'enabled' => true,
+#                         'iiopport' => 1072,
+#                         'securityenabled' => false
+#                       }
+#                     },
+#                     'context_services' => {
+#                       'concurrent/MyAppContextService' => {
+#                         'description' => 'My Apps ContextService'
+#                       }
+#                     },
+#                     'managed_thread_factories' => {
+#                       'concurrent/myThreadFactory' => {
+#                         'threadpriority' => 12,
+#                         'description' => 'My Thread Factory'
+#                       }
+#                     },
+#                     'managed_executor_services' => {
+#                       'concurrent/myExecutorService' => {
+#                         'threadpriority' => 12,
+#                         'description' => 'My Executor Service'
+#                       }
+#                     },
+#                     'managed_scheduled_executor_services' => {
+#                       'concurrent/myScheduledExecutorService' => {
+#                         'corepoolsize' => 12,
+#                         'description' => 'My Executor Service'
+#                       }
+#                     },
+#                     'jdbc_connection_pools' => {
+#                         'RealmPool' => {
+#                             'config' => {
+#                                 'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+#                                 'restype' => 'javax.sql.DataSource',
+#                                 'isconnectvalidatereq' => 'true',
+#                                 'validationmethod' => 'auto-commit',
+#                                 'ping' => 'true',
+#                                 'description' => 'Realm Pool',
+#                                 'properties' => {
+#                                    'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/realmdb",
+#                                    'ServerName' => "devdb.somecompany.com",
+#                                    'User' => 'realmuser',
+#                                    'Password' => 'realmpw',
+#                                    'PortNumber' => '3306',
+#                                    'DatabaseName' => 'realmdb'
+#                                 }
+#                             },
+#                             'resources' => {
+#                                 'jdbc/Realm' => {
+#                                     'description' => 'Resource for Realm Pool',
+#                                 }
+#                             }
+#                         },
+#                         'AppPool' => {
+#                             'config' => {
+#                                 'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+#                                 'restype' => 'javax.sql.DataSource',
+#                                 'isconnectvalidatereq' => 'true',
+#                                 'validationmethod' => 'auto-commit',
+#                                 'ping' => 'true',
+#                                 'description' => 'App Pool',
+#                                 'properties' => {
+#                                   'Instance' => "jdbc:mysql://devdb.somecompany.com:3306/appdb",
+#                                   'ServerName' => "devdb.somecompany.com",
+#                                   'User' => 'appuser',
+#                                   'Password' => 'apppw',
+#                                   'PortNumber' => '3306',
+#                                   'DatabaseName' => 'appdb'
+#                                 }
+#                             },
+#                             'resources' => {
+#                                 'jdbc/App' => {
+#                                     'description' => 'Resource for App Pool',
+#                                 }
+#                             }
+#                         }
+#                     },
+#                     'realms' => {
+#                         'custom-realm' => {
+#                             'classname' => 'com.somecompany.realm.CustomRealm',
+#                             'jaas-context' => 'customRealm',
+#                             'properties' => {
+#                                 'jaas-context' => 'customRealm',
+#                                 'datasource' => 'jdbc/Realm',
+#                                 'groupQuery' => 'SELECT ...',
+#                                 'passwordQuery' => 'SELECT ...'
+#                             }
+#                          }
+#                     },
+#                     'realm_types' => {
+#                         'customRealm' => 'com.somecompany.realm.CustomLoginModule'
+#                     },
+#                     'deployables' => {
+#                         'myapp' => {
+#                             'url' => 'https://s3.amazonaws.com/somebucket/apps/app.war',
+#                             'context_root' => '/'
+#                          }
+#                     },
+#                     "custom_resources" => {
+#                       "env/myapp/timeout" => {
+#                         "restype" => "java.lang.Long",
+#                         "value" => 300000
+#                       },
+#                       "env/myapp/mykey" => "123",
+#                       "env/myapp/someString" => "XYZ"
+#                     }
+#                 }
+#             }
+#         }
+# ```
 
 include_recipe 'glassfish::default'
 
@@ -233,7 +229,7 @@ def gf_sort(hash)
   return {} if hash.nil?
   hash = hash.dup
   hash.delete_if { |k, _| k =~ /^_.*/ || k == 'managed' }
-  Hash[hash.sort_by { |key, value| "#{'%04d' % gf_priority(value)}#{key}" }]
+  Hash[hash.sort_by { |key, value| "#{format('%04d', gf_priority(value))}#{key}" }]
 end
 
 def gf_managed?(data)
@@ -324,28 +320,26 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     ruby_block "block_until_glassfish_#{domain_key}_up" do
       block do
         def url_responding_with_code?(url, username, password, code)
-          begin
-            uri = URI(url)
-            res = nil
-            http = Net::HTTP.new(uri.hostname, uri.port)
-            if url =~ /https\:/
-              http.use_ssl = true
-              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-            end
-            http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
-              request = Net::HTTP::Get.new(uri.request_uri)
-              request.basic_auth username, password
-              request['Accept'] = 'application/json'
-              res = http.request(request)
-            end
-            return true if res.code.to_s == code.to_s
-            puts "GlassFish not responding OK - #{res.code} to #{url}"
-          rescue StandardError => e
-            puts "GlassFish error while accessing web interface at #{url}"
-            puts e.message
-            puts e.backtrace.join("\n")
-            return url
+          uri = URI(url)
+          res = nil
+          http = Net::HTTP.new(uri.hostname, uri.port)
+          if url =~ /https\:/
+            http.use_ssl = true
+            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
           end
+          http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
+            request = Net::HTTP::Get.new(uri.request_uri)
+            request.basic_auth username, password
+            request['Accept'] = 'application/json'
+            res = http.request(request)
+          end
+          return true if res.code.to_s == code.to_s
+          puts "GlassFish not responding OK - #{res.code} to #{url}"
+        rescue StandardError => e
+          puts "GlassFish error while accessing web interface at #{url}"
+          puts e.message
+          puts e.backtrace.join("\n")
+          url
         end
 
         fail_count = 0

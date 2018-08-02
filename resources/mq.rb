@@ -14,39 +14,35 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Creates an OpenMQ message broker instance, creates an OS-level service and starts the service.
-
-@action create Create the message broker instance, enable and start the associated service.
-@action destroy Stop the associated service and delete the instance directory and associated artifacts.
-
-@section Examples
-
-    # Create a basic mq broker instance
-    glassfish_mq "MessageBroker" do
-      port 80
-      jmx_port 8089
-      jmx_admins { 'admin' => 'secret1' }
-      jmx_monitors { 'monitoring_system' => 'secret2' }
-      logging_properties {
-        "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
-          ".level" => "INFO",
-          "java.util.logging.ConsoleHandler.level" => "INFO",
-          "gelf4j.logging.GelfHandler.level" => "ALL",
-          "gelf4j.logging.GelfHandler.host" => 'graylog.example.org',
-          "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyInstance"}'
-      }
-      users { 'MyApp' => 'MyAppsPassword', 'MyOtherApp' => 'S3Cr37' }
-      queues { 'MySystem.MyMessageQueue' => {'XMLSchemaURIList' => 'http://example.com/...'} }
-      access_control_rules {
-        'queue.MySystem.MyMessageQueue.browse.allow.user' => '*',
-          'queue.MySystem.MyMessageQueue.produce.allow.user' => 'MyApp',
-          'queue.MySystem.MyMessageQueue.consume.allow.user' => 'MyOtherApp'
-      }
-    end
-#>
-=end
+# Creates an OpenMQ message broker instance, creates an OS-level service and starts the service.
+#
+# @action create Create the message broker instance, enable and start the associated service.
+# @action destroy Stop the associated service and delete the instance directory and associated artifacts.
+#
+# @section Examples
+#
+#     # Create a basic mq broker instance
+#     glassfish_mq "MessageBroker" do
+#       port 80
+#       jmx_port 8089
+#       jmx_admins { 'admin' => 'secret1' }
+#       jmx_monitors { 'monitoring_system' => 'secret2' }
+#       logging_properties {
+#         "handlers" => "java.util.logging.ConsoleHandler, gelf4j.logging.GelfHandler",
+#           ".level" => "INFO",
+#           "java.util.logging.ConsoleHandler.level" => "INFO",
+#           "gelf4j.logging.GelfHandler.level" => "ALL",
+#           "gelf4j.logging.GelfHandler.host" => 'graylog.example.org',
+#           "gelf4j.logging.GelfHandler.defaultFields" => '{"environment": "' + node.chef_environment + '", "facility": "MyInstance"}'
+#       }
+#       users { 'MyApp' => 'MyAppsPassword', 'MyOtherApp' => 'S3Cr37' }
+#       queues { 'MySystem.MyMessageQueue' => {'XMLSchemaURIList' => 'http://example.com/...'} }
+#       access_control_rules {
+#         'queue.MySystem.MyMessageQueue.browse.allow.user' => '*',
+#           'queue.MySystem.MyMessageQueue.produce.allow.user' => 'MyApp',
+#           'queue.MySystem.MyMessageQueue.consume.allow.user' => 'MyOtherApp'
+#       }
+#     end
 
 actions :create, :destroy
 

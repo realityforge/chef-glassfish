@@ -16,7 +16,7 @@
 
 JdbcAttribute = Struct.new('JdbcAttribute', :key, :type, :arg, :default_value)
 
-ATTRIBUTES = []
+ATTRIBUTES = [] # rubocop:disable Style/MutableConstant
 
 private
 
@@ -53,7 +53,7 @@ num(:statementtimeout, 'statement-timeout-in-seconds', -1)
 num(:maxconnectionusagecount, 'max-connection-usage-count')
 num(:statementcachesize, 'statement-cache-size')
 
-bool(:isisolationguaranteed , 'is-isolation-level-guaranteed')
+bool(:isisolationguaranteed, 'is-isolation-level-guaranteed')
 bool(:isconnectvalidatereq, 'is-connection-validation-required')
 bool(:failconnection, 'fail-all-connections', false)
 bool(:allownoncomponentcallers, 'allow-non-component-callers', false)

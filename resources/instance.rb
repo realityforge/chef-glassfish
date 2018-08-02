@@ -14,22 +14,18 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Creates a GlassFish server instance in the domain configuration.
-
-@action create  Create the instance and start it..
-@action delete  Stop the instance if running and remove it from the config.
-
-@section Examples
-
-    # Create a standalone Glassfish instance
-    glassfish_instance "Myserver" do
-      node_name 'localhost-domain1'
-      lbenabled false
-    end
-#>
-=end
+# Creates a GlassFish server instance in the domain configuration.
+#
+# @action create  Create the instance and start it..
+# @action delete  Stop the instance if running and remove it from the config.
+#
+# @section Examples
+#
+#     # Create a standalone Glassfish instance
+#     glassfish_instance "Myserver" do
+#       node_name 'localhost-domain1'
+#       lbenabled false
+#     end
 
 actions :create, :delete
 

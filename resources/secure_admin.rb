@@ -14,20 +14,16 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Enable or disable secure admin flag on the GlassFish server which enables/disables remote administration.
-
-@action enable Enable remote access/secure admin.
-@action disable Disable remote access/secure admin.
-
-@section Examples
-
-    glassfish_secure_admin "My Domain Remote Access" do
-       action :enable
-    end
-#>
-=end
+# Enable or disable secure admin flag on the GlassFish server which enables/disables remote administration.
+#
+# @action enable Enable remote access/secure admin.
+# @action disable Disable remote access/secure admin.
+#
+# @section Examples
+#
+#     glassfish_secure_admin "My Domain Remote Access" do
+#        action :enable
+#     end
 
 actions :enable, :disable
 

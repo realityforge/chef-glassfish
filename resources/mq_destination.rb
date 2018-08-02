@@ -14,26 +14,22 @@
 # limitations under the License.
 #
 
-=begin
-#<
-Creates or deletes a queue or a topic in an OpenMQ message broker instance.
-
-@action create Create the destination.
-@action destroy Destroy the destination.
-
-@section Examples
-
-    # Create a queue destination
-    glassfish_destination "MySystem.MyMessageQueue" do
-      queue true
-      config {'schema' => 'http://example.org/MyMessageFormat.xsd'}
-      host "localhost"
-      port 7676
-      username 'imqadmin'
-      passfile '/etc/omq/omqadmin.pass'
-    end
-#>
-=end
+# Creates or deletes a queue or a topic in an OpenMQ message broker instance.
+#
+# @action create Create the destination.
+# @action destroy Destroy the destination.
+#
+# @section Examples
+#
+#     # Create a queue destination
+#     glassfish_destination "MySystem.MyMessageQueue" do
+#       queue true
+#       config {'schema' => 'http://example.org/MyMessageFormat.xsd'}
+#       host "localhost"
+#       port 7676
+#       username 'imqadmin'
+#       passfile '/etc/omq/omqadmin.pass'
+#     end
 
 actions :create, :destroy
 

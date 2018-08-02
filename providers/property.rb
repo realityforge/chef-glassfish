@@ -18,10 +18,11 @@ include Chef::Asadmin
 
 action :set do
   cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
-  may_need_update =
-    cache_present ?
-      new_resource.value != RealityForge::GlassFish.get_cached_property(node, new_resource.domain_name, new_resource.key) :
-      true
+  may_need_update = if cache_present
+                      new_resource.value != RealityForge::GlassFish.get_cached_property(node, new_resource.domain_name, new_resource.key)
+                    else
+                      true
+                    end
 
   if may_need_update
     execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
