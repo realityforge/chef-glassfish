@@ -1,6 +1,12 @@
-## v0.7.8 (Pending):
+## v0.8.0:
+* Enhance : Add support to Payara 5.182
+* Fix     : Fix Cookstyle issues
+* Change  : Rename is_property_cache_present to property_cache_present
+* Enhance : Remove dependency of compat_resource cookbook (Works only on Chef 13 or above)
+* Change  : Rename glassfish_web_env_entry name to glassfish_web_env_entry_name
 * Enhance : Improvements based on Cookstyle and Foodcritic
 * Enhance : Add initial support for Payara 5.181
+* Change  : Drop support for Chef 12
 * Change  : Avoid specifying the user and group when executing asadmin commands if
             on the windows platform. Submitted by Akos Vandra.
 * Fix     : Start using the execute resource rather than the bash resource in preparation

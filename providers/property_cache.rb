@@ -14,13 +14,13 @@
 # limitations under the License.
 #
 
+require 'English'
+
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
-  output = `#{asadmin_command("get '*'", true, :terse => true, :echo => false)}`
-  raise "Error caching properties" unless $?.exitstatus.to_i == 0
+  output = `#{asadmin_command("get '*'", true, terse: true, echo: false)}`
+  raise 'Error caching properties' unless $CHILD_STATUS.exitstatus.to_i == 0
 
   values = {}
   output.split("\n").each do |line|

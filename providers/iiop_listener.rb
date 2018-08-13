@@ -16,15 +16,11 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   args = []
   args << 'create-iiop-listener'
   args << asadmin_target_flag
-  if new_resource.listeneraddress
-    args << '--listeneraddress' << new_resource.listeneraddress
-  end
+  args << '--listeneraddress' << new_resource.listeneraddress if new_resource.listeneraddress
   args << '--iiopport' << new_resource.iiopport
   args << '--securityenabled' << new_resource.securityenabled
   args << '--enabled' << new_resource.enabled
@@ -33,7 +29,7 @@ action :create do
   args << new_resource.iioplistener_id
 
   execute "asadmin_create-iiop-listener #{new_resource.iioplistener_id}" do
-    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -68,7 +64,7 @@ action :delete do
   command << new_resource.iioplistener_id
 
   execute "asadmin_delete_iiop-listener #{new_resource.iioplistener_id}" do
-    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'

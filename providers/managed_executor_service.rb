@@ -16,8 +16,6 @@
 
 include Chef::Asadmin
 
-use_inline_resources
-
 action :create do
   args = []
   args << 'create-managed-executor-service'
@@ -38,7 +36,7 @@ action :create do
   args << new_resource.jndi_name
 
   execute "asadmin_create-managed-executor-service #{new_resource.jndi_name}" do
-    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'
@@ -57,7 +55,7 @@ action :create do
     'long-running-tasks' => new_resource.longrunningtasks,
     'maximum-pool-size' => new_resource.maximumpoolsize,
     'task-queue-capacity' => new_resource.taskqueuecapacity,
-    'thread-lifetime-seconds' => new_resource.threadlifetimeseconds
+    'thread-lifetime-seconds' => new_resource.threadlifetimeseconds,
   }
 
   properties.each_pair do |key, value|
@@ -81,7 +79,7 @@ action :delete do
   command << new_resource.jndi_name
 
   execute "asadmin_delete-managed-executor-service #{new_resource.jndi_name}" do
-    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node['os'] == 'windows'
     group new_resource.system_group unless node['os'] == 'windows'

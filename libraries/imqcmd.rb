@@ -34,7 +34,7 @@ class Chef
       args << "-u #{options[:username]}"
       args << "-passfile #{options[:passfile]}"
 
-      "#{imqcmd_script(node)} #{args.join(" ")} #{command}"
+      "#{imqcmd_script(node)} #{args.join(' ')} #{command}"
     end
 
     def self.imqcmd_script(node)

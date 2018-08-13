@@ -12,8 +12,8 @@
 # limitations under the License.
 #
 
-class RealityForge #nodoc
-  module GlassFish #nodoc
+class RealityForge
+  module GlassFish
     class << self
       # Return the current glassfish domain name
       #
@@ -49,10 +49,10 @@ class RealityForge #nodoc
 
       def any_cached_property_start_with?(node, domain_key, property_key)
         regex = /^#{Regexp.escape(property_key)}/
-        get_property_cache(node, domain_key).keys.any?{|k| k =~ regex }
+        get_property_cache(node, domain_key).keys.any? { |k| k =~ regex }
       end
 
-      def is_property_cache_present?(node, domain_key)
+      def property_cache_present?(node, domain_key)
         !!node.run_state["glassfish_properties_#{domain_key}"]
       end
 
