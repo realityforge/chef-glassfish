@@ -149,7 +149,6 @@ end
 
 def osgi_jvm_options
   [
-    # osgi_jvm_options
     '-Dosgi.shell.telnet.maxconn=1',
     '-Dfelix.fileinstall.disableConfigSave=false',
     "-Dfelix.fileinstall.dir=#{node['glassfish']['install_dir']}/glassfish/modules/autostart/",

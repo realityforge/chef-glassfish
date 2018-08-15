@@ -42,7 +42,6 @@ action :create do
     'enabled' => new_resource.enabled,
     'thread-priority' => new_resource.threadpriority,
     'description' => (new_resource.description || ''),
-    # deployment-order=100
   }
 
   properties.each_pair do |key, value|
