@@ -60,7 +60,7 @@ a = archive 'glassfish' do
   group node['glassfish']['group']
 end
 
-node.override['glassfish']['install_dir'] = a.current_directory
+node.override['glassfish']['install_dir'] = a.target_directory
 
 exists_at_run_start = ::File.exist?(node['glassfish']['install_dir'])
 
