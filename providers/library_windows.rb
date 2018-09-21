@@ -23,7 +23,7 @@ def type_flag
 end
 
 def service_name
-  "#{new_resource.domain_name}"
+  new_resource.domain_name.to_s
 end
 
 def domain_dir_arg
@@ -33,16 +33,16 @@ end
 action :add do
   windows_service service_name do
     asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
 
-    #Stopping the service with the native command is not working for some reason...
-    restart_command            "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command               "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
+    # Stopping the service with the native command is not working for some reason...
+    restart_command "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
 
-    supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
-    timeout                    120
+    supports restart: true, reload: false, status: true, start: true, stop: true
+    timeout 120
 
-    action                     :nothing
+    action :nothing
   end
 
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"
@@ -66,7 +66,7 @@ action :add do
   end
 
   execute "asadmin_add-library #{new_resource.url}" do
-    not_if check_command, :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if check_command, timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
@@ -79,9 +79,7 @@ action :add do
 
     command asadmin_command(args.join(' '))
 
-    if new_resource.requires_restart
-      notifies :restart, "windows_service[#{service_name}]", :immediate
-    end
+    notifies :restart, "windows_service[#{service_name}]", :immediate if new_resource.requires_restart
   end
 end
 
@@ -92,7 +90,7 @@ action :remove do
   args << ::File.basename(new_resource.url)
 
   execute "asadmin_remove-library #{new_resource.url}" do
-    only_if "#{asadmin_command('list-libraries')} #{type_flag} | findstr /R /B /C:'#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-libraries')} #{type_flag} | findstr /R /B /C:'#{::File.basename(new_resource.url)}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node.windows?

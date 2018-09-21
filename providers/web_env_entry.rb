@@ -22,11 +22,11 @@ action :set do
   args << '--name' << new_resource.name
   args << '--type' << new_resource.type
   args << '--description' << "'#{new_resource.description}'" if new_resource.description
-  if new_resource.value.nil?
-    args << '--ignoreDescriptorItem'
-  else
-    args << "'--value=#{new_resource.value}'"
-  end
+  args << if new_resource.value.nil?
+            '--ignoreDescriptorItem'
+          else
+            "'--value=#{new_resource.value}'"
+          end
   args << new_resource.webapp
 
   execute "asadmin_set-web-env-entry #{new_resource.webapp} --name #{new_resource.name}" do
@@ -37,7 +37,7 @@ action :set do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter("#{new_resource.name} (#{new_resource.type}) #{new_resource.value} ignoreDescriptorItem=#{new_resource.value.nil?} //(#{new_resource.description || 'description not specified'})", regexp: false, line: true)
-    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
@@ -56,6 +56,6 @@ action :unset do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.name, regexp: false, line: true)
-    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command("list-web-env-entry #{new_resource.webapp}")} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end

@@ -19,5 +19,4 @@ depends 'authbind'
 depends 'archive'
 depends 'cutlery'
 depends 'runit'
-depends 'nssm', '~> 2.1.0' #Needed for windows only
-
+depends 'nssm', '~> 2.1.0' # Needed for windows only

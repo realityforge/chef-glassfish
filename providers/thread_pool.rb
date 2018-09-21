@@ -50,7 +50,7 @@ action :create do
 
       unless cache_present
         filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
-        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
 
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
@@ -105,7 +105,7 @@ action :delete do
 
       unless cache_present
         filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
-        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
     end
   end

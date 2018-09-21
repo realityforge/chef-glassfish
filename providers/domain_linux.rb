@@ -198,7 +198,7 @@ action :create do
 
   cookbook_file "#{new_resource.domain_dir_path}/config/default-web.xml" do
     source "default-web-#{node['glassfish']['version']}.xml"
-    cookbook "glassfish"
+    cookbook 'glassfish'
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode '0644'

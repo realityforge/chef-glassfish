@@ -17,12 +17,12 @@
 include Chef::Asadmin
 
 def service_name
-  "#{new_resource.domain_name}"
+  new_resource.domain_name.to_s
 end
 
 action :set do
   service service_name do
-    supports :restart => true, :status => true
+    supports restart: true, status: true
     action :nothing
   end
 
@@ -85,7 +85,7 @@ action :set do
 
         user new_resource.system_user unless node.windows?
         group new_resource.system_group unless node.windows?
-        command "#{asadmin_command(delete_command.join(' '))}"
+        command asadmin_command(delete_command.join(' '))
 
         notifies :run, "execute[asadmin_create-jvm-options #{new_resource.name}]", :immediate
       end
@@ -101,7 +101,7 @@ action :set do
 
         user new_resource.system_user unless node.windows?
         group new_resource.system_group unless node.windows?
-        command "#{asadmin_command(create_command.join(' '))}"
+        command asadmin_command(create_command.join(' '))
 
         action :nothing
         notifies :restart, "service[#{service_name}]", :immediate

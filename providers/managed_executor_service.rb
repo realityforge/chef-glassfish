@@ -43,7 +43,7 @@ action :create do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
-    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | #{fiter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 
   properties = {
@@ -90,6 +90,6 @@ action :delete do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
-    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-managed-executor-services')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end

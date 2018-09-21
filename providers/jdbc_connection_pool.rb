@@ -47,7 +47,7 @@ action :create do
     execute "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
         filter = pipe_filter(new_resource.name, regexp: false, line: true)
-        not_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
@@ -58,7 +58,7 @@ action :create do
   end
 
   if !cache_present || !may_need_create
-    sets = {'description' => new_resource.description}
+    sets = { 'description' => new_resource.description }
     new_resource.properties.each_pair do |key, value|
       sets["property.#{key}"] = value
     end
@@ -105,7 +105,7 @@ action :delete do
 
       unless cache_present
         filter = pipe_filter(new_resource.name, regexp: false, line: true)
-        only_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        only_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
     end
   end

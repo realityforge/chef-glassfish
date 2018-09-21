@@ -90,14 +90,13 @@ end
 
 # Install/delete endorsed JAR files into Glassfish's binary to be used thourgh the Java Endorsed mechanism.
 # see: https://docs.oracle.com/javase/7/docs/technotes/guides/standards/
-gf_binary_endorsed_dir = File.join(node['glassfish']['install_dir'],'glassfish', 'lib','endorsed')
-
+gf_binary_endorsed_dir = File.join(node['glassfish']['install_dir'], 'glassfish', 'lib', 'endorsed')
 
 # Delete unnecessary binary endorsed jar files
 gf_scan_existing_binary_endorsed_jars(node['glassfish']['install_dir']).each do |file_name|
   next if node['glassfish']['endorsed'] && node['glassfish']['endorsed'][file_name]
   Chef::Log.info "Deleting binary endorsed jar file - #{file_name}"
-  file File.join(gf_binary_endorsed_dir,file_name) do
+  file File.join(gf_binary_endorsed_dir, file_name) do
     action :delete
   end
 end

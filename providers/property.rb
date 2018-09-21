@@ -28,7 +28,7 @@ action :set do
     execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
       unless cache_present
         filter = pipe_filter("#{new_resource.key}=#{new_resource.value}", regexp: false, line: false)
-        not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+        not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
@@ -39,8 +39,6 @@ action :set do
       command asadmin_command("set \"#{new_resource.key}=#{new_resource.value}\"")
     end
 
-    if cache_present
-      RealityForge::GlassFish.set_cached_property(node, new_resource.domain_name, new_resource.key, new_resource.value)
-    end
+    RealityForge::GlassFish.set_cached_property(node, new_resource.domain_name, new_resource.key, new_resource.value) if cache_present
   end
 end

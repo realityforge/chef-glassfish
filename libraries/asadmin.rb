@@ -33,17 +33,17 @@ class Chef
     end
 
     def self.pipe_filter(node, pattern, regexp: true, line: false)
-      case node[:os]
+      case node['os']
       when 'linux'
         switches = [
-          regexp ? "" : "-F",
-          line ? "-x" : ""
+          regexp ? '' : '-F',
+          line ? '-x' : '',
         ]
         "grep #{switches.join(' ')} -- '#{pattern}'"
       when 'windows'
         switches = [
-          regexp ? "/R" : "/L",
-          line ? "/X" : ""
+          regexp ? '/R' : '/L',
+          line ? '/X' : '',
         ]
         "findstr #{switches.join(' ')} \"#{pattern}\""
       end
@@ -109,7 +109,7 @@ class Chef
       ENV['AS_ADMIN_READTIMEOUT'] = (node['glassfish']['asadmin']['timeout'] * 1000).to_s
 
       script = "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin"
-      script.gsub!("/", "\\") if node.windows?
+      script.tr!('/', '\\') if node.windows?
 
       script
     end

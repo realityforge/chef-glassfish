@@ -23,7 +23,7 @@ action :create do
 
   args = []
   args << 'create-connector-connection-pool'
-  args += parameters.select { |key| new_resource.send(key)}.map do |key|
+  args += parameters.select { |key| new_resource.send(key) }.map do |key|
     "--#{key}=#{new_resource.send(key)}"
   end
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
@@ -39,7 +39,7 @@ action :create do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.pool_name, regexp: false, line: true)
-    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
@@ -58,6 +58,6 @@ action :delete do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.pool_name, regexp: false, line: true)
-    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end

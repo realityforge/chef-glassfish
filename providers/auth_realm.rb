@@ -28,7 +28,7 @@ action :create do
   args << new_resource.name
 
   execute "asadmin_create_auth_realm #{new_resource.name}" do
-    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", :timeout => 150
+    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", timeout: 150
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
@@ -36,7 +36,7 @@ action :create do
     group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
 
-    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{pipe_filter(new_resource.name, regexp: false, line: true)}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{pipe_filter(new_resource.name, regexp: false, line: true)}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 
   properties.each_pair do |key, value|
@@ -68,6 +68,6 @@ action :delete do
     command asadmin_command(args.join(' '))
 
     filter = pipe_filter(new_resource.name, regexp: false, line: true)
-    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-auth-realms')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end

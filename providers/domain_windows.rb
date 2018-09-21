@@ -21,6 +21,8 @@ include Chef::Asadmin
 def default_logging_properties
   {
     'handlers' => 'java.util.logging.ConsoleHandler',
+    'handlerServices' => 'com.sun.enterprise.server.logging.GFFileHandler,com.sun.enterprise.server.logging.SyslogHandler',
+
     'java.util.logging.ConsoleHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
 
     'com.sun.enterprise.server.logging.GFFileHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
@@ -37,7 +39,17 @@ def default_logging_properties
 
     'log4j.logger.org.hibernate.validator.util.Version' => 'warn',
 
-    #All log level details
+    # Payara 5.182
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.compressOnRotation' => 'false',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => '2000000',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationOnDateChange' => 'false',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.file' => '${com.sun.aas.instanceRoot}/logs/notification.log',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.logtoFile' => 'true',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => '0',
+    'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => 'true',
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => '0',
+
+    # All log level details
     '.level' => 'INFO',
 
     'com.sun.enterprise.server.logging.GFFileHandler.level' => 'ALL',
@@ -88,7 +100,8 @@ def default_logging_properties
     'javax.enterprise.system.ssl.security.level' => 'INFO',
     'ShoalLogger.level' => 'CONFIG',
     'org.eclipse.persistence.session.level' => 'INFO',
-    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING'
+    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING',
+    'com.hazelcast.level' => 'WARNING',
   }
 end
 
@@ -119,15 +132,12 @@ def domain_dir_arg
 end
 
 def service_name
-  "#{new_resource.domain_name}"
+  new_resource.domain_name
 end
 
 def jdk_path
-  ::File.join(node[:java][:java_home], 'bin', 'java.exe')
+  ::File.join(node['java']['java_home'], 'bin', 'java.exe')
 end
-
-
-use_inline_resources
 
 action :create do
   include_recipe 'nssm'
@@ -158,23 +168,18 @@ action :create do
   master_password = new_resource.master_password || new_resource.password
 
   if master_password.nil? || master_password.length <= 6
-    if new_resource.master_password.nil?
-      raise 'The master_password parameter is unspecified and defaulting to the domain password. The user must specify a master_password greater than 6 characters or increase the size of the domain password to be greater than 6 characters.'
-    else
-      raise 'The master_password parameter must be greater than 6 characters.'
-    end
+    raise 'The master_password parameter is unspecified and defaulting to the domain password. The user must specify a master_password greater than 6 characters or increase the size of the domain password to be greater than 6 characters.' if new_resource.master_password.nil?
+    raise 'The master_password parameter must be greater than 6 characters.'
   end
 
-  template new_resource.password_file do
+  template new_resource.password_file do # ~FC021
     cookbook 'glassfish'
     source 'password.erb'
     owner new_resource.system_user
     group new_resource.system_group unless node.windows?
     mode '0600'
-    variables({
-      :password => new_resource.password,
-      :master_password => master_password
-    })
+    variables password: new_resource.password,
+              master_password: master_password
 
     not_if { new_resource.password.nil? }
     not_if { new_resource.password_file.nil? }
@@ -194,7 +199,7 @@ action :create do
   end
 
   execute "create domain #{new_resource.domain_name}" do
-    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", timeout: node['glassfish']['asadmin']['timeout'] + 5
 
     create_args = []
     create_args << '--checkports=false'
@@ -211,10 +216,7 @@ action :create do
 
     command asadmin_command("--user #{new_resource.system_user} create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
-    if node['glassfish']['variant'] != 'payara'
-      notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate
-    end
-
+    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
   end
 
@@ -224,12 +226,12 @@ action :create do
     dest_file = "#{new_resource.domain_dir_path}/master-password"
 
     only_if { node['glassfish']['version'][0] == '4' }
-    only_if { ::File.exists?(source_file) }
-    not_if { ::File.exists?(dest_file) }
+    only_if { ::File.exist?(source_file) }
+    not_if { ::File.exist?(dest_file) }
 
     block do
       FileUtils.cp(source_file, dest_file)
-      FileUtils.chown( new_resource.system_user, new_resource.system_group, dest_file)
+      FileUtils.chown(new_resource.system_user, new_resource.system_group, dest_file)
     end
   end
 
@@ -240,7 +242,7 @@ action :create do
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    variables(:logging_properties => logging_properties)
+    variables logging_properties: logging_properties
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
@@ -250,7 +252,7 @@ action :create do
     cookbook 'glassfish'
     owner new_resource.system_user
     group new_resource.system_group unless node.windows?
-    variables(:realm_types => default_realm_confs.merge(new_resource.realm_types))
+    variables realm_types: default_realm_confs.merge(new_resource.realm_types)
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
@@ -275,19 +277,16 @@ action :create do
     owner new_resource.system_user
     group new_resource.system_group unless node.windows?
     content <<-BAT
-#{Asadmin.asadmin_command(node, '%*', :remote_command => true, :terse => false, :echo => new_resource.echo, :username => new_resource.username, :password_file => new_resource.password_file, :secure => new_resource.secure, :admin_port => new_resource.admin_port)}
+#{Asadmin.asadmin_command(node, '%*', remote_command: true, terse: false, echo: new_resource.echo, username: new_resource.username, password_file: new_resource.password_file, secure: new_resource.secure, admin_port: new_resource.admin_port)}
     BAT
   end
 
-
   nssm service_name do
-    program jdk_path.gsub('/', '\\')
+    program jdk_path.tr('/', '\\')
     args %(-jar "#{::File.join(node['glassfish']['install_dir'], 'glassfish', 'modules', 'admin-cli.jar')}" start-domain --watchdog --user ui --passwordfile "#{new_resource.password_file}" --domaindir "#{node['glassfish']['domains_dir']}" "#{new_resource.domain_name}")
     action :install
 
-    params({
-      'AppDirectory' => ::File.join(node['glassfish']['domains_dir'], new_resource.domain_name).gsub('/', '\\')
-    })
+    params 'AppDirectory' => ::File.join(node['glassfish']['domains_dir'], new_resource.domain_name).tr('/', '\\')
 
     notifies :enable, "windows_service[#{service_name}]"
     notifies :restart, "windows_service[#{service_name}]"
@@ -295,20 +294,20 @@ action :create do
 
   windows_service service_name do
     asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
-    status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
+    # status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
 
-    #Stopping the service should be made with asadmin to ensure
-    restart_command            "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command               "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    # Stopping the service should be made with asadmin to ensure
+    restart_command "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
 
-    startup_type               :automatic
-    supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
-    timeout                    120
+    startup_type :automatic
+    supports restart: true, reload: false, status: true, start: true, stop: true
+    timeout 120
 
     action :nothing
 
-    notifies :run, "execute[wait for payara domain to be up and running]"
+    notifies :run, 'execute[wait for payara domain to be up and running]'
   end
 
   execute 'wait for payara domain to be up and running' do
@@ -326,16 +325,16 @@ end
 action :restart do
   windows_service service_name do
     asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
-    status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
+    # status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
 
-    #Stopping the service should be made with asadmin to ensure
-    restart_command            "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command               "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    # Stopping the service should be made with asadmin to ensure
+    restart_command "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
 
-    startup_type               :automatic
-    supports                   :restart => true, :reload => false, :status => true, :start => true, :stop => true
-    timeout                    120
+    startup_type :automatic
+    supports restart: true, reload: false, status: true, start: true, stop: true
+    timeout 120
 
     action [:restart]
   end
@@ -352,7 +351,7 @@ end
 
 action :destroy do
   windows_service service_name do
-    action [:stop, :disable, :destroy]
+    action [:stop, :disable, :delete]
     ignore_failure true
   end
 
@@ -361,4 +360,3 @@ action :destroy do
     action :delete
   end
 end
-

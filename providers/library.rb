@@ -23,7 +23,7 @@ def type_flag
 end
 
 def service_name
-  "#{new_resource.domain_name}"
+  new_resource.domain_name.to_s
 end
 
 action :add do
@@ -59,14 +59,12 @@ action :add do
   args << cached_package_filename
 
   execute "asadmin_add-library #{new_resource.url}" do
-    not_if check_command, :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    not_if check_command, timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
-    if new_resource.requires_restart
-      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
-    end
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.requires_restart
   end
 end
 
@@ -77,7 +75,7 @@ action :remove do
   args << ::File.basename(new_resource.url)
 
   execute "asadmin_remove-library #{new_resource.url}" do
-    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node.windows?
