@@ -16,8 +16,14 @@
 
 include Chef::Asadmin
 
+provides :glassfish_library, os: 'linux'
+
 def type_flag
   "--type #{new_resource.library_type}"
+end
+
+def service_name
+  "#{new_resource.domain_name}"
 end
 
 action :add do
@@ -32,7 +38,7 @@ action :add do
   directory ::File.dirname(cached_package_filename) do
     not_if check_command
     owner new_resource.system_user
-    group new_resource.system_group unless node['os'] == 'windows'
+    group new_resource.system_group
     mode '0770'
     recursive true
   end
@@ -41,7 +47,7 @@ action :add do
     not_if check_command
     source new_resource.url
     owner new_resource.system_user
-    group new_resource.system_group unless node['os'] == 'windows'
+    group new_resource.system_group
     mode '0640'
     action :create_if_missing
   end
@@ -53,12 +59,14 @@ action :add do
   args << cached_package_filename
 
   execute "asadmin_add-library #{new_resource.url}" do
-    not_if check_command, timeout: node['glassfish']['asadmin']['timeout'] + 5
+    not_if check_command, :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
-    command asadmin_command(args.join(' '))
-    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.requires_restart
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
+    if new_resource.requires_restart
+      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
+    end
   end
 end
 
@@ -69,10 +77,11 @@ action :remove do
   args << ::File.basename(new_resource.url)
 
   execute "asadmin_remove-library #{new_resource.url}" do
-    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
+    only_if "#{asadmin_command('list-libraries')} #{type_flag} | grep -F -x -- '#{::File.basename(new_resource.url)}'", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
   end
 end

@@ -41,13 +41,18 @@ action :create do
     args << new_resource.threadpool_id
 
     execute "asadmin_threadpool #{new_resource.threadpool_id}" do
-      unless cache_present
-        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
+
+      unless cache_present
+        filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
+        not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+      end
+
       notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
     end
   end
@@ -91,13 +96,17 @@ action :delete do
     args << new_resource.threadpool_id
 
     execute "asadmin_delete_threadpool #{new_resource.threadpool_id}" do
-      unless cache_present
-        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | grep -F -x -- '#{new_resource.threadpool_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
+
+      unless cache_present
+        filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
+        only_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+      end
     end
   end
 end

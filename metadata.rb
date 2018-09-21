@@ -4,7 +4,7 @@ maintainer_email 'peter@realityforge.org'
 license 'Apache-2.0'
 description 'Installs/Configures GlassFish Application Server'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version '0.8.0'
+version '0.9.0'
 
 chef_version '>= 13.0' if respond_to?(:chef_version)
 
@@ -19,3 +19,5 @@ depends 'authbind'
 depends 'archive'
 depends 'cutlery'
 depends 'runit'
+depends 'nssm', '~> 2.1.0' #Needed for windows only
+

@@ -35,13 +35,17 @@ action :create do
     args << new_resource.name
 
     execute "asadmin_create_jdbc_resource #{new_resource.name}" do
-      unless cache_present
-        not_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target}| grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
+
+      unless cache_present
+        filter = pipe_filter(new_resource.name, regexp: false, line: true)
+        not_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+      end
     end
   end
 
@@ -74,19 +78,22 @@ action :delete do
 
   if may_need_delete
 
-    command = []
-    command << 'delete-jdbc-resource'
-    command << asadmin_target_flag
-    command << new_resource.name
+    args = []
+    args << 'delete-jdbc-resource'
+    args << asadmin_target_flag
+    args << new_resource.name
 
     execute "asadmin_delete_jdbc_resource #{new_resource.name}" do
-      unless cache_present
-        only_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
-      command asadmin_command(command.join(' '))
+
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
+      command asadmin_command(args.join(' '))
+      unless cache_present
+        filter = pipe_filter(new_resource.name, regexp: false, line: true)
+        only_if "#{asadmin_command('list-jdbc-resources')} #{new_resource.target} | #{filter}", :timeout => node['glassfish']['asadmin']['timeout'] + 5
+      end
     end
   end
 end
