@@ -27,12 +27,16 @@ action :set do
   if may_need_update
     execute "asadmin_set #{new_resource.key}=#{new_resource.value}" do
       unless cache_present
-        not_if "#{asadmin_command("get #{new_resource.key}")} | grep -F -x -- '#{new_resource.key}=#{new_resource.value}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
+        filter = pipe_filter("#{new_resource.key}=#{new_resource.value}", regexp: false, line: false)
+        not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
-      command asadmin_command("set '#{new_resource.key}=#{new_resource.value}'")
+
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
+
+      command asadmin_command("set \"#{new_resource.key}=#{new_resource.value}\"")
     end
 
     RealityForge::GlassFish.set_cached_property(node, new_resource.domain_name, new_resource.key, new_resource.value) if cache_present

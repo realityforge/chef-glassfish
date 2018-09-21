@@ -29,11 +29,14 @@ action :create do
   args << new_resource.iioplistener_id
 
   execute "asadmin_create-iiop-listener #{new_resource.iioplistener_id}" do
-    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.iioplistener_id, regexp: false, line: true)
+    not_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 
   properties = new_resource.properties.dup.merge(
@@ -58,16 +61,19 @@ action :create do
 end
 
 action :delete do
-  command = []
-  command << 'delete-iiop-listener'
-  command << asadmin_target_flag
-  command << new_resource.iioplistener_id
+  args = []
+  args << 'delete-iiop-listener'
+  args << asadmin_target_flag
+  args << new_resource.iioplistener_id
 
   execute "asadmin_delete_iiop-listener #{new_resource.iioplistener_id}" do
-    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | grep -F -x -- '#{new_resource.iioplistener_id}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
-    command asadmin_command(command.join(' '))
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
+    command asadmin_command(args.join(' '))
+
+    filter = pipe_filter(new_resource.iioplistener_id, regexp: false, line: true)
+    only_if "#{asadmin_command('list-iiop-listeners')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end

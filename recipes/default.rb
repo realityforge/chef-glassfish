@@ -33,19 +33,16 @@ def gf_scan_existing_binary_endorsed_jars(install_dir)
 end
 
 include_recipe 'glassfish::derive_version'
-include_recipe 'java'
+# include_recipe 'java'
 
-group node['glassfish']['group'] do
-  not_if "getent group #{node['glassfish']['group']}"
-end
+group node['glassfish']['group']
 
 user node['glassfish']['user'] do
   comment 'GlassFish Application Server'
   gid node['glassfish']['group']
   home node['glassfish']['base_dir']
-  shell '/bin/bash'
+  shell '/bin/bash' unless node.windows?
   system true
-  not_if "getent passwd #{node['glassfish']['user']}"
 end
 
 directory node['glassfish']['base_dir'] do
@@ -56,17 +53,16 @@ directory node['glassfish']['base_dir'] do
 end
 
 a = archive 'glassfish' do
-  prefix node['glassfish']['install_dir']
+  prefix node['glassfish']['base_dir']
   url node['glassfish']['package_url']
-  version node['glassfish']['version']
+
   owner node['glassfish']['user']
   group node['glassfish']['group']
-  extract_action 'unzip_and_strip_dir'
 end
 
-exists_at_run_start = ::File.exist?(a.target_directory)
-
 node.override['glassfish']['install_dir'] = a.target_directory
+
+exists_at_run_start = ::File.exist?(node['glassfish']['install_dir'])
 
 template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
   source 'asenv.conf.erb'
@@ -94,13 +90,13 @@ end
 
 # Install/delete endorsed JAR files into Glassfish's binary to be used thourgh the Java Endorsed mechanism.
 # see: https://docs.oracle.com/javase/7/docs/technotes/guides/standards/
-gf_binary_endorsed_dir = node['glassfish']['install_dir'] + File::Separator + 'glassfish' + File::Separator + 'lib' + File::Separator + 'endorsed'
+gf_binary_endorsed_dir = File.join(node['glassfish']['install_dir'], 'glassfish', 'lib', 'endorsed')
 
 # Delete unnecessary binary endorsed jar files
 gf_scan_existing_binary_endorsed_jars(node['glassfish']['install_dir']).each do |file_name|
   next if node['glassfish']['endorsed'] && node['glassfish']['endorsed'][file_name]
   Chef::Log.info "Deleting binary endorsed jar file - #{file_name}"
-  file gf_binary_endorsed_dir + File::Separator + file_name do
+  file File.join(gf_binary_endorsed_dir, file_name) do
     action :delete
   end
 end

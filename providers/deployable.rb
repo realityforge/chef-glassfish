@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+provides :glassfish_deployable, os: 'linux'
+
 include Chef::Asadmin
 
 def domain_dir
@@ -86,15 +88,20 @@ action :deploy do
       end
 
       execute "Create #{deployment_plan}" do
+        # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
+        timeout node['glassfish']['asadmin']['timeout'] + 5
+
         cmd = <<-CMD
         rm -rf #{build_dir}
         mkdir -p #{build_dir}
         cd #{build_dir}
         CMD
+
         new_resource.descriptors.collect do |key, file|
           cmd << "mkdir -p #{::File.dirname(key)}\n" if ::File.dirname(key) != ''
           cmd << "cp #{file} #{key}\n"
         end
+
         cmd << <<-CMD
         jar -cf #{deployment_plan} .
         chown #{new_resource.system_user}:#{new_resource.system_group} #{deployment_plan}
@@ -134,8 +141,8 @@ action :deploy do
 
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
     end
 
@@ -169,8 +176,8 @@ action :undeploy do
       end
       # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
     end
 
@@ -200,8 +207,8 @@ action :disable do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep '#{new_resource.component_name} ' | grep enabled", timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
   end
 end
@@ -216,8 +223,8 @@ action :enable do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | grep #{new_resource.component_name} | grep enabled", timeout: node['glassfish']['asadmin']['timeout'] + 5
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5 + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
   end
 end

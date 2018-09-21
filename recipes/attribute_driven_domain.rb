@@ -359,7 +359,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
           sleep 1
         end
       end
-      action :create
+      action :run
     end
   end
 
