@@ -23,7 +23,7 @@ def type_flag
 end
 
 def service_name
-  new_resource.domain_name.to_s
+  "glassfish-#{new_resource.domain_name}"
 end
 
 def domain_dir_arg

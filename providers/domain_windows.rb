@@ -132,7 +132,7 @@ def domain_dir_arg
 end
 
 def service_name
-  new_resource.domain_name
+  "glassfish-#{new_resource.domain_name}"
 end
 
 def jdk_path

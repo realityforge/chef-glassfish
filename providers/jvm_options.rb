@@ -17,7 +17,7 @@
 include Chef::Asadmin
 
 def service_name
-  new_resource.domain_name.to_s
+  "glassfish-#{new_resource.domain_name}"
 end
 
 action :set do
