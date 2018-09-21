@@ -64,6 +64,7 @@ action :add do
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
+    command asadmin_command(args.join(' '))
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.requires_restart
   end
 end
