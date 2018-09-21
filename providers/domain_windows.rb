@@ -281,7 +281,7 @@ action :create do
     BAT
   end
 
-  nssm service_name do
+  nssm_service service_name do
     program jdk_path.tr('/', '\\')
     args %(-jar "#{::File.join(node['glassfish']['install_dir'], 'glassfish', 'modules', 'admin-cli.jar')}" start-domain --watchdog --user ui --passwordfile "#{new_resource.password_file}" --domaindir "#{node['glassfish']['domains_dir']}" "#{new_resource.domain_name}")
     action :install
