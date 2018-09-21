@@ -55,9 +55,10 @@ end
 a = archive 'glassfish' do
   prefix node['glassfish']['base_dir']
   url node['glassfish']['package_url']
-
+  version node['glassfish']['version']
   owner node['glassfish']['user']
   group node['glassfish']['group']
+  extract_action 'unzip_and_strip_dir'
 end
 
 node.override['glassfish']['install_dir'] = a.target_directory
