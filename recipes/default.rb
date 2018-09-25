@@ -52,7 +52,7 @@ directory node['glassfish']['base_dir'] do
   group node['glassfish']['group']
 end
 
-a = archive 'glassfish' do
+a = archive-branch-origin_windowssupport 'glassfish' do
   prefix node['glassfish']['base_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
