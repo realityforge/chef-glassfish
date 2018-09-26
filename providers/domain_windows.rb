@@ -140,8 +140,6 @@ def jdk_path
 end
 
 action :create do
-  include_recipe 'nssm'
-
   if new_resource.system_group != node['glassfish']['group']
     group new_resource.system_group do
       action :create
