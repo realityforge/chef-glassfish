@@ -280,7 +280,8 @@ action :create do
   end
 
   execute "create_service_#{service_name}" do
-    # not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", timeout: node['glassfish']['asadmin']['timeout'] + 5
+    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", timeout: node['glassfish']['asadmin']['timeout'] + 5
+    # TODO: Now we check if the domain exists but this should check if the service exists.
 
     create_args = []
     create_args << "--name=#{service_name}"
