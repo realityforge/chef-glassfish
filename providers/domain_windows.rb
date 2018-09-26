@@ -214,7 +214,7 @@ action :create do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    command asadmin_command("--user #{new_resource.system_user} create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    command asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
     notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
