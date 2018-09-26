@@ -281,33 +281,17 @@ action :create do
     BAT
   end
 
-  nssm service_name do
-    program jdk_path.tr('/', '\\')
-    args %(-jar "#{::File.join(node['glassfish']['install_dir'], 'glassfish', 'modules', 'admin-cli.jar')}" start-domain --watchdog --user ui --passwordfile "#{new_resource.password_file}" --domaindir "#{node['glassfish']['domains_dir']}" "#{new_resource.domain_name}")
-    action :install
+  execute "create service for domain #{new_resource.domain_name}" do
+    # not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", timeout: node['glassfish']['asadmin']['timeout'] + 5
 
-    parameters(
-      AppDirectory: ::File.join(node['glassfish']['domains_dir'], new_resource.domain_name).tr('/', '\\')
-    )
+    create_args = []
+    create_args << "--name=#{service_name}"
+    create_args << domain_dir_arg
 
-    notifies :enable, "windows_service[#{service_name}]"
-    notifies :restart, "windows_service[#{service_name}]"
-  end
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
+    timeout node['glassfish']['asadmin']['timeout'] + 5
 
-  windows_service service_name do
-    asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
-    # status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
-
-    # Stopping the service should be made with asadmin to ensure
-    restart_command "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
-
-    startup_type :automatic
-    supports restart: true, reload: false, status: true, start: true, stop: true
-    timeout 120
-
-    action :nothing
+    command asadmin_command("create-service #{create_args.join(' ')} #{new_resource.domain_name}", false)
   end
 end
 
