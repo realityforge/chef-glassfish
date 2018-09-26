@@ -281,7 +281,7 @@ action :create do
     BAT
   end
 
-  execute "create service for domain #{new_resource.domain_name}" do
+  execute "create_service_#{service_name}" do
     # not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", timeout: node['glassfish']['asadmin']['timeout'] + 5
 
     create_args = []
@@ -292,6 +292,11 @@ action :create do
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     command asadmin_command("create-service #{create_args.join(' ')} #{new_resource.domain_name}", false)
+    notifies :start, "windows_service[#{service_name}]", :immediately
+  end
+
+  windows_service service_name do
+    action :nothing
   end
 end
 
