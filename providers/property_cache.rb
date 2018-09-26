@@ -19,7 +19,7 @@ require 'English'
 include Chef::Asadmin
 
 action :create do
-  output = `#{asadmin_command("get '*'", true, terse: true, echo: false)}`
+  output = `#{asadmin_command("get \"*\"", true, terse: true, echo: false)}`
   raise 'Error caching properties' unless $CHILD_STATUS.exitstatus.to_i == 0
 
   values = {}
