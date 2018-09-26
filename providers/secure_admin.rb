@@ -19,6 +19,7 @@ include Chef::Asadmin
 action :enable do
   service "glassfish-#{new_resource.domain_name}" do
     supports restart: true, status: true
+    timeout 180
     action :nothing
   end
 
@@ -40,6 +41,7 @@ end
 action :disable do
   service "glassfish-#{new_resource.domain_name}" do
     supports restart: true, status: true
+    timeout 180
     action :nothing
   end
 
