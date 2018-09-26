@@ -216,6 +216,7 @@ action :create do
 
     notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
+    notifies :run, "execute[create_service_#{service_name}]", :immediately
   end
 
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
@@ -280,9 +281,6 @@ action :create do
   end
 
   execute "create_service_#{service_name}" do
-    not_if "#{asadmin_command('list-domains')} #{domain_dir_arg} | findstr /R /B /C:\"#{new_resource.domain_name}\"", timeout: node['glassfish']['asadmin']['timeout'] + 5
-    # TODO: Now we check if the domain exists but this should check if the service exists.
-
     create_args = []
     create_args << "--name=#{service_name}"
     create_args << domain_dir_arg
@@ -290,6 +288,7 @@ action :create do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
+    action :nothing
     command asadmin_command("create-service #{create_args.join(' ')} #{new_resource.domain_name}", false)
     notifies :start, "windows_service[#{service_name}]", :immediately
   end
@@ -301,18 +300,7 @@ end
 
 action :restart do
   windows_service service_name do
-    asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
-    # status_filter = Asadmin.pipe_filter(node, "#{name}.*running", regexp: true, line:false)
-
-    # Stopping the service should be made with asadmin to ensure
-    restart_command "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
-
-    startup_type :automatic
-    supports restart: true, reload: false, status: true, start: true, stop: true
     timeout 120
-
     action [:restart]
   end
 end
