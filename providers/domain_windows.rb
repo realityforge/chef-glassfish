@@ -308,19 +308,6 @@ action :create do
     timeout 120
 
     action :nothing
-
-    notifies :run, 'execute[wait for payara domain to be up and running]'
-  end
-
-  execute 'wait for payara domain to be up and running' do
-    command 'curl -sf http://localhost:4848 > nul'
-
-    retry_delay 60
-    retries 15
-
-    timeout 30
-
-    action :nothing
   end
 end
 
@@ -339,15 +326,6 @@ action :restart do
     timeout 120
 
     action [:restart]
-  end
-
-  execute 'wait for payara domain to be up and running' do
-    command 'curl -sf http://localhost:4848 > nul'
-
-    retry_delay 60
-    retries 15
-
-    timeout 30
   end
 end
 
