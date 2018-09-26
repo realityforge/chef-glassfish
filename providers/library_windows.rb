@@ -71,7 +71,6 @@ action :add do
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     args = []
-    args << "--user #{new_resource.system_user}"
     args << 'add-library'
     args << type_flag
     args << '--upload' << new_resource.upload unless node['glassfish']['version'] == '4.1' || node['glassfish']['version'] == '4.1.151'
