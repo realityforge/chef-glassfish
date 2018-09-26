@@ -294,13 +294,14 @@ action :create do
   end
 
   windows_service service_name do
+    timeout 180
     action :nothing
   end
 end
 
 action :restart do
   windows_service service_name do
-    timeout 120
+    timeout 180
     action [:restart]
   end
 end
