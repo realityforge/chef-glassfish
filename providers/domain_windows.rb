@@ -219,7 +219,6 @@ action :create do
   end
 
   glassfish_wait_for_glassfish new_resource.domain_name do
-    secure new_resource.secure
     username new_resource.username
     password new_resource.password
     admin_port new_resource.admin_port

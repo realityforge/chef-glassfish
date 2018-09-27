@@ -93,26 +93,33 @@ class RealityForge
           return true
         end
         puts "GlassFish not responding OK - #{res.code} to #{url}"
-      rescue StandardError => e
+      rescue StandardError => e # Fallback to secure/insecure
         puts "GlassFish error while accessing web interface at #{url}"
         puts e.message
-        puts e.backtrace.join("\n")
+        # puts e.backtrace.join("\n")
         false
       end
 
-      def block_until_glassfish_up(remote_access, username, password, ipaddress, admin_port)
-        require 'net/https' if remote_access
+      def block_until_glassfish_up(username, password, ipaddress, admin_port)
+        require 'net/https'
 
         fail_count = 0
+
+        # Looks like we need to check both http/https because secure_admin might or might not be enabled
+
+        http_base_url = "http://#{ipaddress}:#{admin_port}"
+        https_base_url = "https://#{ipaddress}:#{admin_port}"
+        http_nodes_url = "#{http_base_url}/management/domain/nodes"
+        https_nodes_url = "#{https_base_url}/management/domain/nodes"
+        http_applications_url = "#{http_base_url}/management/domain/applications"
+        https_applications_url = "#{https_base_url}/management/domain/applications"
+
         loop do
           raise 'GlassFish failed to become operational' if fail_count > 50
-          base_url = "http#{remote_access ? 's' : ''}://#{ipaddress}:#{admin_port}"
-          nodes_url = "#{base_url}/management/domain/nodes"
-          applications_url = "#{base_url}/management/domain/applications"
           password = password
-          if url_responding_with_code?(nodes_url, username, password, 200) &&
-             url_responding_with_code?(applications_url, username, password, 200) &&
-             url_responding_with_code?(base_url, username, password, 200)
+          if (url_responding_with_code?(http_nodes_url, username, password, 200) || url_responding_with_code?(https_nodes_url, username, password, 200)) &&
+             (url_responding_with_code?(http_applications_url, username, password, 200) || url_responding_with_code?(https_applications_url, username, password, 200)) &&
+             (url_responding_with_code?(http_base_url, username, password, 200) || url_responding_with_code?(https_base_url, username, password, 200))
             sleep 1
             break
           end
