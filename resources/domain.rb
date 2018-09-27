@@ -144,7 +144,8 @@ def installation_jvm_options
     "-Dcom.sun.aas.installRoot=#{node['glassfish']['install_dir']}/glassfish",
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
     "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
-    "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext:#{node['java']['java_home']}/jre/lib/ext:#{domain_dir_path}/lib/ext",
+    "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext${path.separator}#{node['java']['java_home']}/jre/lib/ext${path.separator}#{domain_dir_path}/lib/ext",
+    # <jvm-options>-Djava.ext.dirs=${com.sun.aas.javaRoot}/lib/ext${path.separator}${com.sun.aas.javaRoot}/jre/lib/ext${path.separator}${com.sun.aas.instanceRoot}/lib/ext</jvm-options>
     "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['install_dir']}/glassfish/lib/endorsed",
   ]
 end
