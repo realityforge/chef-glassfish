@@ -197,6 +197,7 @@
 # ```
 
 include_recipe 'glassfish::default'
+require 'mixlib/shellout'
 
 def gf_scan_existing_resources(admin_port, username, password_file, secure, command)
   options = { remote_command: true, terse: true, echo: false }
@@ -206,7 +207,9 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   options[:admin_port] = admin_port if admin_port
 
   Chef::Log.debug "Issuing #{Asadmin.asadmin_command(node, command, options)}"
-  output = `#{Asadmin.asadmin_command(node, command, options)} 2> /dev/null`
+  as_command = Mixlib::ShellOut.new(Asadmin.asadmin_command(node, command, options))
+  as_command.run_command
+  output = as_command.stdout
   return if output =~ /^Nothing to list.*/ || output =~ /^No such local command.*/ || output =~ /^Command .* failed\./
   lines = output.split("\n")
 
@@ -310,10 +313,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     system_user system_username if system_username
     system_group system_group if system_group
     action (remote_access.to_s == 'true') ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
-  end
-
-  log definition.inspect do
-    level :debug
   end
 
   glassfish_wait_for_glassfish domain_key do
