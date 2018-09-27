@@ -30,5 +30,5 @@ property :ipaddress, String, default: lazy { node['ipaddress'] }
 property :admin_port, Integer, default: 4848
 
 action :run do
-  RealityForge::GlassFish.block_until_glassfish_up(new_resource.secure, new_resource.username, new_resource.password, new_resource.ipaddress new_resource.admin_port)
+  RealityForge::GlassFish.block_until_glassfish_up(new_resource.secure, new_resource.username, new_resource.password, new_resource.ipaddress, new_resource.admin_port)
 end
