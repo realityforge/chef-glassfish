@@ -315,7 +315,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   log definition.inspect do
     level :debug
   end
-  
+
   wait_for_glassfish domain_key do
     secure remote_access
     username if username
