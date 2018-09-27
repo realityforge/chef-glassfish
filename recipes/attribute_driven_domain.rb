@@ -317,7 +317,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   glassfish_wait_for_glassfish domain_key do
-    secure remote_access
     username username if username
     password definition['config']['password']
     admin_port admin_port
