@@ -318,7 +318,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   glassfish_wait_for_glassfish domain_key do
     secure remote_access
-    username if username
+    username username if username
     password definition['config']['password']
     admin_port admin_port
     only_if { admin_port }

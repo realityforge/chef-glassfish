@@ -219,6 +219,15 @@ action :create do
     notifies :run, "execute[create_service_#{service_name}]", :immediately
   end
 
+  glassfish_wait_for_glassfish new_resource.domain_name do
+    secure new_resource.secure
+    username new_resource.username
+    password new_resource.password
+    admin_port new_resource.admin_port
+    only_if { new_resource.admin_port }
+    action :nothing
+  end
+
   # There is a bug in the Glassfish 4 domain creation that puts the master-password in the wrong spot. This copies it back.
   ruby_block 'copy master-password' do
     source_file = "#{new_resource.domain_dir_path}/config/master-password"
@@ -296,6 +305,7 @@ action :create do
   windows_service service_name do
     timeout 180
     action :nothing
+    notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
   end
 end
 
@@ -303,6 +313,7 @@ action :restart do
   windows_service service_name do
     timeout 180
     action [:restart]
+    notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
   end
 end
 
