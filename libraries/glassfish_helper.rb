@@ -73,6 +73,56 @@ class RealityForge
       def get_cached_property(node, domain_key, key)
         get_property_cache(node, domain_key)[key] || ''
       end
+
+      def url_responding_with_code?(url, username, password, code)
+        uri = URI(url)
+        res = nil
+        http = Net::HTTP.new(uri.hostname, uri.port)
+        if url =~ /https\:/
+          http.use_ssl = true
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+        http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
+          request = Net::HTTP::Get.new(uri.request_uri)
+          request.basic_auth username, password
+          request['Accept'] = 'application/json'
+          res = http.request(request)
+        end
+        return true if res.code.to_s == code.to_s
+        puts "GlassFish not responding OK - #{res.code} to #{url}"
+      rescue StandardError => e
+        puts "GlassFish error while accessing web interface at #{url}"
+        puts e.message
+        puts e.backtrace.join("\n")
+        url
+      end
+
+      def block_until_glassfish_up(domain_key, remote_access, username, password, admin_port)
+        require 'net/https' if remote_access
+
+        Chef::Log.info "Defining GlassFish Domain #{domain_key} - wait till up"
+        ruby_block "block_until_glassfish_#{domain_key}_up" do
+          block do
+            fail_count = 0
+            loop do
+              raise 'GlassFish failed to become operational' if fail_count > 50
+              base_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}"
+              nodes_url = "#{base_url}/management/domain/nodes"
+              applications_url = "#{base_url}/management/domain/applications"
+              password = definition['config']['password']
+              if url_responding_with_code?(nodes_url, username, password, 200) &&
+                 url_responding_with_code?(applications_url, username, password, 200) &&
+                 url_responding_with_code?(base_url, username, password, 200)
+                sleep 1
+                break
+              end
+              fail_count += 1
+              sleep 1
+            end
+          end
+          action :run
+        end
+      end
     end
   end
 end
