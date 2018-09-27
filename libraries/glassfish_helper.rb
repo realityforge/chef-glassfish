@@ -106,7 +106,7 @@ class RealityForge
           base_url = "http#{remote_access ? 's' : ''}://#{ipaddress}:#{admin_port}"
           nodes_url = "#{base_url}/management/domain/nodes"
           applications_url = "#{base_url}/management/domain/applications"
-          password = definition['config']['password']
+          password = password
           if url_responding_with_code?(nodes_url, username, password, 200) &&
              url_responding_with_code?(applications_url, username, password, 200) &&
              url_responding_with_code?(base_url, username, password, 200)
