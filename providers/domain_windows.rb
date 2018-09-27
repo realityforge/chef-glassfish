@@ -303,7 +303,15 @@ action :create do
   end
 
   windows_service service_name do
+    asadmin = Asadmin.asadmin_script(node)
+    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
+
+    restart_command "#{asadmin} #{password_file} restart-domain #{domain_dir_arg} #{new_resource.domain_name}"
+    stop_command "#{asadmin} #{password_file} stop-domain #{domain_dir_arg} #{new_resource.domain_name}"
+
+    supports restart: true, reload: false, status: true, start: true, stop: true
     timeout 180
+
     action :nothing
     notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
   end
