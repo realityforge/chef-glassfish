@@ -88,12 +88,15 @@ class RealityForge
           request['Accept'] = 'application/json'
           res = http.request(request)
         end
-        return true if res.code.to_s == code.to_s
-        puts "GlassFish not responding OK - #{res.code} to #{url}"
+        if res.code.to_s == code.to_s
+          logger.debug "GlassFish response OK - #{res.code} to #{url}"
+          return true
+        end
+        logger.debug "GlassFish not responding OK - #{res.code} to #{url}"
       rescue StandardError => e
-        puts "GlassFish error while accessing web interface at #{url}"
-        puts e.message
-        puts e.backtrace.join("\n")
+        logger.debug "GlassFish error while accessing web interface at #{url}"
+        logger.debug e.message
+        logger.debug e.backtrace.join("\n")
         url
       end
 
