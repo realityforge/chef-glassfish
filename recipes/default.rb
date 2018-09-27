@@ -73,6 +73,14 @@ template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
   group node['glassfish']['group']
 end
 
+template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.bat" do
+  source 'asenv.bat.erb'
+  mode '0600'
+  cookbook 'glassfish'
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+end
+
 directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
   recursive true
   action :delete
