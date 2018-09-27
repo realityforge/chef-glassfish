@@ -22,7 +22,7 @@ action :create do
   args << '--raname' << new_resource.raname
   args << '--restype' << new_resource.restype
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
   args << '--classname' << new_resource.classname if new_resource.classname
   args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   args << asadmin_target_flag

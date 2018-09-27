@@ -27,7 +27,7 @@ action :create do
     "--#{key}=#{new_resource.send(key)}"
   end
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  args << "--description='#{new_resource.description}'" if new_resource.description
+  args << "--description=\"#{new_resource.description}\"" if new_resource.description
   args << new_resource.pool_name
 
   execute "asadmin_create-connector-connection-pool #{new_resource.pool_name}" do

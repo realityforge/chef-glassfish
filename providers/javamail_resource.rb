@@ -27,7 +27,7 @@ action :create do
   args << '--transprotocol' << new_resource.transprotocol if new_resource.transprotocol
   args << '--transprotocolclass' << new_resource.transprotocolclass if new_resource.transprotocolclass
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
   args << "--debug=#{new_resource.debug}" if new_resource.debug
   args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   args << asadmin_target_flag

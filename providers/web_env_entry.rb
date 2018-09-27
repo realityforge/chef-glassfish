@@ -21,7 +21,7 @@ action :set do
   args << 'set-web-env-entry'
   args << '--name' << new_resource.name
   args << '--type' << new_resource.type
-  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
   args << if new_resource.value.nil?
             '--ignoreDescriptorItem'
           else

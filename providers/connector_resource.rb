@@ -21,7 +21,7 @@ action :create do
   args << 'create-connector-resource'
   args << '--poolname' << new_resource.poolname
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
   args << '--objecttype' << new_resource.objecttype if new_resource.objecttype
   args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   args << asadmin_target_flag

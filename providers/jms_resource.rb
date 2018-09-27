@@ -21,7 +21,7 @@ action :create do
   args << 'create-jms-resource'
   args << '--restype' << new_resource.restype
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
   args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   args << asadmin_target_flag
   args << new_resource.name

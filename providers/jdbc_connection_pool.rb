@@ -41,7 +41,7 @@ action :create do
     end
 
     args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-    args << '--description' << "'#{new_resource.description}'" if new_resource.description
+    args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
     args << new_resource.name
 
     execute "asadmin_create_jdbc_connection_pool #{new_resource.name}" do

@@ -34,7 +34,7 @@ action :create do
     args << '--restype' << new_resource.restype
     args << '--factoryclass' << factoryclass
     args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-    args << '--description' << "'#{new_resource.description}'" if new_resource.description
+    args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
     args << '--property' << encode_parameters(properties) unless properties.empty?
     args << asadmin_target_flag
     args << new_resource.jndi_name
