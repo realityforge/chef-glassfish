@@ -41,7 +41,7 @@ end
 action :deploy do
   raise 'Must specify url' unless new_resource.url
 
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   is_deployed = if cache_present
                   RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
                 else
@@ -151,7 +151,7 @@ action :deploy do
 end
 
 action :undeploy do
-  cache_present = RealityForge::GlassFish.is_property_cache_present?(node, new_resource.domain_name)
+  cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   maybe_deployed = if cache_present
                      RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
                    else
