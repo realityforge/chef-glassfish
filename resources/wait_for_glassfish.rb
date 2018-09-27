@@ -18,7 +18,7 @@
 property :secure, [TrueClass, FalseClass], default: false
 
 # <> @attribute username The username to use when communicating with the domain.
-property :username, String, default: nil
+property :username, String, default: 'admin'
 
 # <> @attribute password The password must be stored assigned to appropriate key.
 property :password, String, default: nil
