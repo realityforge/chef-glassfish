@@ -242,14 +242,12 @@ action :create do
     end
   end
 
-  logging_properties = default_logging_properties.merge(new_resource.logging_properties)
-
   template "#{new_resource.domain_dir_path}/config/logging.properties" do
     source 'logging.properties.erb'
     mode '0600'
     cookbook 'glassfish'
     owner new_resource.system_user
-    variables logging_properties: logging_properties
+    variables(logging_properties: default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
@@ -288,6 +286,8 @@ action :create do
     BAT
   end
 
+  require 'win32/service'
+
   execute "create_service_#{service_name}" do
     create_args = []
     create_args << "--name=#{service_name}"
@@ -296,9 +296,9 @@ action :create do
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    action :nothing
     command asadmin_command("create-service #{create_args.join(' ')} #{new_resource.domain_name}", false)
     # notifies :start, "windows_service[#{service_name}]", :immediately
+    not_if { Win32::Service.exists?(service_name) }
   end
 
   windows_service service_name do
