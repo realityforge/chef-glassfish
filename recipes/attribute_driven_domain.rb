@@ -312,7 +312,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     action (remote_access.to_s == 'true') ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
   end
 
-  RealityForge::GlassFish.block_until_glassfish_up(domain_key, remote_access, username, password, admin_port) if admin_port
+  RealityForge::GlassFish.block_until_glassfish_up(domain_key, remote_access, username, definition['config']['password'], admin_port) if admin_port
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - server instances"
   gf_sort(definition['instances'] || {}).each_pair do |key, config|
