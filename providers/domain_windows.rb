@@ -218,7 +218,6 @@ action :create do
 
     notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
     notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
-    notifies :run, "execute[create_service_#{service_name}]", :immediately
   end
 
   glassfish_wait_for_glassfish new_resource.domain_name do
