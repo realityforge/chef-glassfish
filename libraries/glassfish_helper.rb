@@ -97,13 +97,13 @@ class RealityForge
         url
       end
 
-      def block_until_glassfish_up(remote_access, username, password, admin_port)
+      def block_until_glassfish_up(remote_access, username, password, ipaddress, admin_port)
         require 'net/https' if remote_access
 
         fail_count = 0
         loop do
           raise 'GlassFish failed to become operational' if fail_count > 50
-          base_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}"
+          base_url = "http#{remote_access ? 's' : ''}://#{ipaddress}:#{admin_port}"
           nodes_url = "#{base_url}/management/domain/nodes"
           applications_url = "#{base_url}/management/domain/applications"
           password = definition['config']['password']

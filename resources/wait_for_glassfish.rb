@@ -23,9 +23,12 @@ property :username, String, default: 'admin'
 # <> @attribute password The password must be stored assigned to appropriate key.
 property :password, String, default: ''
 
+# <> @attribute ipaddress The IP address to connect to glassfish.
+property :ipaddress, String, default: lazy { node['ipaddress'] }
+
 # <> @attribute admin_port The port on which the web management console is bound.
 property :admin_port, Integer, default: 4848
 
 action :run do
-  RealityForge::GlassFish.block_until_glassfish_up(new_resource.secure, new_resource.username, new_resource.password, new_resource.admin_port)
+  RealityForge::GlassFish.block_until_glassfish_up(new_resource.secure, new_resource.username, new_resource.password, new_resource.ipaddress new_resource.admin_port)
 end
