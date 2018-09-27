@@ -21,12 +21,10 @@ property :secure, [TrueClass, FalseClass], default: false
 property :username, String, default: 'admin'
 
 # <> @attribute password The password must be stored assigned to appropriate key.
-property :password, String, default: nil
+property :password, String, default: ''
 
 # <> @attribute admin_port The port on which the web management console is bound.
 property :admin_port, Integer, default: 4848
-
-default_action :run
 
 action :run do
   RealityForge::GlassFish.block_until_glassfish_up(new_resource.secure, new_resource.username, new_resource.password, new_resource.admin_port)
