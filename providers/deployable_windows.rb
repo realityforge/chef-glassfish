@@ -77,7 +77,7 @@ action :deploy do
     deployment_plan = nil
     unless new_resource.descriptors.empty?
       deployment_plan = "#{deployment_plan_dir}/plan-#{plan_version}.jar"
-      build_dir = "#{Chef::Config[:file_cache_path]}/glassfish-plan/#{new_resource.name}"
+      build_dir = "#{Chef::Config[:file_cache_path]}/glassfish-plan"
 
       directory deployment_plan_dir do
         recursive true
@@ -99,52 +99,50 @@ action :deploy do
 
         command << <<-CMD
         jar -cf #{deployment_plan} .
-        rem chown #{new_resource.system_user}:#{new_resource.system_group} #{deployment_plan}
-        rem chmod 0700 #{deployment_plan}
         rmdir /Q /S #{build_dir}
         if not exist #{deployment_plan} exit /b 1
         CMD
 
-        # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
         timeout node['glassfish']['asadmin']['timeout'] + 5
         code command
         not_if { ::File.exist?(deployment_plan) }
       end
     end
-  end
 
-  execute "deploy application #{new_resource.component_name}" do
-    args = []
-    args << 'deploy'
-    args << asadmin_target_flag
-    args << '--name' << new_resource.component_name
-    args << "--enabled=#{new_resource.enabled}"
-    args << '--force=true'
-    args << '--type' << new_resource.type if new_resource.type
-    args << "--contextroot=#{new_resource.context_root}" if new_resource.context_root
-    args << "--generatermistubs=#{new_resource.generate_rmi_stubs}"
-    args << "--availabilityenabled=#{new_resource.availability_enabled}"
-    args << "--lbenabled=#{new_resource.lb_enabled}"
-    args << "--keepstate=#{new_resource.keep_state}"
-    args << "--verify=#{new_resource.verify}"
-    args << "--precompilejsp=#{new_resource.precompile_jsp}"
-    args << "--asyncreplication=#{new_resource.async_replication}"
-    args << '--properties' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-    args << "--virtualservers=#{new_resource.virtual_servers.join(',')}" unless new_resource.virtual_servers.empty?
-    args << '--deploymentplan' << deployment_plan if deployment_plan
-    args << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
-    args << a.target_artifact
+    execute "deploy application #{new_resource.component_name}" do
+      args = []
+      args << 'deploy'
+      args << asadmin_target_flag
+      args << '--name' << new_resource.component_name
+      args << "--enabled=#{new_resource.enabled}"
+      args << '--upload=true' unless node['glassfish']['version'] == '4.1'
+      args << '--force=true'
+      args << '--type' << new_resource.type if new_resource.type
+      args << "--contextroot=#{new_resource.context_root}" if new_resource.context_root
+      args << "--generatermistubs=#{new_resource.generate_rmi_stubs}"
+      args << "--availabilityenabled=#{new_resource.availability_enabled}"
+      args << "--lbenabled=#{new_resource.lb_enabled}"
+      args << "--keepstate=#{new_resource.keep_state}"
+      args << "--verify=#{new_resource.verify}"
+      args << "--precompilejsp=#{new_resource.precompile_jsp}"
+      args << "--asyncreplication=#{new_resource.async_replication}"
+      args << '--properties' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
+      args << "--virtualservers=#{new_resource.virtual_servers.join(',')}" unless new_resource.virtual_servers.empty?
+      args << '--deploymentplan' << deployment_plan if deployment_plan
+      args << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
+      args << a.target_artifact
 
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
-    timeout node['glassfish']['asadmin']['timeout'] + 5
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
+      timeout node['glassfish']['asadmin']['timeout'] + 5
 
-    command asadmin_command(args.join(' '))
-  end
+      command asadmin_command(args.join(' '))
+    end
 
-  file version_file do
-    content expected_version
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
+    file version_file do
+      content expected_version
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+    end
   end
 end
 
