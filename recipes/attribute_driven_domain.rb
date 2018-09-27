@@ -312,6 +312,10 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     action (remote_access.to_s == 'true') ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
   end
 
+  log definition.inspect do
+    level :debug
+  end
+  
   wait_for_glassfish domain_key do
     secure remote_access
     username if username
