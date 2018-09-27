@@ -97,7 +97,7 @@ class RealityForge
         puts "GlassFish error while accessing web interface at #{url}"
         puts e.message
         puts e.backtrace.join("\n")
-        url
+        return false
       end
 
       def block_until_glassfish_up(remote_access, username, password, ipaddress, admin_port)
