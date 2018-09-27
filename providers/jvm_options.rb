@@ -26,7 +26,7 @@ action :set do
     action :nothing
   end
 
-  output = `#{asadmin_command('list-jvm-options', true, terse: true, echo: false)}`
+  output = `#{asadmin_command('list-jvm-options', true, terse: true, echo: false)}` # TODO: Convert to mixlib/shellout
 
   # Work around bugs in 3.1.2.2
   if node['glassfish']['version'] == '3.1.2.2'

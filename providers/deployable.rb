@@ -44,7 +44,7 @@ action :deploy do
   cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   is_deployed = if cache_present
                   RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
-                else
+                else # TODO: Convert to mixlib/shellout
                   !`#{asadmin_command('list-applications')} #{new_resource.target} | grep -- '#{new_resource.component_name} '`.strip.split("\n").size.empty?
                 end
 

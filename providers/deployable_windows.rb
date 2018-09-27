@@ -44,7 +44,7 @@ action :deploy do
   cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   is_deployed = if cache_present
                   RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
-                else
+                else # TODO: Convert to mixlib/shellout
                   !`#{asadmin_command('list-applications')} #{new_resource.target} | findstr /R /C:\"#{new_resource.component_name}\"`.strip.split("\n").size.empty?
                 end
 
@@ -68,12 +68,10 @@ action :deploy do
 
     Chef::Log.info "Deploying #{new_resource.component_name} from #{new_resource.url}"
 
-    directory ::File.join(archives_dir, new_resource.component_name, new_resource.version_value) do
-      recursive true
-    end
-
-    r = remote_file ::File.join(archives_dir, new_resource.component_name, new_resource.version_value, ::File.basename(new_resource.url)) do
-      source new_resource.url
+    a = archive new_resource.component_name do
+      prefix archives_dir
+      url new_resource.url
+      version new_resource.version_value
     end
 
     deployment_plan = nil
@@ -135,7 +133,7 @@ action :deploy do
     args << "--virtualservers=#{new_resource.virtual_servers.join(',')}" unless new_resource.virtual_servers.empty?
     args << '--deploymentplan' << deployment_plan if deployment_plan
     args << "--libraries=#{new_resource.libraries.join(',')}" unless new_resource.libraries.empty?
-    args << r.path
+    args << a.target_artifact
 
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
