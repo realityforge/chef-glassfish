@@ -28,7 +28,7 @@ property :admin_port, Integer, default: 4848
 
 action :run do
   password = nil
-  File.foreach(new_resource.password_file) do |line|
+  ::File.foreach(new_resource.password_file) do |line|
     (var = line.match(/AS_ADMIN_PASSWORD=(.*)/)&.captures&.first&.strip)
     password = var if var
   end
