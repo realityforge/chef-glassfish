@@ -38,7 +38,7 @@ action :add do
     only_if { new_resource.admin_port }
     action :nothing
   end
-  
+
   windows_service service_name do
     timeout 180
 
