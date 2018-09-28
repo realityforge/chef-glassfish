@@ -18,7 +18,7 @@
 property :username, String, default: 'admin'
 
 # <> @attribute password_file The file in which the password must be stored assigned to appropriate key.
-property :password_file, kind_of: String, default: nil, required: true
+property :password_file, String, default: nil, required: true
 
 # <> @attribute ipaddress The IP address to connect to glassfish.
 property :ipaddress, String, default: lazy { node['ipaddress'] }
