@@ -207,9 +207,7 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   options[:admin_port] = admin_port if admin_port
 
   Chef::Log.debug "Issuing #{Asadmin.asadmin_command(node, command, options)}"
-  as_command = Mixlib::ShellOut.new(Asadmin.asadmin_command(node, command, options))
-  as_command.run_command
-  output = as_command.stdout
+  output = Mixlib::ShellOut.new(Asadmin.asadmin_command(node, command, options)).run_command.stdout
   return if output =~ /^Nothing to list.*/ || output =~ /^No such local command.*/ || output =~ /^Command .* failed\./
   lines = output.split("\n")
 

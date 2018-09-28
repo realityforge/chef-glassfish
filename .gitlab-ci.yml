@@ -26,7 +26,6 @@ foodcritic:
   script:
     - foodcritic -V
     - foodcritic -f any .
-  allow_failure: true
 
 deploy:
   stage: deploy

@@ -19,8 +19,11 @@ require 'English'
 include Chef::Asadmin
 
 action :create do
-  output = `#{asadmin_command('get "*"', true, terse: true, echo: false)}` # TODO: Convert to mixlib/shellout
-  raise 'Error caching properties' unless $CHILD_STATUS.exitstatus.to_i == 0
+  require 'mixlib/shellout'
+
+  command = Mixlib::ShellOut.new(asadmin_command('get "*"', true, terse: true, echo: false)).run_command
+  output = command.stdout
+  raise 'Error caching properties' unless command.exitstatus.to_i == 0
 
   values = {}
   output.split("\n").each do |line|
