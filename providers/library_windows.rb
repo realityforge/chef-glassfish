@@ -31,18 +31,19 @@ def domain_dir_arg
 end
 
 action :add do
+  glassfish_wait_for_glassfish new_resource.domain_name do
+    username new_resource.username
+    password_file new_resource.password_file
+    admin_port new_resource.admin_port
+    only_if { new_resource.admin_port }
+    action :nothing
+  end
+  
   windows_service service_name do
-    asadmin = Asadmin.asadmin_script(node)
-    password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ''
-
-    # Stopping the service with the native command is not working for some reason...
-    restart_command "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
-    stop_command "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}"
-
-    supports restart: true, reload: false, status: true, start: true, stop: true
-    timeout 120
+    timeout 180
 
     action :nothing
+    notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
   end
 
   cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.domain_name}_#{Digest::SHA1.hexdigest(new_resource.url)}/#{::File.basename(new_resource.url)}"

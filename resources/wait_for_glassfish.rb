@@ -17,8 +17,8 @@
 # <> @attribute username The username to use when communicating with the domain.
 property :username, String, default: 'admin'
 
-# <> @attribute password The password must be stored assigned to appropriate key.
-property :password, String, default: ''
+# <> @attribute password_file The file in which the password must be stored assigned to appropriate key.
+property :password_file, kind_of: String, default: nil, required: true
 
 # <> @attribute ipaddress The IP address to connect to glassfish.
 property :ipaddress, String, default: lazy { node['ipaddress'] }
@@ -27,5 +27,11 @@ property :ipaddress, String, default: lazy { node['ipaddress'] }
 property :admin_port, Integer, default: 4848
 
 action :run do
-  RealityForge::GlassFish.block_until_glassfish_up(new_resource.username, new_resource.password, new_resource.ipaddress, new_resource.admin_port)
+  password = nil
+  File.foreach(new_resource.password_file) do |line|
+    (var = line.match(/AS_ADMIN_PASSWORD=(.*)/)&.captures&.first&.strip)
+    password = var if var
+  end
+  raise 'Unable to get password' if password.nil?
+  RealityForge::GlassFish.block_until_glassfish_up(new_resource.username, password, new_resource.ipaddress, new_resource.admin_port)
 end

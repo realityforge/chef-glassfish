@@ -21,9 +21,18 @@ def service_name
 end
 
 action :set do
+  glassfish_wait_for_glassfish new_resource.domain_name do
+    username new_resource.username
+    password_file new_resource.password_file
+    admin_port new_resource.admin_port
+    only_if { new_resource.admin_port }
+    action :nothing
+  end
+
   service service_name do
     supports restart: true, status: true
     action :nothing
+    notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
   end
 
   require 'mixlib/shellout'
