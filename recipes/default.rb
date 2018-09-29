@@ -53,7 +53,7 @@ directory node['glassfish']['base_dir'] do
 end
 
 a = archive 'glassfish' do
-  prefix node['glassfish']['base_dir']
+  prefix node['glassfish']['install_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
   owner node['glassfish']['user']
