@@ -49,6 +49,9 @@ def default_logging_properties
     'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => 'true',
     'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => '0',
 
+    # Payara 5.183
+    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.formatter' => 'com.sun.enterprise.server.logging.ODLLogFormatter',
+
     # All log level details
     '.level' => 'INFO',
 
