@@ -18,7 +18,7 @@
 property :username, String, default: 'admin'
 
 # <> @attribute password_file The file in which the password must be stored assigned to appropriate key.
-property :password_file, String, default: nil, required: true
+property :password_file, String, required: true
 
 # <> @attribute ipaddress The IP address to connect to glassfish.
 property :ipaddress, String, default: lazy { node['ipaddress'] }
@@ -28,7 +28,7 @@ property :admin_port, Integer, default: 4848
 
 action :run do
   password = nil
-  File.foreach(new_resource.password_file) do |line|
+  ::File.foreach(new_resource.password_file) do |line|
     (var = line.match(/AS_ADMIN_PASSWORD=(.*)/)&.captures&.first&.strip)
     password = var if var
   end

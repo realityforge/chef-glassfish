@@ -315,7 +315,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
 
   glassfish_wait_for_glassfish domain_key do
     username username if username
-    password definition['config']['password']
+    password_file password_file
     admin_port admin_port
     only_if { admin_port }
   end
