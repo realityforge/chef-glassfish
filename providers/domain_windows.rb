@@ -176,6 +176,7 @@ action :create do
   template new_resource.password_file do # ~FC021
     cookbook 'glassfish'
     source 'password.erb'
+    sensitive true
     owner new_resource.system_user
     group new_resource.system_group unless node.windows?
     mode '0600'

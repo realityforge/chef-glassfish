@@ -180,6 +180,7 @@ action :create do
       cookbook 'glassfish'
       not_if { new_resource.password.nil? }
       source 'password.erb'
+      sensitive true
       owner new_resource.system_user
       group new_resource.system_group unless node.windows?
       mode '0600'
