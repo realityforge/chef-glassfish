@@ -120,11 +120,10 @@ class RealityForge
           if (url_responding_with_code?(http_nodes_url, username, password, 200) || url_responding_with_code?(https_nodes_url, username, password, 200)) &&
              (url_responding_with_code?(http_applications_url, username, password, 200) || url_responding_with_code?(https_applications_url, username, password, 200)) &&
              (url_responding_with_code?(http_base_url, username, password, 200) || url_responding_with_code?(https_base_url, username, password, 200))
-            sleep 1
             break
           end
           fail_count += 1
-          sleep 1
+          sleep 3
         end
       end
     end
