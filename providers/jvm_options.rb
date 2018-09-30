@@ -80,7 +80,8 @@ action :set do
       end
     end
   else
-    existing = output.split("\n")
+    existing = output.split("\n") if node.linux?
+    existing = output.split("\r\n") if node.windows?
 
     existing_option_string = encode_options(existing)
     new_option_string = encode_options(new_resource.options)
