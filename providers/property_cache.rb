@@ -23,7 +23,7 @@ action :create do
 
   command = Mixlib::ShellOut.new(asadmin_command('get "*"', true, terse: true, echo: false)).run_command
   output = command.stdout
-  puts 'property_cache.rb shellout:' + output.inspect
+  Chef::Log.debug 'property_cache.rb shellout:' + output.inspect
 
   raise 'Error caching properties' unless command.exitstatus.to_i == 0
 

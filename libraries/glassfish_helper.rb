@@ -89,14 +89,14 @@ class RealityForge
           res = http.request(request)
         end
         if res.code.to_s == code.to_s
-          puts "GlassFish response OK - #{res.code} to #{url}"
+          Chef::Log.debug "GlassFish response OK - #{res.code} to #{url}"
           return true
         end
-        puts "GlassFish not responding OK - #{res.code} to #{url}"
+        Chef::Log.debug "GlassFish not responding OK - #{res.code} to #{url}"
       rescue StandardError => e # Fallback to secure/insecure
-        puts "GlassFish error while accessing web interface at #{url}"
-        puts e.message
-        # puts e.backtrace.join("\n")
+        Chef::Log.info "GlassFish error while accessing web interface at #{url}"
+        Chef::Log.info e.message
+        Chef::Log.debug e.backtrace.join("\n")
         false
       end
 
