@@ -140,9 +140,9 @@ def installation_jvm_options
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
     '-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory',
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
-    "-javaagent:${com.sun.aas.installRoot}/glassfish/lib/monitor/flashlight-agent.jar",
+    '-javaagent:${com.sun.aas.installRoot}/glassfish/lib/monitor/flashlight-agent.jar',
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext${path.separator}#{node['java']['java_home']}/jre/lib/ext${path.separator}#{domain_dir_path}/lib/ext",
-    "-Djava.endorsed.dirs=${com.sun.aas.installRoot}/glassfish/modules/endorsed${path.separator}${com.sun.aas.installRoot}/glassfish/lib/endorsed",
+    '-Djava.endorsed.dirs=${com.sun.aas.installRoot}/glassfish/modules/endorsed${path.separator}${com.sun.aas.installRoot}/glassfish/lib/endorsed',
   ]
 end
 
@@ -150,7 +150,7 @@ def osgi_jvm_options
   [
     '-Dosgi.shell.telnet.maxconn=1',
     '-Dfelix.fileinstall.disableConfigSave=false',
-    "-Dfelix.fileinstall.dir=${com.sun.aas.installRoot}/glassfish/modules/autostart/",
+    '-Dfelix.fileinstall.dir=${com.sun.aas.installRoot}/glassfish/modules/autostart/',
     '-Dosgi.shell.telnet.port=6666',
     '-Dfelix.fileinstall.log.level=2',
     '-Dfelix.fileinstall.poll=5000',
