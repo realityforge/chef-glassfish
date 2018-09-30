@@ -208,6 +208,8 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
 
   Chef::Log.debug "Issuing #{Asadmin.asadmin_command(node, command, options)}"
   output = Mixlib::ShellOut.new(Asadmin.asadmin_command(node, command, options)).run_command.stdout
+  puts 'attribute_driven_domain.rb shellout:' + output
+
   return if output =~ /^Nothing to list.*/ || output =~ /^No such local command.*/ || output =~ /^Command .* failed\./
   lines = output.split("\n")
 

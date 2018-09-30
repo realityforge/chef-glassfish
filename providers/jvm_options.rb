@@ -38,6 +38,7 @@ action :set do
   require 'mixlib/shellout'
 
   output = Mixlib::ShellOut.new(asadmin_command('list-jvm-options', true, terse: true, echo: false)).run_command.stdout
+  puts 'jvm_options.rb shellout:' + output
 
   # Work around bugs in 3.1.2.2
   if node['glassfish']['version'] == '3.1.2.2'
