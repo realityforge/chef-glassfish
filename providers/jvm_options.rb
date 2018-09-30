@@ -38,7 +38,6 @@ action :set do
   require 'mixlib/shellout'
 
   output = Mixlib::ShellOut.new(asadmin_command('list-jvm-options', true, terse: true, echo: false)).run_command.stdout
-  Chef::Log.debug 'jvm_options.rb shellout:' + output.inspect
 
   # Work around bugs in 3.1.2.2
   if node['glassfish']['version'] == '3.1.2.2'
@@ -86,7 +85,6 @@ action :set do
     existing_option_string = encode_options(existing)
     new_option_string = encode_options(new_resource.options)
 
-    Chef::Log.debug format('jvm_options.rb: comparing %s to %s', existing_option_string.inspect, new_option_string.inspect)
     if existing_option_string != new_option_string
       execute "asadmin_delete-jvm-options #{new_resource.name}" do
         delete_command = []
