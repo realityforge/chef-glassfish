@@ -137,16 +137,12 @@ end
 
 def installation_jvm_options
   [
-    # TODO: All jvm options that have expanded node['glassfish']['install_dir'] should be replaced by ${com.sun.aas.installRoot} in modern glassfish versions and should also use${path.separator}
     "-Dcom.sun.aas.instanceRoot=#{domain_dir_path}",
     '-Dcom.sun.enterprise.config.config_environment_factory_class=com.sun.enterprise.config.serverbeans.AppserverConfigEnvironmentFactory',
-    # TODO: Next line is not needed as of modern glassfish
-    "-Dcom.sun.aas.installRoot=#{node['glassfish']['install_dir']}/glassfish",
     '-DANTLR_USE_DIRECT_CLASS_LOADING=true',
-    "-javaagent:#{node['glassfish']['install_dir']}/glassfish/lib/monitor/flashlight-agent.jar",
+    "-javaagent:${com.sun.aas.installRoot}/glassfish/lib/monitor/flashlight-agent.jar",
     "-Djava.ext.dirs=#{node['java']['java_home']}/lib/ext${path.separator}#{node['java']['java_home']}/jre/lib/ext${path.separator}#{domain_dir_path}/lib/ext",
-    # <jvm-options>-Djava.ext.dirs=${com.sun.aas.javaRoot}/lib/ext${path.separator}${com.sun.aas.javaRoot}/jre/lib/ext${path.separator}${com.sun.aas.instanceRoot}/lib/ext</jvm-options>
-    "-Djava.endorsed.dirs=#{node['glassfish']['install_dir']}/glassfish/modules/endorsed:#{node['glassfish']['install_dir']}/glassfish/lib/endorsed",
+    "-Djava.endorsed.dirs=${com.sun.aas.installRoot}/glassfish/modules/endorsed${path.separator}${com.sun.aas.installRoot}/glassfish/lib/endorsed",
   ]
 end
 
@@ -154,7 +150,7 @@ def osgi_jvm_options
   [
     '-Dosgi.shell.telnet.maxconn=1',
     '-Dfelix.fileinstall.disableConfigSave=false',
-    "-Dfelix.fileinstall.dir=#{node['glassfish']['install_dir']}/glassfish/modules/autostart/",
+    "-Dfelix.fileinstall.dir=${com.sun.aas.installRoot}/glassfish/modules/autostart/",
     '-Dosgi.shell.telnet.port=6666',
     '-Dfelix.fileinstall.log.level=2',
     '-Dfelix.fileinstall.poll=5000',
