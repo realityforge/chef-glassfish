@@ -35,29 +35,36 @@ end
 include_recipe 'glassfish::derive_version'
 # include_recipe 'java'
 
-group node['glassfish']['group']
+group node['glassfish']['group'] do
+  not_if { node.windows? }
+end
 
 user node['glassfish']['user'] do
   comment 'GlassFish Application Server'
   gid node['glassfish']['group']
   home node['glassfish']['base_dir']
-  shell '/bin/bash' unless node.windows?
+  shell '/bin/bash'
   system true
+  not_if { node.windows? }
 end
 
 directory node['glassfish']['base_dir'] do
   recursive true
-  mode '0755'
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
+  unless node.windows?
+    mode '0755'
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+  end
 end
 
 a = archive 'glassfish' do
   prefix node['glassfish']['install_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
+  unless node.windows?
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+  end
   extract_action 'unzip_and_strip_dir'
 end
 
@@ -67,18 +74,22 @@ exists_at_run_start = ::File.exist?(node['glassfish']['install_dir'])
 
 template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
   source 'asenv.conf.erb'
-  mode '0600'
   cookbook 'glassfish'
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
+  unless node.windows?
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode '0600'
+  end
 end
 
 template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.bat" do
   source 'asenv.bat.erb'
-  mode '0600'
   cookbook 'glassfish'
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
+  unless node.windows?
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode '0600'
+  end
 end
 
 directory "#{node['glassfish']['install_dir']}/glassfish/domains/domain1" do
@@ -118,9 +129,11 @@ if node['glassfish']['endorsed']
     target_file = gf_binary_endorsed_dir + File::Separator + file_name
     remote_file target_file do
       source url
-      mode '0600'
-      owner node['glassfish']['user']
-      group node['glassfish']['group']
+      unless node.windows?
+        mode '0600'
+        owner node['glassfish']['user']
+        group node['glassfish']['group']
+      end
       action :create
       not_if { ::File.exist?(target_file) }
     end

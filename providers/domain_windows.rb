@@ -143,26 +143,7 @@ def jdk_path
 end
 
 action :create do
-  if new_resource.system_group != node['glassfish']['group']
-    group new_resource.system_group do
-      action :create
-      append true
-    end
-  end
-
-  if new_resource.system_user != node['glassfish']['user']
-    user new_resource.system_user do
-      comment "GlassFish #{new_resource.domain_name} Domain"
-      gid new_resource.system_group
-      home "#{node['glassfish']['domains_dir']}/#{new_resource.domain_name}"
-      system true
-    end
-  end
-
   directory node['glassfish']['domains_dir'] do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode '0755'
     recursive true
   end
 
@@ -177,9 +158,6 @@ action :create do
     cookbook 'glassfish'
     source 'password.erb'
     sensitive true
-    owner new_resource.system_user
-    group new_resource.system_group unless node.windows?
-    mode '0600'
     variables password: new_resource.password,
               master_password: master_password
 
@@ -190,9 +168,6 @@ action :create do
   cookbook_file "#{new_resource.domain_dir_path}/config/default-web.xml" do
     source "default-web-#{node['glassfish']['version']}.xml"
     cookbook 'glassfish'
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode '0644'
     action :nothing
   end
 
@@ -249,7 +224,6 @@ action :create do
     source 'logging.properties.erb'
     mode '0600'
     cookbook 'glassfish'
-    owner new_resource.system_user
     variables(logging_properties: default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
@@ -258,32 +232,19 @@ action :create do
     source 'login.conf.erb'
     mode '0600'
     cookbook 'glassfish'
-    owner new_resource.system_user
-    group new_resource.system_group unless node.windows?
     variables realm_types: default_realm_confs.merge(new_resource.realm_types)
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
   # Directory required for Payara 4.1.151
-  directory "#{new_resource.domain_dir_path}/bin" do
-    owner new_resource.system_user
-    group new_resource.system_group unless node.windows?
-    mode '0755'
-  end
+  directory "#{new_resource.domain_dir_path}/bin"
 
   # Directory required for Payara 4.1.152
   %w(lib lib/ext).each do |dir|
-    directory "#{new_resource.domain_dir_path}/#{dir}" do
-      owner new_resource.system_user
-      group new_resource.system_group unless node.windows?
-      mode '0755'
-    end
+    directory "#{new_resource.domain_dir_path}/#{dir}"
   end
 
   file "#{new_resource.domain_dir_path}/bin/#{new_resource.domain_name}_asadmin.bat" do
-    mode '0700'
-    owner new_resource.system_user
-    group new_resource.system_group unless node.windows?
     content <<-BAT
 #{Asadmin.asadmin_command(node, '%*', remote_command: true, terse: false, echo: new_resource.echo, username: new_resource.username, password_file: new_resource.password_file, secure: new_resource.secure, admin_port: new_resource.admin_port)}
     BAT
