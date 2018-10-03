@@ -21,18 +21,19 @@ action :create do
   args << 'create-connector-resource'
   args << '--poolname' << new_resource.poolname
   args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-  args << '--description' << "'#{new_resource.description}'" if new_resource.description
+  args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
   args << '--objecttype' << new_resource.objecttype if new_resource.objecttype
   args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
   args << asadmin_target_flag
   args << new_resource.name
 
   execute "asadmin_create-connector-resource #{new_resource.name}" do
-    not_if "#{asadmin_command('list-connector-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    not_if "#{asadmin_command('list-connector-resources')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
@@ -43,10 +44,11 @@ action :delete do
   args << new_resource.name
 
   execute "asadmin_delete-connector-resource #{new_resource.name}" do
-    only_if "#{asadmin_command('list-connector-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
+    filter = pipe_filter(new_resource.name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-connector-resources')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end

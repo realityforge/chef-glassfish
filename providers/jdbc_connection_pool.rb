@@ -41,16 +41,17 @@ action :create do
     end
 
     args << '--property' << encode_parameters(new_resource.properties) unless new_resource.properties.empty?
-    args << '--description' << "'#{new_resource.description}'" if new_resource.description
+    args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
     args << new_resource.name
 
     execute "asadmin_create_jdbc_connection_pool #{new_resource.name}" do
       unless cache_present
-        not_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
+        filter = pipe_filter(new_resource.name, regexp: false, line: true)
+        not_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
     end
   end
@@ -62,7 +63,7 @@ action :create do
     end
 
     parameters.each do |key, mapping|
-      sets[mapping] = new_resource.send(key)
+      sets[mapping] = new_resource.send(key) if new_resource.send(key)
     end
 
     sets.each_pair do |key, value|
@@ -95,13 +96,14 @@ action :delete do
     args << new_resource.name
 
     execute "asadmin_delete_jdbc_connection_pool #{new_resource.name}" do
-      unless cache_present
-        only_if "#{asadmin_command('list-jdbc-connection-pools')} | grep -F -x -- '#{new_resource.name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
+      unless cache_present
+        filter = pipe_filter(new_resource.name, regexp: false, line: true)
+        only_if "#{asadmin_command('list-jdbc-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
+      end
     end
   end
 end

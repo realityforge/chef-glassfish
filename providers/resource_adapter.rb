@@ -27,24 +27,26 @@ action :create do
   args << new_resource.resource_adapter_name
 
   execute "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    not_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
+    filter = pipe_filter(new_resource.resource_adapter_name, regexp: false, line: true)
+    not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end
 
 action :delete do
-  command = []
-  command << 'delete-resource-adapter-config'
-  command << new_resource.resource_adapter_name
+  args = []
+  args << 'delete-resource-adapter-config'
+  args << new_resource.resource_adapter_name
 
   execute "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    only_if "#{asadmin_command('list-resource-adapter-configs')} | grep -F -x -- '#{new_resource.resource_adapter_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
-    command asadmin_command(command.join(' '))
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
+    command asadmin_command(args.join(' '))
+    filter = pipe_filter(new_resource.resource_adapter_name, regexp: false, line: true)
+    only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
 end
