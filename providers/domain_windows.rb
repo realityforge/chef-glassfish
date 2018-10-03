@@ -261,7 +261,6 @@ action :create do
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     command asadmin_command("create-service #{create_args.join(' ')} #{new_resource.domain_name}", false)
-    # notifies :start, "windows_service[#{service_name}]", :immediately
     not_if { ::Win32::Service.exists?(service_name) }
   end
 
