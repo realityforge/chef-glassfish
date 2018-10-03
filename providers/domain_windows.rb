@@ -18,118 +18,6 @@ provides :glassfish_domain, os: 'windows'
 
 include Chef::Asadmin
 
-def default_logging_properties
-  {
-    'handlers' => 'java.util.logging.ConsoleHandler',
-    'handlerServices' => 'com.sun.enterprise.server.logging.GFFileHandler,com.sun.enterprise.server.logging.SyslogHandler',
-
-    'java.util.logging.ConsoleHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
-
-    'com.sun.enterprise.server.logging.GFFileHandler.formatter' => 'com.sun.enterprise.server.logging.UniformLogFormatter',
-    'com.sun.enterprise.server.logging.GFFileHandler.file' => '${com.sun.aas.instanceRoot}/logs/server.log',
-    'com.sun.enterprise.server.logging.GFFileHandler.rotationTimelimitInMinutes' => '0',
-    'com.sun.enterprise.server.logging.GFFileHandler.flushFrequency' => '1',
-    'com.sun.enterprise.server.logging.GFFileHandler.logtoConsole' => 'false',
-    'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => '2000000',
-    'com.sun.enterprise.server.logging.GFFileHandler.retainErrorsStasticsForHours' => '0',
-    'com.sun.enterprise.server.logging.GFFileHandler.maxHistoryFiles' => '3',
-    'com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange' => 'false',
-
-    'com.sun.enterprise.server.logging.SyslogHandler.useSystemLogging' => 'false',
-
-    'log4j.logger.org.hibernate.validator.util.Version' => 'warn',
-
-    # Payara 5.182
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.compressOnRotation' => 'false',
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => '2000000',
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationOnDateChange' => 'false',
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.file' => '${com.sun.aas.instanceRoot}/logs/notification.log',
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.logtoFile' => 'true',
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => '0',
-    'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => 'true',
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => '0',
-
-    # Payara 5.183
-    'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.formatter' => 'com.sun.enterprise.server.logging.ODLLogFormatter',
-
-    # All log level details
-    '.level' => 'INFO',
-
-    'com.sun.enterprise.server.logging.GFFileHandler.level' => 'ALL',
-    'javax.enterprise.system.tools.admin.level' => 'INFO',
-    'org.apache.jasper.level' => 'INFO',
-    'javax.enterprise.resource.corba.level' => 'INFO',
-    'javax.enterprise.system.core.level' => 'INFO',
-    'javax.enterprise.system.core.classloading.level' => 'INFO',
-    'java.util.logging.ConsoleHandler.level' => 'FINEST',
-    'javax.enterprise.system.webservices.saaj.level' => 'INFO',
-    'javax.enterprise.system.tools.deployment.level' => 'INFO',
-    'javax.enterprise.system.container.ejb.level' => 'INFO',
-    'javax.enterprise.system.core.transaction.level' => 'INFO',
-    'org.apache.catalina.level' => 'INFO',
-    'javax.enterprise.system.container.ejb.mdb.level' => 'INFO',
-    'org.apache.coyote.level' => 'INFO',
-    'javax.level' => 'INFO',
-    'javax.enterprise.resource.javamail.level' => 'INFO',
-    'javax.enterprise.system.webservices.rpc.level' => 'INFO',
-    'javax.enterprise.system.container.web.level' => 'INFO',
-    'javax.enterprise.system.util.level' => 'INFO',
-    'javax.enterprise.resource.resourceadapter.level' => 'INFO',
-    'javax.enterprise.resource.jms.level' => 'INFO',
-    'javax.enterprise.system.core.config.level' => 'INFO',
-    'javax.enterprise.system.level' => 'INFO',
-    'javax.enterprise.system.core.security.level' => 'INFO',
-    'javax.enterprise.system.container.cmp.level' => 'INFO',
-    'javax.enterprise.system.webservices.registry.level' => 'INFO',
-    'javax.enterprise.system.core.selfmanagement.level' => 'INFO',
-    'javax.enterprise.resource.jdo.level' => 'INFO',
-    'javax.enterprise.system.core.naming.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.application.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.resource.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.config.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.context.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.facelets.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.lifecycle.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.managedbean.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.renderkit.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.taglib.level' => 'INFO',
-    'javax.enterprise.resource.webcontainer.jsf.timing.level' => 'INFO',
-    'javax.enterprise.resource.jta.level' => 'WARNING',
-    'javax.enterprise.resource.sqltrace.level' => 'FINE',
-    'javax.org.glassfish.persistence.level' => 'INFO',
-    'org.jvnet.hk2.osgiadapter.level' => 'INFO',
-    'javax.enterprise.system.tools.backup.level' => 'INFO',
-    'org.glassfish.admingui.level' => 'INFO',
-    'javax.enterprise.system.ssl.security.level' => 'INFO',
-    'ShoalLogger.level' => 'CONFIG',
-    'org.eclipse.persistence.session.level' => 'INFO',
-    'javax.enterprise.resource.resourceadapter.com.sun.gjc.spi.level' => 'WARNING',
-    'com.hazelcast.level' => 'WARNING',
-  }
-end
-
-def default_realm_confs
-  common_confs = {
-    'fileRealm' => 'com.sun.enterprise.security.auth.login.FileLoginModule',
-    'ldapRealm' => 'com.sun.enterprise.security.auth.login.LDAPLoginModule',
-    'solarisRealm' => 'com.sun.enterprise.security.auth.login.SolarisLoginModule',
-  }
-
-  if node['glassfish']['version'][0] == '4'
-    {
-      'jdbcRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCLoginModule',
-      'jdbcDigestRealm' => 'com.sun.enterprise.security.ee.auth.login.JDBCDigestLoginModule',
-      'pamRealm' => 'com.sun.enterprise.security.ee.auth.login.PamLoginModule',
-    }.merge common_confs
-  else
-    {
-      'jdbcRealm' => 'com.sun.enterprise.security.auth.login.JDBCLoginModule',
-      'jdbcDigestRealm' => 'com.sun.enterprise.security.auth.login.JDBCDigestLoginModule',
-      'pamRealm' => 'com.sun.enterprise.security.auth.login.PamLoginModule',
-    }.merge common_confs
-  end
-end
-
 def domain_dir_arg
   "--domaindir #{node['glassfish']['domains_dir']}"
 end
@@ -224,7 +112,7 @@ action :create do
     source 'logging.properties.erb'
     mode '0600'
     cookbook 'glassfish'
-    variables(logging_properties: default_logging_properties.merge(new_resource.logging_properties))
+    variables(logging_properties: new_resource.default_logging_properties.merge(new_resource.logging_properties))
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
@@ -232,7 +120,7 @@ action :create do
     source 'login.conf.erb'
     mode '0600'
     cookbook 'glassfish'
-    variables realm_types: default_realm_confs.merge(new_resource.realm_types)
+    variables realm_types: new_resource.default_realm_confs.merge(new_resource.realm_types)
     notifies :restart, "windows_service[#{service_name}]", :delayed
   end
 
