@@ -17,7 +17,7 @@ export <%= key %>=<%= value %>
 
 <%
    prefix = "su -s /bin/sh #{node['glassfish']['user']} -c 'exec #{@authbind ? '/usr/bin/authbind --deep ' : ''}"
-   asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
+   asadmin = "#{node['glassfish']['base_dir']}/glassfish/versions/current/bin/asadmin"
    domaindir = "--domaindir #{node['glassfish']['domains_dir']}"
 %>
 case "$1" in

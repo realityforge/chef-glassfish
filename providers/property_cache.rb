@@ -19,11 +19,21 @@ require 'English'
 include Chef::Asadmin
 
 action :create do
-  output = `#{asadmin_command("get '*'", true, terse: true, echo: false)}`
-  raise 'Error caching properties' unless $CHILD_STATUS.exitstatus.to_i == 0
+  require 'mixlib/shellout'
+
+  command = Mixlib::ShellOut.new(asadmin_command('get "*"', true, terse: true, echo: false)).run_command
+  output = command.stdout
+
+  raise 'Error caching properties' unless command.exitstatus.to_i == 0
+
+  separator = if node.windows?
+                "\r\n"
+              else
+                "\n"
+              end
 
   values = {}
-  output.split("\n").each do |line|
+  output.split(separator).each do |line|
     index = line.index('=')
     key = line[0, index]
     value = line[index + 1, line.size]

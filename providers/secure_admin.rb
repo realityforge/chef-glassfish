@@ -17,17 +17,29 @@
 include Chef::Asadmin
 
 action :enable do
-  service "glassfish-#{new_resource.domain_name}" do
-    supports restart: true, status: true
+  glassfish_wait_for_glassfish new_resource.domain_name do
+    username new_resource.username
+    password_file new_resource.password_file
+    admin_port new_resource.admin_port
+    only_if { new_resource.admin_port }
     action :nothing
   end
 
+  service "glassfish-#{new_resource.domain_name}" do
+    supports restart: true, status: true
+    timeout 180
+    action :nothing
+    notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
+  end
+
   execute 'asadmin_enable-secure-admin' do
-    not_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command('enable-secure-admin', true, secure: false)
+    filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
+    not_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
+
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
 end
@@ -35,15 +47,17 @@ end
 action :disable do
   service "glassfish-#{new_resource.domain_name}" do
     supports restart: true, status: true
+    timeout 180
     action :nothing
   end
 
   execute 'asadmin_disable-secure-admin' do
-    only_if "#{asadmin_command('get secure-admin.enabled')} | grep -F -x -- 'secure-admin.enabled=true'", timeout: node['glassfish']['asadmin']['timeout'] + 5
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node['os'] == 'windows'
-    group new_resource.system_group unless node['os'] == 'windows'
+    user new_resource.system_user unless node.windows?
+    group new_resource.system_group unless node.windows?
     command asadmin_command('disable-secure-admin')
+    filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
+    only_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
 end

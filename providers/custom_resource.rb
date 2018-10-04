@@ -34,19 +34,20 @@ action :create do
     args << '--restype' << new_resource.restype
     args << '--factoryclass' << factoryclass
     args << "--enabled=#{new_resource.enabled}" if new_resource.enabled
-    args << '--description' << "'#{new_resource.description}'" if new_resource.description
+    args << '--description' << "\"#{new_resource.description}\"" if new_resource.description
     args << '--property' << encode_parameters(properties) unless properties.empty?
     args << asadmin_target_flag
     args << new_resource.jndi_name
 
     execute "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
-      unless cache_present
-        not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
+      unless cache_present
+        filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
+        not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
+      end
     end
   end
   if !cache_present || !may_need_create
@@ -79,19 +80,20 @@ action :delete do
                     end
 
   if may_need_delete
-    command = []
-    command << 'delete-custom-resource'
-    command << asadmin_target_flag
-    command << new_resource.jndi_name
+    args = []
+    args << 'delete-custom-resource'
+    args << asadmin_target_flag
+    args << new_resource.jndi_name
 
     execute "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
-      unless cache_present
-        only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | grep -F -x -- '#{new_resource.jndi_name}'", timeout: node['glassfish']['asadmin']['timeout'] + 5
-      end
       timeout node['glassfish']['asadmin']['timeout'] + 5
-      user new_resource.system_user unless node['os'] == 'windows'
-      group new_resource.system_group unless node['os'] == 'windows'
-      command asadmin_command(command.join(' '))
+      user new_resource.system_user unless node.windows?
+      group new_resource.system_group unless node.windows?
+      command asadmin_command(args.join(' '))
+      unless cache_present
+        filter = pipe_filter(new_resource.name, regexp: false, line: true)
+        only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
+      end
     end
   end
 end

@@ -197,6 +197,7 @@
 # ```
 
 include_recipe 'glassfish::default'
+require 'mixlib/shellout'
 
 def gf_scan_existing_resources(admin_port, username, password_file, secure, command)
   options = { remote_command: true, terse: true, echo: false }
@@ -206,7 +207,12 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
   options[:admin_port] = admin_port if admin_port
 
   Chef::Log.debug "Issuing #{Asadmin.asadmin_command(node, command, options)}"
-  output = `#{Asadmin.asadmin_command(node, command, options)} 2> /dev/null`
+  begin
+    output = Mixlib::ShellOut.new(Asadmin.asadmin_command(node, command, options)).run_command.stdout
+  rescue Errno::ENOENT
+    return
+  end
+
   return if output =~ /^Nothing to list.*/ || output =~ /^No such local command.*/ || output =~ /^Command .* failed\./
   lines = output.split("\n")
 
@@ -312,55 +318,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     action (remote_access.to_s == 'true') ? :enable : :disable # rubocop:disable Lint/ParenthesesAsGroupedExpression
   end
 
-  if admin_port
-    require 'net/https' if remote_access
-
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - wait till up"
-
-    ruby_block "block_until_glassfish_#{domain_key}_up" do
-      block do
-        def url_responding_with_code?(url, username, password, code)
-          uri = URI(url)
-          res = nil
-          http = Net::HTTP.new(uri.hostname, uri.port)
-          if url =~ /https\:/
-            http.use_ssl = true
-            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-          end
-          http.start do |http| # rubocop:disable Lint/ShadowingOuterLocalVariable
-            request = Net::HTTP::Get.new(uri.request_uri)
-            request.basic_auth username, password
-            request['Accept'] = 'application/json'
-            res = http.request(request)
-          end
-          return true if res.code.to_s == code.to_s
-          puts "GlassFish not responding OK - #{res.code} to #{url}"
-        rescue StandardError => e
-          puts "GlassFish error while accessing web interface at #{url}"
-          puts e.message
-          puts e.backtrace.join("\n")
-          url
-        end
-
-        fail_count = 0
-        loop do
-          raise 'GlassFish failed to become operational' if fail_count > 50
-          base_url = "http#{remote_access ? 's' : ''}://#{node['ipaddress']}:#{admin_port}"
-          nodes_url = "#{base_url}/management/domain/nodes"
-          applications_url = "#{base_url}/management/domain/applications"
-          password = definition['config']['password']
-          if url_responding_with_code?(nodes_url, username, password, 200) &&
-             url_responding_with_code?(applications_url, username, password, 200) &&
-             url_responding_with_code?(base_url, username, password, 200)
-            sleep 1
-            break
-          end
-          fail_count += 1
-          sleep 1
-        end
-      end
-      action :create
-    end
+  glassfish_wait_for_glassfish domain_key do
+    username username if username
+    password_file password_file
+    admin_port admin_port
+    only_if { admin_port }
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - server instances"

@@ -1,0 +1,30 @@
+rem #
+rem #                       * * *    N O T E     * * *
+rem #
+rem # Although the lines in this file are formatted as environment
+rem # variable assignments, this file is NOT typically invoked as a script
+rem # from another script to define these variables.  Rather, this file is read
+rem # and processed by a server as it starts up.  That scanning code resolves
+rem # the relative paths against the GlassFish installation directory.
+rem #
+rem # Yet, this file is also where users of earlier versions have sometimes added
+rem # a definition of AS_JAVA to control which version of Java GlassFish
+rem # should use.  As a result, in order to run a user-specified version of Java,
+rem # the asadmin and appclient scripts do indeed invoke this file as a
+rem # script - but ONLY to define AS_JAVA.  Any calling script should not
+rem # rely on the other settings because the relative paths will be resolved
+rem # against the current directory when the calling script is run, not the
+rem # installation directory of GlassFish, and such resolution will not work
+rem # correctly unless the script happens to be run from the GlassFish installation
+rem # directory.
+rem #
+
+set AS_JAVA=<%= node['java']['java_home'] %>
+set AS_IMQ_LIB=<%= "#{node['glassfish']['install_dir']}/mq/lib" %>
+set AS_IMQ_BIN=<%= "#{node['glassfish']['install_dir']}/mq/bin" %>
+set AS_CONFIG=<%= "#{node['glassfish']['install_dir']}/glassfish/config" %>
+set AS_INSTALL=<%= "#{node['glassfish']['install_dir']}/glassfish" %>
+set AS_DEF_DOMAINS_PATH=<%= node['glassfish']['domains_dir'] %>
+set AS_DEF_NODES_PATH=../nodes
+set AS_DERBY_INSTALL=../../javadb
+set AS_H2_INSTALL=../../h2db
