@@ -31,7 +31,7 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 * `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `4.0`.
 * `node['glassfish']['variant']` - variant: The variant of the GlassFish install package. Usually payara or glassfish. Defaults to `glassfish`.
 * `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `nil`.
-* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish` (Linux) or `C:\Applications` (Windows).
+* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish` (Linux) or `C:\glassfish` (Windows).
 * `node['glassfish']['install_dir']` - GlassFish Install Directory: The directory into which glassfish is actually installed. Defaults to `nil`.
 * `node['glassfish']['remove_domains_dir_on_install']` - A flag determining whether we should remove the domains directory. Defaults to `true`.
 * `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
