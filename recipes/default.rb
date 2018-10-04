@@ -58,7 +58,7 @@ directory node['glassfish']['base_dir'] do
 end
 
 a = archive 'glassfish' do
-  prefix node['glassfish']['install_dir']
+  prefix node['glassfish']['base_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
   unless node.windows?
