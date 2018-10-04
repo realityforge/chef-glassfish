@@ -14,6 +14,7 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 
 * ubuntu
 * debian
+* windows
 
 ## Cookbooks:
 
@@ -30,7 +31,7 @@ A sample project with a Vagrantfile that launches a glassfish instance is availa
 * `node['glassfish']['version']` - Version: The version of the GlassFish install package. Defaults to `4.0`.
 * `node['glassfish']['variant']` - variant: The variant of the GlassFish install package. Usually payara or glassfish. Defaults to `glassfish`.
 * `node['glassfish']['package_url']` - Package URL: The url to the GlassFish install package. Defaults to `nil`.
-* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish`.
+* `node['glassfish']['base_dir']` - GlassFish Base Directory: The base directory of the GlassFish install. Defaults to `/usr/local/glassfish` (Linux) or `C:\glassfish` (Windows).
 * `node['glassfish']['install_dir']` - GlassFish Install Directory: The directory into which glassfish is actually installed. Defaults to `nil`.
 * `node['glassfish']['remove_domains_dir_on_install']` - A flag determining whether we should remove the domains directory. Defaults to `true`.
 * `node['glassfish']['domains_dir']` - GlassFish Domain Directory: The directory containing all the domain instance data and configuration. Defaults to `/srv/glassfish`.
@@ -561,6 +562,7 @@ Creates a GlassFish application domain, creates an OS-level service and starts t
 - realm_types: A map of names to realm implementation classes that is merged into the default realm types. Defaults to <code>{}</code>.
 - system_user: The user that the domain executes as. Defaults to `node['glassfish']['user']` if unset. Defaults to <code>nil</code>.
 - system_group: The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset. Defaults to <code>nil</code>.
+- certificate_cn: The common name that should be used when generating the self-signed ssl certificate for the domain. Default to <code>nil</code>
 
 ### Examples
 

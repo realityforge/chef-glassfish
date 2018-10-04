@@ -29,7 +29,6 @@ action :create do
   args << new_resource.name
 
   execute "asadmin_create-admin-object #{new_resource.name}" do
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     user new_resource.system_user unless node.windows?
@@ -48,7 +47,6 @@ action :delete do
   args << new_resource.name
 
   execute "asadmin_delete-admin-object #{new_resource.name}" do
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     user new_resource.system_user unless node.windows?

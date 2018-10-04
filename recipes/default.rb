@@ -33,7 +33,7 @@ def gf_scan_existing_binary_endorsed_jars(install_dir)
 end
 
 include_recipe 'glassfish::derive_version'
-# include_recipe 'java'
+include_recipe 'java' if node.linux?
 
 group node['glassfish']['group'] do
   not_if { node.windows? }
@@ -58,7 +58,7 @@ directory node['glassfish']['base_dir'] do
 end
 
 a = archive 'glassfish' do
-  prefix node['glassfish']['install_dir']
+  prefix node['glassfish']['base_dir']
   url node['glassfish']['package_url']
   version node['glassfish']['version']
   unless node.windows?

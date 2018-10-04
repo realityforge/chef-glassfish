@@ -40,13 +40,10 @@ action :create do
     args << new_resource.jndi_name
 
     execute "asadmin_create-custom-resource #{new_resource.jndi_name} => #{new_resource.value}" do
-      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-
       user new_resource.system_user unless node.windows?
       group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
-
       unless cache_present
         filter = pipe_filter(new_resource.jndi_name, regexp: false, line: true)
         not_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
@@ -89,13 +86,10 @@ action :delete do
     args << new_resource.jndi_name
 
     execute "asadmin_delete-custom-resource #{new_resource.jndi_name}" do
-      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
-
       user new_resource.system_user unless node.windows?
       group new_resource.system_group unless node.windows?
       command asadmin_command(args.join(' '))
-
       unless cache_present
         filter = pipe_filter(new_resource.name, regexp: false, line: true)
         only_if "#{asadmin_command('list-custom-resources')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5

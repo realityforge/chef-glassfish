@@ -105,20 +105,20 @@ action :create do
 
   directory node['openmq']['var_home'] do
     recursive true
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     mode '0700'
   end
 
   directory "#{node['openmq']['var_home']}/instances" do
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     mode '0700'
   end
 
   %W(#{instance_dir} #{instance_dir}/etc #{instance_dir}/log #{instance_dir}/props #{instance_dir}/bin).each do |dir|
     directory dir do
-      owner new_resource.system_user
+      owner new_resource.system_user unless node.windows?
       group new_resource.system_group unless node.windows?
       mode '0700'
     end
@@ -127,7 +127,7 @@ action :create do
   # Not sure why this is required... but something runs service as root which created this file as root owned
   file "#{instance_dir}/log/log.txt" do
     not_if { ::File.exist?("#{instance_dir}/log/log.txt") }
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     mode '0700'
     action :touch
@@ -135,7 +135,7 @@ action :create do
 
   file "#{instance_dir}/bin/#{new_resource.instance}_imqcmd" do
     mode '0700'
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     content <<-SH
 #!/bin/sh
@@ -161,42 +161,48 @@ action :create do
   if new_resource.port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Port #{new_resource.port}" do
       port new_resource.port
-      user new_resource.system_user unless node.windows?
+      user new_resource.system_user
+      not_if { os.windows? }
     end
   end
 
   if new_resource.jmx_port && new_resource.jmx_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ JMX Port #{new_resource.jmx_port}" do
       port new_resource.jmx_port
-      user new_resource.system_user unless node.windows?
+      user new_resource.system_user
+      not_if { os.windows? }
     end
   end
 
   if new_resource.rmi_port && new_resource.rmi_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ RMI Port #{new_resource.rmi_port}" do
       port new_resource.rmi_port
-      user new_resource.system_user unless node.windows?
+      user new_resource.system_user
+      not_if { os.windows? }
     end
   end
 
   if new_resource.admin_port && new_resource.admin_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Admin Port #{new_resource.admin_port}" do
       port new_resource.admin_port
-      user new_resource.system_user unless node.windows?
+      user new_resource.system_user
+      not_if { os.windows? }
     end
   end
 
   if new_resource.jms_port && new_resource.jms_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ JMS Port #{new_resource.jms_port}" do
       port new_resource.jms_port
-      user new_resource.system_user unless node.windows?
+      user new_resource.system_user
+      not_if { os.windows? }
     end
   end
 
   if new_resource.stomp_port && new_resource.stomp_port < 1024
     authbind_port "AuthBind GlassFish OpenMQ Stomp Port #{new_resource.stomp_port}" do
       port new_resource.stomp_port
-      user new_resource.system_user unless node.windows?
+      user new_resource.system_user
+      not_if { os.windows? }
     end
   end
 
@@ -237,7 +243,7 @@ action :create do
 
   if new_resource.jmx_port
     file "#{instance_dir}/etc/jmxremote.access" do
-      owner new_resource.system_user
+      owner new_resource.system_user unless node.windows?
       group new_resource.system_group unless node.windows?
       mode '0400'
       action :create
@@ -246,7 +252,7 @@ action :create do
     end
 
     file "#{instance_dir}/etc/jmxremote.password" do
-      owner new_resource.system_user
+      owner new_resource.system_user unless node.windows?
       group new_resource.system_group unless node.windows?
       mode '0400'
       action :create
@@ -274,7 +280,7 @@ action :create do
     source 'config.properties.erb'
     mode '0600'
     cookbook 'glassfish'
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     variables(configs: mq_config_settings(new_resource))
     notifies :restart, service_resource_name, :delayed
@@ -284,7 +290,7 @@ action :create do
     source 'logging.properties.erb'
     mode '0400'
     cookbook 'glassfish'
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     variables(logging_properties: new_resource.logging_properties)
     notifies :restart, service_resource_name, :delayed
@@ -294,7 +300,7 @@ action :create do
     source 'passwd.erb'
     mode '0400'
     cookbook 'glassfish'
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     variables(users: new_resource.users)
   end
@@ -303,7 +309,7 @@ action :create do
     source 'accesscontrol.properties.erb'
     mode '0400'
     cookbook 'glassfish'
-    owner new_resource.system_user
+    owner new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     variables(rules: new_resource.access_control_rules)
   end

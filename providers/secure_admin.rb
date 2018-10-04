@@ -33,13 +33,10 @@ action :enable do
   end
 
   execute 'asadmin_enable-secure-admin' do
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-
     user new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     command asadmin_command('enable-secure-admin', true, secure: false)
-
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
     not_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
 
@@ -55,15 +52,12 @@ action :disable do
   end
 
   execute 'asadmin_disable-secure-admin' do
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
     user new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     command asadmin_command('disable-secure-admin')
-
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
     only_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
-
     notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
   end
 end

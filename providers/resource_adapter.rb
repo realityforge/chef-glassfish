@@ -27,13 +27,10 @@ action :create do
   args << new_resource.resource_adapter_name
 
   execute "asadmin_create-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-
     user new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
-
     filter = pipe_filter(new_resource.resource_adapter_name, regexp: false, line: true)
     not_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end
@@ -45,13 +42,10 @@ action :delete do
   args << new_resource.resource_adapter_name
 
   execute "asadmin_delete-resource-adapter-config #{new_resource.resource_adapter_name}" do
-    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-
     user new_resource.system_user unless node.windows?
     group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
-
     filter = pipe_filter(new_resource.resource_adapter_name, regexp: false, line: true)
     only_if "#{asadmin_command('list-connector-connection-pools')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
   end

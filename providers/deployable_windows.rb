@@ -193,8 +193,6 @@ action :disable do
     only_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | findstr /R /C:\"#{new_resource.component_name}\" | findstr /R /C:\"enabled\"", timeout: node['glassfish']['asadmin']['timeout']
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node.windows?
-    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
   end
 end
@@ -209,8 +207,6 @@ action :enable do
     not_if "#{asadmin_command('list-applications --long')} #{new_resource.target} | finstr /R /C:\"#{new_resource.component_name}\" | findstr /R /C:\"enabled\"", timeout: node['glassfish']['asadmin']['timeout']
     # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
-    user new_resource.system_user unless node.windows?
-    group new_resource.system_group unless node.windows?
     command asadmin_command(args.join(' '))
   end
 end

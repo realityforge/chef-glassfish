@@ -1,3 +1,11 @@
+## v1.0.0:
+* Enhance : Add support for Payara 5.183
+* Enhance : Add Windows support
+            Huge thanks to Akos Vandra @axos88 for work on this!
+* Enhance : Moved waiting for Glassfish to be up to library
+* Enhance : Use Mixlib::ShellOut for calling commands
+* Enhance : Add support for specifying self-signed certificate CN
+
 ## v0.8.0:
 * Enhance : Add support to Payara 5.182
 * Fix     : Fix Cookstyle issues
