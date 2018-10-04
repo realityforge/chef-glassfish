@@ -42,7 +42,7 @@ end
 user node['glassfish']['user'] do
   comment 'GlassFish Application Server'
   gid node['glassfish']['group']
-  home node['glassfish']['base_dir']
+  home node['glassfish']['base_dir'] + '/glassfish'
   shell '/bin/bash'
   system true
   not_if { node.windows? }
