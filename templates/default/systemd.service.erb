@@ -14,6 +14,9 @@ Type = forking
 Environment="<%= key %>=<%= value %>"
 <% end -%>
 <% end -%>
+<%- if @new_resource.env_var_file %>
+EnvironmentFile=<%= @new_resource.env_var_file %>
+<% end -%>
 TimeoutStartSec = <%= @start_domain_timeout %>
 TimeoutStopSec = <%= @stop_domain_timeout %>
 
