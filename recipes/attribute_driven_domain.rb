@@ -281,6 +281,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     max_perm_size definition['config']['max_perm_size'] if definition['config']['max_perm_size']
     max_stack_size definition['config']['max_stack_size'] if definition['config']['max_stack_size']
     port definition['config']['port'] if definition['config']['port']
+    https_port definition['config']['https_port'] if definition['config']['https_port']
     admin_port admin_port if admin_port
     portbase portbase if portbase
     username username if username
