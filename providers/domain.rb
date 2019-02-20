@@ -138,7 +138,7 @@ action :create do
     end
   end
 
-  requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024
+  requires_authbind = new_resource.port < 1024 || new_resource.admin_port < 1024 || new_resource.https_port < 1024
 
   service service_name do
     supports :start => true, :restart => true, :stop => true, :status => true

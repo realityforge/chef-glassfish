@@ -52,6 +52,8 @@ attribute :max_perm_size, :kind_of => Integer, :default => 96
 attribute :max_stack_size, :kind_of => Integer, :default => 350
 #<> @attribute port The port on which the HTTP service will bind.
 attribute :port, :kind_of => Integer, :default => 8080
+#<> @attribute https_port The port on which the HTTPS service will bind.
+attribute :https_port, :kind_of => Integer, :default => 8181 
 #<> @attribute admin_port The port on which the web management console is bound.
 attribute :admin_port, :kind_of => Integer, :default => 4848
 #<> @attribute extra_jvm_options An array of extra arguments to pass the JVM.
