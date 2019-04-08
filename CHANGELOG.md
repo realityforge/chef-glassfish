@@ -1,3 +1,6 @@
+## v1.0.1:
+* Fix     : Bugfix release to not change mode, owner or group of /usr/local
+
 ## v1.0.0:
 * Enhance : Add support for Payara 5.183
 * Enhance : Add Windows support
