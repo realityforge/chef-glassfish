@@ -1,3 +1,7 @@
+## v.1.0.2:
+* Enhance : Improve systemd restarting on failure
+* Enhance : Wait for Glassfish admin to be ready before adding a library
+
 ## v1.0.1:
 * Fix     : Bugfix release to not change mode, owner or group of /usr/local
 
