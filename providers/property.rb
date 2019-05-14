@@ -30,6 +30,7 @@ action :set do
         filter = pipe_filter("#{new_resource.key}=#{new_resource.value}", regexp: false, line: false)
         not_if "#{asadmin_command("get #{new_resource.key}")} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
+      # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
       timeout node['glassfish']['asadmin']['timeout'] + 5
 
       user new_resource.system_user unless node.windows?

@@ -18,6 +18,7 @@ include Chef::Asadmin
 
 action :run do
   execute "asadmin #{new_resource.command}" do
+    # execute should wait for asadmin to time out first, if it doesn't because of some problem, execute should time out eventually
     timeout node['glassfish']['asadmin']['timeout'] + 5
 
     user new_resource.system_user unless node.windows?

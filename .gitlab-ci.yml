@@ -1,0 +1,35 @@
+image: git.ext.vilant.com:4567/vilant-it/docker-chefdk:latest
+
+stages:
+- lint
+- deploy
+
+chef:
+  stage: lint
+  tags:
+    - docker
+  script:
+    - chef -v
+
+cookstyle:
+  stage: lint
+  tags:
+    - docker
+  script:
+    - cookstyle -v
+    - cookstyle -D --fail-level C
+
+foodcritic:
+  stage: lint
+  tags:
+    - docker
+  script:
+    - foodcritic -V
+    - foodcritic -f any .
+
+deploy:
+  stage: deploy
+  tags:
+    - docker
+  script:
+    - /root/gitlab_upload.sh infra origin/$CI_BUILD_REF_NAME
