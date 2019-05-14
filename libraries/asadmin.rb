@@ -32,6 +32,29 @@ class Chef
       string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) { |match| "\\#{match}" }
     end
 
+    def transform_jvm_options(options)
+      options.map do |line|
+        min = ''
+        capture = line.match(/min\(([\d\.]+)\)/)
+        min = capture.captures.first unless capture.nil?
+
+        max = ''
+        capture = line.match(/max\(([\d\.]+)\)/)
+        max = capture.captures.first unless capture.nil?
+
+        base = line.gsub(/   --> JDK versions: [A-Za-z\(\d\.\), ]+/, '')
+
+        min = min.gsub(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '\1.\2.\3u\4')
+        max = max.gsub(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '\1.\2.\3u\4')
+
+        if min != '' || max != ''
+          "[#{min}|#{max}]#{base}"
+        else
+          base
+        end
+      end
+    end
+
     def self.pipe_filter(node, pattern, regexp: true, line: false)
       case node['os']
       when 'linux'

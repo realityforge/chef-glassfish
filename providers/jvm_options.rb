@@ -78,7 +78,7 @@ action :set do
     existing = output.split("\n") if node.linux?
     existing = output.split("\r\n") if node.windows?
 
-    existing_option_string = encode_options(existing)
+    existing_option_string = encode_options(transform_jvm_options(existing))
     new_option_string = encode_options(new_resource.options)
 
     if existing_option_string != new_option_string
