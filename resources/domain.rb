@@ -172,6 +172,20 @@ def security_jvm_options
   ]
 end
 
+def grizzly_options
+  if node['glassfish']['variant'] == 'payara' && node['glassfish']['version'].split('.')[0].to_i >= 5 && node['glassfish']['version'].split('.')[1].to_i >= 184
+    [
+      '[1.8.0|1.8.0u120]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar',
+      '[1.8.0u121|1.8.0u160]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.7.jar',
+      '[1.8.0u161|1.8.0u190]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.8.jar',
+      '[1.8.0u191|1.8.0u500]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.8.1.jar',
+      '[9|]-Xbootclasspath/a:${com.sun.aas.installRoot}/lib/grizzly-npn-api.jar',
+    ]
+  else
+    []
+  end
+end
+
 def development_jvm_options
   [
     '-Djdbc.drivers=org.apache.derby.jdbc.ClientDriver',
@@ -179,7 +193,8 @@ def development_jvm_options
 end
 
 def default_jvm_options
-  runtime_jvm_options +
+  grizzly_options +
+    runtime_jvm_options +
     development_jvm_options +
     common_jvm_options +
     installation_jvm_options +
