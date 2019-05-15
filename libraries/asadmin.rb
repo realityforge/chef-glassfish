@@ -32,6 +32,13 @@ class Chef
       string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) { |match| "\\#{match}" }
     end
 
+    # asadmin (and REST API) returns JDK version restrictions for JVM options in different format than it requires as input
+    # This function converts between the return-format and input-format (or optionally without any version)
+    #
+    # For example:
+    # From: "-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar   --> JDK versions: min(1.8.0), max(1.8.0.120) (Inactive on this JDK)"
+    # To: "[1.8.0|1.8.0u120]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar"
+    #
     def transform_jvm_options(options, withoutversions = false)
       options.map do |line|
         min = ''
