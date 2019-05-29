@@ -242,6 +242,9 @@ def default_logging_properties
     # Payara 5.183
     'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.formatter' => 'com.sun.enterprise.server.logging.ODLLogFormatter',
 
+    # Payara 5.192
+    'com.sun.enterprise.server.logging.GFFileHandler.logStandardStreams' => 'true',
+
     # All log level details
     '.level' => 'INFO',
 

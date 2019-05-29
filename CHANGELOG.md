@@ -1,3 +1,6 @@
+## v.1.1.1:
+* Enhance : Add support for Payara 5.192
+
 ## v.1.1.0:
 * Enhance : Add support for Payara 5.184 and 5.191
 
