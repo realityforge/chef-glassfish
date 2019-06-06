@@ -1,9 +1,10 @@
 <% prefix = @authbind ? '/usr/bin/authbind --deep ' : '' %>
 [Unit]
 Description = GlassFish Server for <%= @new_resource.domain_name %>
-After = syslog.target network.target remote-fs.target
+After = syslog.target network.target remote-fs.target mysqld.service
 
 [Service]
+
 User=<%= node['glassfish']['user'] %>
 ExecStart = <%= "#{prefix} #{@start_domain_command}" %>
 ExecStop = <%= "#{prefix} #{@stop_domain_command}" %>
