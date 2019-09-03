@@ -76,6 +76,8 @@ default_action :download
 attribute :name, :kind_of => String, :name_attribute => true
 #<> @attribute url The url from which to download the resource.
 attribute :url, :kind_of => String, :required => true
+#<> @attribute headers Hash of custom headers to send when making HTTP call
+attribute :headers, :kind_of => Hash, :default => {}
 #<> @attribute version The version of the archive. Should be set, otherwise will be derived as a hash of the url parameter.
 attribute :version, :kind_of => [String, NilClass], :default => nil
 #<> @attribute owner The owner of the container directory and created artifacts.

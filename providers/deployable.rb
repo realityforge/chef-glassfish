@@ -67,9 +67,14 @@ action :deploy do
 
     Chef::Log.info "Deploying #{new_resource.component_name} from #{new_resource.url}"
 
+    headers = {}
+    if new_resource.auth_username and new_resource.auth_password
+      headers['Authorization'] = "Basic #{ Base64.encode64("#{new_resource.auth_username}:#{new_resource.auth_password}").gsub("\n", "") }"
+    end
     a = glassfish_archive new_resource.component_name do
       prefix archives_dir
       url new_resource.url
+      headers headers
       version new_resource.version_value
       owner node['glassfish']['user']
       group node['glassfish']['group']

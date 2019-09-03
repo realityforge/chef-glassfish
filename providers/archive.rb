@@ -29,10 +29,13 @@ action :download do
     else
       cached_package_filename = "#{Chef::Config[:file_cache_path]}/#{new_resource.local_filename}"
 
+      sensitive = new_resource.headers.empty? ? false : true
       remote_file cached_package_filename do
         source new_resource.url
         owner new_resource.owner
         group new_resource.group
+        headers new_resource.headers
+        sensitive sensitive
         mode '0600'
         action :create_if_missing
       end
