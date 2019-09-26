@@ -41,6 +41,7 @@ include_recipe 'java'
 
 group node['glassfish']['group'] do
   not_if "getent group #{node['glassfish']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 user node['glassfish']['user'] do
@@ -50,6 +51,7 @@ user node['glassfish']['user'] do
   shell '/bin/bash'
   system true
   not_if "getent passwd #{node['glassfish']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 directory node['glassfish']['base_dir'] do
