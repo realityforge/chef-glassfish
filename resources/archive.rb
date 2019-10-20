@@ -119,6 +119,10 @@ def target_directory
   "#{package_directory}/#{name}-#{derived_version}"
 end
 
+def current_directory 
+  "#{package_directory}/current"
+end
+
 def local_filename
   "#{name}-#{derived_version}#{::File.extname(url)}"
 end

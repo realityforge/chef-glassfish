@@ -72,7 +72,7 @@ end
 
 exists_at_run_start = ::File.exist?(a.target_directory)
 
-node.override['glassfish']['install_dir'] = a.target_directory
+node.override['glassfish']['install_dir'] = a.current_directory
 
 template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
   source 'asenv.conf.erb'

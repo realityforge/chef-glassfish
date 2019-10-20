@@ -97,7 +97,7 @@ action :unzip_and_strip_dir do
       end
 
       # Create the symlink
-      current_directory = "#{new_resource.package_directory}/current"
+      current_directory = new_resource.current_directory
       last_version = ::File.exist?(current_directory) ? ::File.readlink(current_directory) : nil
       link current_directory do
         to new_resource.target_directory
