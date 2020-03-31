@@ -10,7 +10,7 @@ supports 'ubuntu'
 supports 'debian'
 
 # Compat resource is required for 12.5+ as resource API changed between 12.4 and 12.5
-depends 'compat_resource'
+depends 'compat_resource', '~> 12.19.0'
 
-depends 'java'
-depends 'authbind'
+depends 'java', '~> 7.0.0'
+depends 'authbind', '~> 0.1.10'
