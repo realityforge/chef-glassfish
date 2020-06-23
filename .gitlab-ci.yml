@@ -19,14 +19,6 @@ cookstyle:
     - cookstyle -v
     - cookstyle -D --fail-level C
 
-foodcritic:
-  stage: lint
-  tags:
-    - docker
-  script:
-    - foodcritic -V
-    - foodcritic -f any .
-
 deploy:
   stage: deploy
   tags:
