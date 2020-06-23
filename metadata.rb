@@ -3,7 +3,7 @@ maintainer 'Peter Donald'
 maintainer_email 'peter@realityforge.org'
 license 'Apache-2.0'
 description 'Installs/Configures GlassFish Application Server'
-version '1.1.4'
+version '1.1.5'
 
 chef_version '>= 13.0'
 
