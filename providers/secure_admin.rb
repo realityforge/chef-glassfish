@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ action :enable do
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
     not_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
 
-    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediately
   end
 end
 
@@ -58,6 +58,6 @@ action :disable do
     command asadmin_command('disable-secure-admin')
     filter = pipe_filter('secure-admin.enabled=true', regexp: false, line: true)
     only_if "#{asadmin_command('get secure-admin.enabled')} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
-    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediately
   end
 end

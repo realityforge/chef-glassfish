@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,13 +40,12 @@ end
 
 action :deploy do
   raise 'Must specify url' unless new_resource.url
-  require 'mixlib/shellout'
 
   cache_present = RealityForge::GlassFish.property_cache_present?(node, new_resource.domain_name)
   is_deployed = if cache_present
                   RealityForge::GlassFish.any_cached_property_start_with?(node, new_resource.domain_name, "applications.application.#{new_resource.component_name}.")
                 else
-                  !Mixlib::ShellOut.new("#{asadmin_command('list-applications')} #{new_resource.target} | findstr /R /C:\"#{new_resource.component_name}\"").run_command.stdout.strip.split("\n").size.empty?
+                  !shell_out("#{asadmin_command('list-applications')} #{new_resource.target} | findstr /R /C:\"#{new_resource.component_name}\"").stdout.strip.split("\n").size.empty?
                 end
 
   plan_version = new_resource.descriptors.empty? ? nil : Asadmin.generate_component_plan_digest(new_resource.descriptors)
