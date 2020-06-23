@@ -979,7 +979,6 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
       Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing connector pool #{existing}"
       glassfish_connector_connection_pool existing do
         domain_name domain_key
-        raname existing
         admin_port admin_port if admin_port
         username username if username
         password_file password_file if password_file
