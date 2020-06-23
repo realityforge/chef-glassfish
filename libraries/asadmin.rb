@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,6 +32,13 @@ class Chef
       string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) { |match| "\\#{match}" }
     end
 
+    # asadmin (and REST API) returns JDK version restrictions for JVM options in different format than it requires as input
+    # This function converts between the return-format and input-format (or optionally without any version)
+    #
+    # For example:
+    # From: "-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar   --> JDK versions: min(1.8.0), max(1.8.0.120) (Inactive on this JDK)"
+    # To: "[1.8.0|1.8.0u120]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar"
+    #
     def transform_jvm_options(options, withoutversions = false)
       options.map do |line|
         min = ''
@@ -108,6 +115,7 @@ class Chef
 
     def self.versioned_component_name(component_name, component_type, version, url, descriptors)
       return component_name if version.nil? && url.nil?
+
       version_value = version ? version.to_s : Digest::SHA1.hexdigest(url)
       versioned_component_name = "#{component_name}:#{version_value}"
       versioned_component_name = "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}" if descriptors && !descriptors.empty?

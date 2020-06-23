@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -241,6 +241,9 @@ def default_logging_properties
 
     # Payara 5.183
     'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.formatter' => 'com.sun.enterprise.server.logging.ODLLogFormatter',
+
+    # Payara 5.192
+    'com.sun.enterprise.server.logging.GFFileHandler.logStandardStreams' => 'true',
 
     # All log level details
     '.level' => 'INFO',

@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 actions :create, :delete
 
-attribute :name, kind_of: String, name_attribute: true
 attribute :desttype, kind_of: String, default: 'queue'
 
 # <> @attribute domain_name The name of the domain.

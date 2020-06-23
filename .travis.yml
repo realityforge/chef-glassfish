@@ -15,8 +15,6 @@ before_script:
   - eval "$(chef shell-init bash)"
   - chef --version
   - cookstyle --version
-  - foodcritic --version
 
 script:
-  - cookstyle -D --fail-level W
-  - foodcritic -f any .
+  - cookstyle -D --fail-level C
