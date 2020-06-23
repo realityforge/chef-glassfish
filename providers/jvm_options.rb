@@ -78,14 +78,15 @@ action :set do
     existing = output.split("\n") if node.linux?
     existing = output.split("\r\n") if node.windows?
 
-    existing_option_string = encode_options(existing)
+    existing_option_string = encode_options(transform_jvm_options(existing))
     new_option_string = encode_options(new_resource.options)
 
     if existing_option_string != new_option_string
+      existing_option_string = encode_options(transform_jvm_options(existing, true))
       execute "asadmin_delete-jvm-options #{new_resource.name}" do
         delete_command = []
         delete_command << 'delete-jvm-options'
-        delete_command << existing_option_string
+        delete_command << existing_option_string # This needs to be sent without the JDK version number restrictions
         delete_command << asadmin_target_flag
 
         timeout node['glassfish']['asadmin']['timeout'] + 5

@@ -32,6 +32,38 @@ class Chef
       string.to_s.gsub(/([#{Regexp.escape('\/,=:.!$%^&*|{}[]"`~;')}])/) { |match| "\\#{match}" }
     end
 
+    # asadmin (and REST API) returns JDK version restrictions for JVM options in different format than it requires as input
+    # This function converts between the return-format and input-format (or optionally without any version)
+    #
+    # For example:
+    # From: "-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar   --> JDK versions: min(1.8.0), max(1.8.0.120) (Inactive on this JDK)"
+    # To: "[1.8.0|1.8.0u120]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar"
+    #
+    def transform_jvm_options(options, withoutversions = false)
+      options.map do |line|
+        min = ''
+        max = ''
+        unless withoutversions
+          capture = line.match(/min\(([\d\.]+)\)/)
+          min = capture.captures.first unless capture.nil?
+
+          capture = line.match(/max\(([\d\.]+)\)/)
+          max = capture.captures.first unless capture.nil?
+
+          min = min.gsub(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '\1.\2.\3u\4')
+          max = max.gsub(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '\1.\2.\3u\4')
+        end
+
+        base = line.gsub(/   --> JDK versions: [A-Za-z\(\d\.\), ]+/, '')
+
+        if min != '' || max != ''
+          "[#{min}|#{max}]#{base}"
+        else
+          base
+        end
+      end
+    end
+
     def self.pipe_filter(node, pattern, regexp: true, line: false)
       case node['os']
       when 'linux'

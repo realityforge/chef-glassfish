@@ -55,6 +55,7 @@ directory node['glassfish']['base_dir'] do
     owner node['glassfish']['user']
     group node['glassfish']['group']
   end
+  not_if { ::File.exist?(node['glassfish']['base_dir']) }
 end
 
 a = archive 'glassfish' do

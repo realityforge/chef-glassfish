@@ -2,6 +2,7 @@
 [Unit]
 Description = GlassFish Server for <%= @new_resource.domain_name %>
 After = syslog.target network.target remote-fs.target
+StartLimitIntervalSec=0
 
 [Service]
 User=<%= node['glassfish']['user'] %>
@@ -16,6 +17,8 @@ Environment="<%= key %>=<%= value %>"
 <% end -%>
 TimeoutStartSec = <%= @start_domain_timeout %>
 TimeoutStopSec = <%= @stop_domain_timeout %>
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy = multi-user.target
