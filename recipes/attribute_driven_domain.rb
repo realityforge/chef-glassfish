@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -208,7 +208,7 @@ def gf_scan_existing_resources(admin_port, username, password_file, secure, comm
 
   Chef::Log.debug "Issuing #{Asadmin.asadmin_command(node, command, options)}"
   begin
-    output = Mixlib::ShellOut.new(Asadmin.asadmin_command(node, command, options)).run_command.stdout
+    output = shell_out(Asadmin.asadmin_command(node, command, options)).stdout
   rescue Errno::ENOENT
     return
   end
@@ -368,7 +368,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   end
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - extra_libs"
-  gf_sort(definition['extra_libraries'] || {}).values.each do |config|
+  gf_sort(definition['extra_libraries'] || {}).each_value do |config|
     config = config.is_a?(Hash) ? config : { 'url' => config }
     url = config['url']
     library_type = config['type'] || 'ext'
@@ -1120,11 +1120,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
   if definition['resource_adapters'] && definition['resource_adapters']['jmsra']
     if definition['resource_adapters']['jmsra']['connection_pools']
       definition['resource_adapters']['jmsra']['connection_pools'].each_value do |pool|
-        pool['resources'].keys.each { |k| jmsra_defined_resources << k } if pool['resources']
+        pool['resources'].each_key { |k| jmsra_defined_resources << k } if pool['resources']
       end
     end
     if definition['resource_adapters']['jmsra']['admin_objects']
-      definition['resource_adapters']['jmsra']['admin_objects'].keys.each { |k| jmsra_defined_resources << k }
+      definition['resource_adapters']['jmsra']['admin_objects'].each_key { |k| jmsra_defined_resources << k }
     end
   end
 
@@ -1347,7 +1347,6 @@ Dir["#{node['glassfish']['domains_dir']}/*"]
   .select { |file| File.directory?(file) }
   .select { |file| !domain_names.include?(File.basename(file)) }
   .each do |file|
-
   Chef::Log.info "Removing historic Glassfish Domain #{File.basename(file)}"
 
   glassfish_domain File.basename(file) do

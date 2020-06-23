@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -120,9 +120,9 @@ action :create do
     group new_resource.system_group
     command (requires_authbind ? 'authbind --deep ' : '') + asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false) # rubocop:disable Lint/ParenthesesAsGroupedExpression
 
-    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
+    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediately if node['glassfish']['variant'] != 'payara'
 
-    notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
+    notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediately
     notifies :start, "service[#{service_name}]", :delayed
   end
 
@@ -189,7 +189,7 @@ action :create do
   end
 
   template "/etc/init.d/#{service_name}" do
-    only_if { !new_resource.systemd_enabled }
+    not_if { new_resource.systemd_enabled }
     case node['platform_family']
     when 'debian'
       source 'init.d.ubuntu.erb'

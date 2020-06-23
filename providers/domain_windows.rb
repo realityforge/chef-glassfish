@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ action :create do
     raise 'The master_password parameter must be greater than 6 characters.'
   end
 
-  template new_resource.password_file do # ~FC021
+  template new_resource.password_file do
     cookbook 'glassfish'
     source 'password.erb'
     sensitive true
@@ -81,8 +81,8 @@ action :create do
 
     command asadmin_command("create-domain #{create_args.join(' ')} #{new_resource.domain_name}", false)
 
-    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediate if node['glassfish']['variant'] != 'payara'
-    notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediate
+    notifies :create, "cookbook_file[#{new_resource.domain_dir_path}/config/default-web.xml]", :immediately if node['glassfish']['variant'] != 'payara'
+    notifies :delete, "file[#{new_resource.domain_dir_path}/docroot/index.html]", :immediately
   end
 
   glassfish_wait_for_glassfish new_resource.domain_name do

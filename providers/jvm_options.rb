@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,9 +35,7 @@ action :set do
     notifies :run, "glassfish_wait_for_glassfish[#{new_resource.domain_name}]", :immediately
   end
 
-  require 'mixlib/shellout'
-
-  output = Mixlib::ShellOut.new(asadmin_command('list-jvm-options', true, terse: true, echo: false)).run_command.stdout
+  output = shell_out(asadmin_command('list-jvm-options', true, terse: true, echo: false)).stdout
 
   # Work around bugs in 3.1.2.2
   if node['glassfish']['version'] == '3.1.2.2'
@@ -95,7 +93,7 @@ action :set do
         group new_resource.system_group unless node.windows?
         command asadmin_command(delete_command.join(' '))
 
-        notifies :run, "execute[asadmin_create-jvm-options #{new_resource.name}]", :immediate
+        notifies :run, "execute[asadmin_create-jvm-options #{new_resource.name}]", :immediately
       end
 
       execute "asadmin_create-jvm-options #{new_resource.name}" do
@@ -111,7 +109,7 @@ action :set do
         command asadmin_command(create_command.join(' '))
 
         action :nothing
-        notifies :restart, "service[#{service_name}]", :immediate
+        notifies :restart, "service[#{service_name}]", :immediately
       end
     end
   end
