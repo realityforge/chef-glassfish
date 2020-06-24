@@ -1,14 +1,15 @@
+# Use Travis's cointainer based infrastructure
 sudo: required
-dist: trusty
+services: docker
 
 addons:
-  apt:
-    sources:
-      - chef-current-trusty
-    packages:
-      - chefdk
+ apt:
+   sources:
+     - chef-stable-precise
+   packages:
+     - chefdk
 
-# Don't `bundle install` which takes about 1.5 mins
+# Don't `bundle install`
 install: echo "skip bundle install"
 
 before_script:
