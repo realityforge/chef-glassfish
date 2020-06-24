@@ -1,20 +1,8 @@
-# Use Travis's cointainer based infrastructure
-sudo: required
-services: docker
+language: ruby
 
-addons:
- apt:
-   sources:
-     - chef-stable-precise
-   packages:
-     - chefdk
-
-# Don't `bundle install`
-install: echo "skip bundle install"
+install: gem install cookstyle
 
 before_script:
-  - eval "$(chef shell-init bash)"
-  - chef --version
   - cookstyle --version
 
 script:
