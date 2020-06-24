@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@ require 'English'
 include Chef::Asadmin
 
 action :create do
-  require 'mixlib/shellout'
-
-  command = Mixlib::ShellOut.new(asadmin_command('get "*"', true, terse: true, echo: false)).run_command
+  command = shell_out(asadmin_command('get "*"', true, terse: true, echo: false))
   output = command.stdout
 
   raise 'Error caching properties' unless command.exitstatus.to_i == 0

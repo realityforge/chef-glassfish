@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ action :create do
         filter = pipe_filter(new_resource.threadpool_id, regexp: false, line: true)
         not_if "#{asadmin_command('list-threadpools')} #{new_resource.target} | #{filter}", timeout: node['glassfish']['asadmin']['timeout'] + 5
       end
-      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate
+      notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediately
     end
   end
 

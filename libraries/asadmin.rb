@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -115,6 +115,7 @@ class Chef
 
     def self.versioned_component_name(component_name, component_type, version, url, descriptors)
       return component_name if version.nil? && url.nil?
+
       version_value = version ? version.to_s : Digest::SHA1.hexdigest(url)
       versioned_component_name = "#{component_name}:#{version_value}"
       versioned_component_name = "#{versioned_component_name}+#{generate_component_plan_digest(descriptors)}" if descriptors && !descriptors.empty?

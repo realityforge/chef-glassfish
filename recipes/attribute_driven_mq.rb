@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ end
 
 include_recipe 'glassfish::default'
 
-node['openmq']['extra_libraries'].values.each do |extra_library|
+node['openmq']['extra_libraries'].each_value do |extra_library|
   library_location = "#{node['glassfish']['install_dir']}/mq/lib/ext/#{File.basename(extra_library)}"
   remote_file library_location do
     source extra_library

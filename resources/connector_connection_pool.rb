@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ actions :create, :delete
 attribute :pool_name, kind_of: String, name_attribute: true
 
 attribute :description, kind_of: String, default: nil
-attribute :raname, kind_of: String, required: true
-attribute :connectiondefinition, kind_of: String, required: true
+attribute :raname, kind_of: String
+attribute :connectiondefinition, kind_of: String
 
 attribute :description, kind_of: String, default: nil
 

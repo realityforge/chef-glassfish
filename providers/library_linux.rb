@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ action :add do
     user new_resource.system_user
     group new_resource.system_group
     command asadmin_command(args.join(' '))
-    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediate if new_resource.requires_restart
+    notifies :restart, "service[glassfish-#{new_resource.domain_name}]", :immediately if new_resource.requires_restart
   end
 end
 

@@ -1,3 +1,6 @@
+## v.1.2.0:
+* Enhance : Add support for Chef infra client 16
+
 ## v.1.1.1:
 * Enhance : Add support for Payara 5.192
 
