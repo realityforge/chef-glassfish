@@ -1,5 +1,5 @@
 #
-# Copyright Peter Donald
+# Copyright:: Peter Donald
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 actions :create, :delete
 
-attribute :name, kind_of: String, name_attribute: true
 attribute :target, kind_of: String, default: 'server'
 attribute :restype, kind_of: String, default: 'javax.jms.Queue'
 attribute :enabled, equal_to: [true, false, 'true', 'false'], default: true
