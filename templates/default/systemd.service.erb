@@ -3,6 +3,9 @@
 Description = GlassFish Server for <%= @new_resource.domain_name %>
 After = syslog.target network.target remote-fs.target mysqld.service
 
+[Install]
+WantedBy = multi-user.target
+
 [Service]
 
 User=<%= node['glassfish']['user'] %>
@@ -21,5 +24,3 @@ EnvironmentFile=<%= @new_resource.env_var_file %>
 TimeoutStartSec = <%= @start_domain_timeout %>
 TimeoutStopSec = <%= @stop_domain_timeout %>
 
-[Install]
-WantedBy = multi-user.target
