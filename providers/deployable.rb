@@ -131,6 +131,7 @@ action :deploy do
       args << "--availabilityenabled=#{new_resource.availability_enabled}"
       args << "--lbenabled=#{new_resource.lb_enabled}"
       args << "--keepstate=#{new_resource.keep_state}"
+      args << "--skipdsfailure=#{new_resource.skipdsfailure}"
       args << "--verify=#{new_resource.verify}"
       args << "--precompilejsp=#{new_resource.precompile_jsp}"
       args << "--asyncreplication=#{new_resource.async_replication}"

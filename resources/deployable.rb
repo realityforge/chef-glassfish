@@ -33,9 +33,10 @@ attribute :virtual_servers, :kind_of => Array, :default => []
 attribute :generate_rmi_stubs, :equal_to => [true, false, 'true', 'false'], :default => false
 attribute :availability_enabled, :equal_to => [true, false, 'true', 'false'], :default => false
 attribute :lb_enabled, :equal_to => [true, false, 'true', 'false'], :default => true
+attribute :skipdsfailure, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :keep_state, :equal_to => [true, false, 'true', 'false'], :default => false
 attribute :verify, :equal_to => [true, false, 'true', 'false'], :default => false
-attribute :precompile_jsp, :equal_to => [true, false, 'true', 'false'], :default => true
+attribute :precompile_jsp, :equal_to => [true, false, 'true', 'false'], :default => false
 attribute :async_replication, :equal_to => [true, false, 'true', 'false'], :default => true
 attribute :properties, :kind_of => Hash, :default => {}
 attribute :descriptors, :kind_of => Hash, :default => {}
