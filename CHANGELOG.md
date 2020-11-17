@@ -1,3 +1,6 @@
+## v.1.2.2:
+* Enhance : Better support for Payara 5.194+.
+
 ## v.1.2.1:
 * Enhance : Add support for newer JVM 8 and Payara.
 
