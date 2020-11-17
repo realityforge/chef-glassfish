@@ -1,3 +1,6 @@
+## v.1.2.1:
+* Enhance : Add support for newer JVM 8 and Payara.
+
 ## v.1.2.0:
 * Enhance : Add support for Chef infra client 16
 
