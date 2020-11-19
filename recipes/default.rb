@@ -24,12 +24,11 @@
 def gf_scan_existing_binary_endorsed_jars(install_dir)
   jar_extensions = ['.jar']
   gf_binary_endorsed_dir = install_dir + '/glassfish/lib/endorsed'
-  existing_binary_endorsed_jars = if Dir.exist?(gf_binary_endorsed_dir)
-                                    Dir.entries(gf_binary_endorsed_dir).reject { |f| File.directory?(f) || !jar_extensions.include?(File.extname(f)) }
-                                  else
-                                    []
-                                  end
-  existing_binary_endorsed_jars
+  if Dir.exist?(gf_binary_endorsed_dir)
+    Dir.entries(gf_binary_endorsed_dir).reject { |f| File.directory?(f) || !jar_extensions.include?(File.extname(f)) }
+  else
+    []
+  end
 end
 
 include_recipe 'glassfish::derive_version'

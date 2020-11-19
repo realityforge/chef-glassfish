@@ -38,7 +38,7 @@ action :create do
   end
 
   properties = new_resource.properties.dup.merge(
-    'address' => new_resource.listeneraddress ? new_resource.listeneraddress : '0.0.0.0',
+    'address' => (new_resource.listeneraddress || '0.0.0.0'),
     'enabled' => new_resource.enabled,
     'port' => new_resource.iiopport,
     'security-enabled' => new_resource.securityenabled

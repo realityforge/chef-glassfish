@@ -162,7 +162,7 @@ def osgi_jvm_options
 end
 
 def security_jvm_options
-  [
+  opts = [
     '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
     "-Djavax.net.ssl.keyStore=#{domain_dir_path}/config/keystore.jks",
     "-Djava.security.policy=#{domain_dir_path}/config/server.policy",
@@ -170,6 +170,11 @@ def security_jvm_options
     '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
     "-Djava.security.auth.login.config=#{domain_dir_path}/config/login.conf",
   ]
+
+  if node['glassfish']['variant'] == 'payara' && node['glassfish']['version'].split('.')[0].to_i >= 5 && node['glassfish']['version'].split('.')[1].to_i >= 194
+    opts << '[Azul-1.8.0u222|1.8.0u260]-XX:+UseOpenJSSE'
+  end
+  opts
 end
 
 def grizzly_options
@@ -178,8 +183,8 @@ def grizzly_options
       '[1.8.0|1.8.0u120]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.6.jar',
       '[1.8.0u121|1.8.0u160]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.7.jar',
       '[1.8.0u161|1.8.0u190]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.8.jar',
-      '[1.8.0u191|1.8.0u500]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.8.1.jar',
-      '[9|]-Xbootclasspath/a:${com.sun.aas.installRoot}/lib/grizzly-npn-api.jar',
+      '[1.8.0u191|1.8.0u250]-Xbootclasspath/p:${com.sun.aas.installRoot}/lib/grizzly-npn-bootstrap-1.8.1.jar',
+      '[1.8.0u251|]-Xbootclasspath/a:${com.sun.aas.installRoot}/lib/grizzly-npn-api.jar',
     ]
   else
     []
