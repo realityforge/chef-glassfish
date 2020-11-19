@@ -162,7 +162,7 @@ def osgi_jvm_options
 end
 
 def security_jvm_options
-  opts = [
+  [
     '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
     "-Djavax.net.ssl.keyStore=#{domain_dir_path}/config/keystore.jks",
     "-Djava.security.policy=#{domain_dir_path}/config/server.policy",
@@ -170,11 +170,6 @@ def security_jvm_options
     '-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=s1as',
     "-Djava.security.auth.login.config=#{domain_dir_path}/config/login.conf",
   ]
-
-  if node['glassfish']['variant'] == 'payara' && node['glassfish']['version'].split('.')[0].to_i >= 5 && node['glassfish']['version'].split('.')[1].to_i >= 194
-    opts << '[Azul-1.8.0u222|1.8.0u260]-XX:+UseOpenJSSE'
-  end
-  opts
 end
 
 def grizzly_options
