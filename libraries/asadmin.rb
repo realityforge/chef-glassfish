@@ -44,17 +44,17 @@ class Chef
         min = ''
         max = ''
         unless withoutversions
-          capture = line.match(/min\(([\d\.]+)\)/)
+          capture = line.match(/min\(([\w\-\d\.]+)\)/)
           min = capture.captures.first unless capture.nil?
 
-          capture = line.match(/max\(([\d\.]+)\)/)
+          capture = line.match(/max\(([\w\-\d\.]+)\)/)
           max = capture.captures.first unless capture.nil?
 
           min = min.gsub(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '\1.\2.\3u\4')
           max = max.gsub(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '\1.\2.\3u\4')
         end
 
-        base = line.gsub(/   --> JDK versions: [A-Za-z\(\d\.\), ]+/, '')
+        base = line.gsub(/   --> JDK versions: [A-Za-z\-\(\d\.\), ]+/, '')
 
         if min != '' || max != ''
           "[#{min}|#{max}]#{base}"
