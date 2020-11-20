@@ -3,3 +3,7 @@ Layout/LineLength:
 
 Layout/EndOfLine:
   EnforcedStyle: lf
+
+ChefCorrectness/PropertyWithoutType:
+  Exclude:
+    - "resources/*.rb"
