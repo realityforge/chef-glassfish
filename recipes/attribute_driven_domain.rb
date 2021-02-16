@@ -1296,11 +1296,11 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
     end
   end if gf_managed?(definition['context_services'])
 
-  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing thread pools"
+  Chef::Log.info "Defining GlassFish Domain #{domain_key} - checking existing threadpools"
   gf_scan_existing_resources(admin_port, username, password_file, secure, 'list-threadpools') do |existing|
-    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing thread-pools #{existing}"
-    unless definition['thread-pools'] && definition['thread-pools'][existing]
-      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing thread-pool #{existing}"
+    Chef::Log.info "Defining GlassFish Domain #{domain_key} - considering existing threadpools #{existing}"
+    unless definition['threadpools'] && definition['threadpools'][existing]
+      Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing existing threadpool #{existing}"
       glassfish_thread_pool existing do
         domain_name domain_key
         admin_port admin_port if admin_port
@@ -1312,7 +1312,7 @@ gf_sort(node['glassfish']['domains']).each_pair do |domain_key, definition|
         action :delete
       end
     end
-  end if gf_managed?(definition['thread-pools'])
+  end if gf_managed?(definition['threadpools'])
 
   Chef::Log.info "Defining GlassFish Domain #{domain_key} - removing cached properties"
   glassfish_property_cache "#{domain_key} Cache" do

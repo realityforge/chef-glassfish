@@ -1,3 +1,6 @@
+## v1.2.5:
+* Fix : Fix thread pool comparison
+
 ## v.1.2.5:
 * Fix : Revert Azul JDK specific JVM options from 1.2.2
 * Enhance : Improve JVM option parsing
