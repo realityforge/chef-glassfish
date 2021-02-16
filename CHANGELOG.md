@@ -1,3 +1,13 @@
+## v1.2.5:
+* Fix : Fix thread pool comparison
+
+## v.1.2.5:
+* Fix : Revert Azul JDK specific JVM options from 1.2.2
+* Enhance : Improve JVM option parsing
+
+## v.1.2.3 - v.1.2.4
+* Unreleased
+
 ## v.1.2.2:
 * Enhance : Better support for Payara 5.194+.
 
