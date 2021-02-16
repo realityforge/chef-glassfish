@@ -1,5 +1,5 @@
-## v1.2.5:
-* Fix : Fix thread pool comparison
+## v1.2.6:
+* Fix : Fix thread pool comparison in attribute driven domain
 
 ## v.1.2.5:
 * Fix : Revert Azul JDK specific JVM options from 1.2.2
