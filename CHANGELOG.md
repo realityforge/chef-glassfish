@@ -1,3 +1,6 @@
+## v1.2.7:
+* Enhance : Add support for Payara 5.2021.10
+
 ## v1.2.6:
 * Fix : Fix thread pool comparison in attribute driven domain
 

@@ -245,6 +245,9 @@ def default_logging_properties
     # Payara 5.192
     'com.sun.enterprise.server.logging.GFFileHandler.logStandardStreams' => 'true',
 
+    # Payara 5.2021.10
+    'com.sun.enterprise.server.logging.GFFileHandler.fastLogging' => 'false',
+
     # All log level details
     '.level' => 'INFO',
 
