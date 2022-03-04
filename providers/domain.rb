@@ -300,7 +300,7 @@ end
     password_file = new_resource.password_file ? "--passwordfile=#{new_resource.password_file}" : ""
 
     variables(:new_resource => new_resource,
-              :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
+              :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug #{debug} --upgrade false #{domain_dir_arg} #{new_resource.domain_name}",
               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_dir_arg} #{new_resource.domain_name}",
               :authbind => requires_authbind,

@@ -98,6 +98,8 @@ attribute :realm_types, :kind_of => Hash, :default => {}
 attribute :system_user, :kind_of => String, :default => nil
 #<> @attribute system_group The group that the domain executes as. Defaults to `node['glassfish']['group']` if unset.
 attribute :system_group, :kind_of => String, :default => nil
+#<> @attribute debug Start the glassfish server in debug mode. Defaults to 'false'
+attribute :debug, :kind_of => String, :default => "false"
 
 default_action :create
 
