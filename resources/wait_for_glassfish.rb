@@ -21,7 +21,7 @@ property :username, String, default: 'admin'
 property :password_file, String, required: true
 
 # <> @attribute ipaddress The IP address to connect to glassfish.
-property :ipaddress, String, default: lazy { node['ipaddress'] }
+property :ipaddress, String, default: '127.0.0.1'
 
 # <> @attribute admin_port The port on which the web management console is bound.
 property :admin_port, Integer, default: 4848
