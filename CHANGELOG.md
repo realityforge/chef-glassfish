@@ -1,3 +1,6 @@
+## v1.2.8:
+* Fix : Add asadmin execution rights to `node['glassfish']['user']` and `node['glassfish']['group']`
+
 ## v1.2.7:
 * Enhance : Add support for Payara 5.2021.10
 

@@ -70,6 +70,14 @@ end
 
 node.override['glassfish']['install_dir'] = a.target_directory
 
+unless node.windows?
+  file "#{node['glassfish']['install_dir']}/glassfish/bin/asadmin" do
+    mode '0755'
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+  end
+end
+
 exists_at_run_start = ::File.exist?(node['glassfish']['install_dir'])
 
 template "#{node['glassfish']['install_dir']}/glassfish/config/asenv.conf" do
