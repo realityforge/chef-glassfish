@@ -1,3 +1,8 @@
+## v1.3.0:
+* Change : Drop support for older Chef client versions. Chef client 16+ required.
+* Change : Add support for Chef-client 18
+* Change : Use localhost address for admin port availability polling instead of `node['ipaddress']`
+
 ## v1.2.8:
 * Fix : Add asadmin execution rights to `node['glassfish']['user']` and `node['glassfish']['group']`
 

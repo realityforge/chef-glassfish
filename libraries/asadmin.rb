@@ -64,25 +64,21 @@ class Chef
       end
     end
 
-    def self.pipe_filter(node, pattern, regexp: true, line: false)
-      case node['os']
-      when 'linux'
-        switches = [
-          regexp ? '' : '-F',
-          line ? '-x' : '',
-        ]
-        "grep #{switches.join(' ')} -- '#{pattern}'"
-      when 'windows'
+    def pipe_filter(pattern, test = nil, regexp: true, line: false)
+      Chef::Log.info pattern.inspect
+      if platform_family? 'windows'
         switches = [
           regexp ? '/R' : '/L',
           line ? '/X' : '',
         ]
         "findstr #{switches.join(' ')} \"#{pattern}\""
+      else
+        switches = [
+          regexp ? '' : '-F',
+          line ? '-x' : '',
+        ]
+        "grep #{switches.join(' ')} -- '#{pattern}'"
       end
-    end
-
-    def pipe_filter(pattern, regexp: true, line: false)
-      Asadmin.pipe_filter(node, pattern, regexp: regexp, line: line)
     end
 
     def asadmin_command(command, remote_command = true, params = {})
